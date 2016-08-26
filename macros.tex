@@ -15,3 +15,17 @@
 \newcommand{\alg}[1]{Algorithm~\ref{#1}}
 \newcommand{\sys}[0]{TinyGarble}
 \newcommand{\BigO}[1]{\ensuremath{\mathcal{O}\bigl(#1\bigr)}}
+
+\newenvironment{dedication}
+{
+   \cleardoublepage
+   \thispagestyle{empty}
+   \vspace*{\stretch{1}}
+   \hfill\begin{minipage}[t]{0.66\textwidth}
+   \raggedright
+}%
+{
+   \end{minipage}
+   \vspace*{\stretch{3}}
+   \clearpage
+}
