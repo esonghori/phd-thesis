@@ -1,0 +1,74 @@
+\newif\ifsubmission
+%\submissionfalse
+\submissiontrue
+
+\documentclass[12pt]{ruthesis}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage{graphics}
+\usepackage{epsfig}
+\usepackage{epsf}
+\usepackage{rotating}
+\usepackage{subfigure}
+\usepackage{pictex}
+\usepackage{epsf}
+\usepackage{cite}
+\usepackage{theorem}
+
+\input{macros}
+
+\title{Simple and Effcient Privacy-Preserving Computation}
+\ctitle{Simple and Effcient Privacy-Preserving Computation}
+
+\author{Ebrahim M. Songhori}
+\department{Electrical and Computer Engineering}
+\school{Rice University}
+\degree{Doctor of Philosophy}
+
+\committee {
+Farinaz Koushanfar, Advisor \\
+Professor of Electrical and Computer Engineering \\
+University of California, San Diego
+\and
+Joseph R. Cavallaro, Chair \\
+Professor of Electrical and Computer Engineering and Computer Science
+Rice University, TX
+\and
+Aydin Babakhani\\
+Assistant Professor of Electrical and Computer Engineering\\
+Rice University, TX
+\and
+Dan Wallach\\
+Professor of Computer Science and of Electrical and Computer Engineering\\
+Rice University, TX
+\and
+Ahmad-Reza Sadeghi\\
+Professor Computer Science\\
+Technische Universit{\"a}t Darmstadt Darmstadt, Germany
+}
+
+\address{Houston, Texas}
+\donemonth{March} \doneyear{2017} \makeindex
+\begin{document}
+
+  \begin{frontmatter}
+   \pagenumbering{roman}
+   %\makecover
+   \maketitle
+   \include{01_abstract}
+   %\include{ack}
+   \tableofcontents
+   \listoffigures
+   \listoftables
+%   \include{ded}
+  \end{frontmatter}
+\pagenumbering{arabic}
+
+\linespacing{1.7}
+
+\include{02_introduction}
+
+\bibliographystyle{ieeetr}
+\bibliography{main_bib}
+\end{document}

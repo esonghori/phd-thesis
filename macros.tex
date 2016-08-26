@@ -1,0 +1,17 @@
+\ifsubmission
+  \newcommand{\TODO}[1]{}
+  \newcommand{\CHANGED}[1]{#1}
+\else
+  \newcommand{\TODO}[1]{\textcolor{red}{TODO: #1}}
+  \newcommand{\CHANGED}[1]{\textcolor{blue}{#1}}
+\fi
+
+\newcommand{\remove}[1]{}
+
+\newcommand{\chap}[1]{Chapter~\ref{#1}}
+\newcommand{\sect}[1]{Section~\ref{#1}}
+\newcommand{\fig}[1]{Figure~\ref{#1}}
+\newcommand{\tab}[1]{Table~\ref{#1}}
+\newcommand{\alg}[1]{Algorithm~\ref{#1}}
+
+\newcommand{\BigO}[1]{\ensuremath{\mathcal{O}\bigl(#1\bigr)}}

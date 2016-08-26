@@ -1,0 +1,10 @@
+% !TEX root = 0_main.tex
+\chapter{Introduction}
+\label{ch:Intro}
+Ever increasing demand for high data rate wireless transmissions with high spectral efficiency leads to utilization of communication systems with multiple transmit and receive antennas. Excellent quality of service represented with near-channel capacity error-rate performance can be achieved with iterative receiver structure composed of inner soft detection and outer soft-input soft-output decoding. Emerging wireless standards such as:~Wireless Local Area Network (W-LAN), Worldwide Interoperability for Microwave Access (WiMAX), $3^{rd}$ Generation Partnership Project Long Term Evolution (3GPP-LTE), etc are being constantly revised to provide higher data rates and better error-rate performance. Iterative receivers based on inner soft detection and outer decoding are promising solutions.
+
+In this thesis, we propose to address issues of designing efficient physical layer receiver structure targeting its use in emerging wireless systems, including both downlink and uplink scenarios. It is our goal to develop performance-efficient wireless receiver with implementable hardware cost while achieving data throughputs in the order of hundreds MBits/sec.
+
+\section{Motivation}
+\label{sec:Motivation}
+Excellent error-rate performance in MIMO environment are made possible by employing sophisticated algorithms such as maximum \emph{a posteriori}~(MAP) detection techniques and outer channel decoding that provides error-correction in the presence of multiple access interference, burst channel fading, channel multi-paths, additive receiver noise, etc. An approximation of impractically complex optimal joint detection/decoding is achieved by iteratively improving the \emph{a posteriori} probabilities (APPs) of transmitted coded bits between inner soft detection and outer decoding~\cite{songhori2015tinygarble}. Inner detection is typically based on the simplification of exponentially complex maximum-likelihood~(ML) approach such as the sphere detection~\cite{wang2015secure}.
