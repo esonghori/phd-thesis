@@ -1,10 +1,95 @@
 % !TEX root = 0_main.tex
-\chapter{Introduction}
-\label{ch:Intro}
-Ever increasing demand for high data rate wireless transmissions with high spectral efficiency leads to utilization of communication systems with multiple transmit and receive antennas. Excellent quality of service represented with near-channel capacity error-rate performance can be achieved with iterative receiver structure composed of inner soft detection and outer soft-input soft-output decoding. Emerging wireless standards such as:~Wireless Local Area Network (W-LAN), Worldwide Interoperability for Microwave Access (WiMAX), $3^{rd}$ Generation Partnership Project Long Term Evolution (3GPP-LTE), etc are being constantly revised to provide higher data rates and better error-rate performance. Iterative receivers based on inner soft detection and outer decoding are promising solutions.
+\chapter{Introduction}\label{ch:intro}
+%what is the problem?
+Secure function evaluation (SFE) allows two or more parties to correctly compute a function of their respective private inputs without exposure.
+The seminal result by Yao introduced the GC protocol for addressing two-party SFE \cite{yao1986generate}.
+The GC protocol allows to securely evaluate a function given as a Boolean circuit that is represented as a series of binary gates.
+The inputs and outputs of each gate are masked such that the party evaluating the GC cannot gain any information about the inputs or  intermediate results that appear during function evaluation.
+The approach of obliviously evaluating a Boolean circuit can also be generalized to multi-party SFE \cite{goldreich1987play,Ben-DavidNP08}.
 
-In this thesis, we propose to address issues of designing efficient physical layer receiver structure targeting its use in emerging wireless systems, including both downlink and uplink scenarios. It is our goal to develop performance-efficient wireless receiver with implementable hardware cost while achieving data throughputs in the order of hundreds MBits/sec.
+%What has been done?
+Contemporary literature has cited multiple important privacy preserving and security critical applications that could benefit from a practical realization of SFE, including but not limited to: biometrics matching, face recognition, image/data classification, electronic auctions and voting, remote diagnosis, and secure search \cite{bringer2013privacy, evans2011efficient, barni2009secure, naor1999privacy, brickell2007privacy, JKS08}.
+While GC was considered to be prohibitively expensive and practically infeasible a decade ago, today we are witnessing a surge of theoretical, algorithmic, and tool developments that have significantly improved the efficiency and practicality of the GC protocol, see \cite{malkhi2004fairplay, kolesnikov2008improved, pinkas2009secure, huang2011faster, bellare2013efficient}.
 
-\section{Motivation}
-\label{sec:Motivation}
-Excellent error-rate performance in MIMO environment are made possible by employing sophisticated algorithms such as maximum \emph{a posteriori}~(MAP) detection techniques and outer channel decoding that provides error-correction in the presence of multiple access interference, burst channel fading, channel multi-paths, additive receiver noise, etc. An approximation of impractically complex optimal joint detection/decoding is achieved by iteratively improving the \emph{a posteriori} probabilities (APPs) of transmitted coded bits between inner soft detection and outer decoding~\cite{songhori2015tinygarble}. Inner detection is typically based on the simplification of exponentially complex maximum-likelihood~(ML) approach such as the sphere detection~\cite{wang2015secure}.
+%classification of the work
+The research on producing Boolean functions for SFE can be roughly classified into two categories: optimizations of cryptographic constructs and protocols such as  \cite{kolesnikov2008improved,pinkas2009secure,bellare2012foundations,bellare2013efficient,kolesnikov2014flexor,zahur2014two}, and compiler/engineering techniques including but not limited to \cite{malkhi2004fairplay,kreuter2012billion,huang2011faster, malka2011vmcrypt,HS13,kreuter2013pcf,franz2014cbmc}.
+
+In the compiler/engineering realm two different approaches for circuit generation have been developed.
+One approach is based on building a custom library for a general purpose programming language such as Java along with functions for emitting the circuit, e.g., \cite{huang2011faster,malka2011vmcrypt,HS13}.
+For better usability, these libraries typically include frequently used modules such as adders and multipliers.
+However, library-based approaches require manual adjustment and do not perform global circuit optimization.
+Moreover, their memory management gets complicated when the number of gates is large thereby affecting performance and scalability \cite{HS13}.
+
+The second approach is to write a new compiler for a higher-level language that translates the instructions into the Boolean logic, e.g., \cite{malkhi2004fairplay,kreuter2012billion,kreuter2013pcf,franz2014cbmc}.
+Although compiler-based approaches can perform global optimizations, they often unroll the circuits into a large list of gates.
+For example, the description of a circuit with one billion gates has at least size $2 \log_2 (10^9) \cdot 10^{9} \approx 7$~GB.
+To reduce circuit description size, the compiler proposed in \cite{kreuter2013pcf}, called PCF (Portable Circuit Format), does not unroll the loops in the circuit until the GC protocol runs, and therefore seems to have a better scalability than the other compilers.
+As we elaborate in related work (see \sect{sec:related}), the existing approaches, including the above proposals, have certain limitations when it comes to real implementation.
+
+\section{Our approach}\label{sec:into-approach}
+Our approach, \sys{}, is based on synthesizing and optimizing circuits for the GC protocol as sequential circuits while leveraging powerful logic synthesis techniques with our newly introduced custom-libraries.
+
+Our solution simply views the circuit generation for GC as an atypical logic synthesis task that, if properly defined, can still be addressed by conventional hardware synthesis tools.
+By posing the circuit generation for Yao's protocol as a hardware synthesis problem, \sys{} naturally benefits from the elegant algorithms and powerful techniques already incorporated in existing logic synthesis solutions, see, \cite{Techreport:Sentovich1992,Book:DeMicheli1994,Book:Devadas1994,TCAD:Brayton2006}.
+This view provides a radically different perspective on this important problem in contrast to the earlier work in this area that attempted to generate circuits by building new libraries for general purpose languages such as Java \cite{huang2011faster,malka2011vmcrypt}, custom compilers such as \cite{kreuter2013pcf,franz2014cbmc}, or introduction of new programming languages such as \cite{malkhi2004fairplay,rastogi2014wysteria}.
+
+\sys{} introduces new techniques for minimizing the number of non-XOR gates which directly results in reduced computation and communication required for the GC protocol.
+We do so by integrating the cost function in the new custom libraries that we design and use within our logic synthesis flow.
+This way, we are able to gain up to $80\%$ improvement in the number of non-XOR gates for benchmark circuits compared to PCF \cite{kreuter2013pcf}.
+The \sys{} methodology is automated, i.e., the savings can be achieved for many functions synthesized by our method, regardless of their sophistication.
+
+One significant contribution of \sys{}, which differentiates it from the previous work, is expressing the function in a very compact format, namely as a sequential logic.
+The earlier work in this area mainly described functions in a combinational format, where the value of the output is determined entirely by the circuit inputs.
+This input/output relationship can be expressed by a (combinational) Boolean function and a directed acyclic graph (DAG) of binary gates.
+The sequential circuit description, on the other hand, allows having feedback from the output to the input by adding the notion of a state (memory).
+At each \emph{sequential cycle}, the output of the circuit is determined by the current state of the system and the input.
+For each particular sequential cycle, the relationship between the output and the inputs for the given states can be determined as a Boolean combinational logic.
+
+The only previous work we are aware of which implicitly hinted at the possibility of having a more compact representation is PCF \cite{kreuter2013pcf}.
+It does so by embracing loops and unrolling them only at runtime.
+A sequential circuit, however, goes far beyond the loop embracing performed at the software level.
+Not only does \sys{} embrace the high-level loops, it also enables the user to further compact the functions by folding the implementation up to its basic elements.
+For example, using \sys{}, user can compress the 1024-bit addition function into only a 1-bit adder.
+
+An important advantage of our sequential representation is providing a new degree of freedom to the user to fold the functions to simpler computing elements; i.e., the user has the freedom to choose the number of sequential cycles needed for evaluation of the function--the size of the combinational logic path between the states/inputs and the outputs.
+The number of gates in the sequential circuit can be managed by varying the number of cycles.
+The memory footprint of the GC operation is directly related to the number of gates in the sequential circuit; at any moment during garbling, only the information corresponding to the current cycle needs to be stored.
+Compact sequential circuits yield a small enough memory footprint that can fit mostly on a typical processor cache.
+This helps us to avoid costly cache misses while accessing the wire tokens during the GC protocol.
+Indeed, \sys{} can enable practicable embedded implementations with a small memory footprint.
+
+The sequential representation enables, for the first time, implementation of a universal processor for private function evaluation where the function is known only to one party.
+We reduce private function SFE (PF-SFE) to general SFE where the function is known by both parties.
+Our implementation accepts assembly instructions of the private function as input to the GC protocol.
+Since a processor is inherently a sequential circuit, it was infeasible to be realized with previous GC tools.
+
+\sys{} accepts inputs in two different formats: a standard hardware description language (HDL), or a higher level language as long as it is compatible with the existing high level synthesis (HLS) tools, e.g., the C language for  SPARK \cite{Gupta2004} and Xilinx Vivado \cite{tool:Vivado}, or Python for PandA \cite{tool:PandA}, that converts the high level language to an HDL.
+Beside user's manual optimization, \sys{} performs various optimizations through standard HDL synthesis tools to generate an optimized \emph{netlist}, i.e., list of gates, which is then transformed to be used with a GC protocol implementation, e.g., JustGarble \cite{bellare2013efficient} or Half Gates \cite{zahur2014two}.
+
+\noindent \\
+\textbf{Contributions.} In brief, our contributions are as follows:
+\begin{itemize}
+\item
+  Adaption of established HDL synthesis techniques to compile and optimize a function into a netlist of gates for use in secure computation protocols.
+
+\item
+  Creation of new custom libraries and setting objectives/ constraints to \emph{repurpose} standard synthesis tools for minimizing the number of non-XOR gates in a circuit.
+
+\item
+  Introduction of sequential circuit description for achieving an unprecedented compactness in function representation and memory footprint.
+
+\item
+  Providing a new degree of freedom to users to fold the functions into a sequential circuit.
+  The user can achieve a small enough sequential circuit such that the memory required for its secure evaluation fits even in a typical processor cache.
+  This helps to avoid costly cache misses and reduces the CPU time required for GC.
+
+\item
+  Proof-of-concept implementation of benchmark functions such as multiplication, and Hamming distance demonstrates up to 5 orders of magnitude savings in memory footprint and up to $80\%$ efficiency in minimizing the total number of non-XOR gates.
+  Furthermore, \sys{} enables implementation of large circuits that were not reported in earlier work, such as SHA-3.% and RSA-8192.
+
+\item
+  Implementing the first scalable emulation of a universal processor for private function evaluation where the number of instruction invocations is not limited by the memory required for garbling.
+  This design is uniquely enabled by the \sys{} sequential description.
+  Our design is a secure general purpose processor based on the MIPS~I instruction set that receives as inputs the private function from one party and the data from the other.
+
+\end{itemize}

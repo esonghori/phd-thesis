@@ -7,4 +7,4 @@ all:
 	pdflatex $(MAIN).tex
 
 clean:
-	rm -f $(MAIN).aux $(MAIN).blg $(MAIN).out $(MAIN).bbl $(MAIN).log $(MAIN).synctex.gz $(MAIN).toc texput.log
+	rm -f $(MAIN).aux $(MAIN).blg $(MAIN).out $(MAIN).bbl $(MAIN).log $(MAIN).synctex.gz $(MAIN).toc texput.log $(MAIN).idx $(MAIN).lof $(MAIN).lot *.aux

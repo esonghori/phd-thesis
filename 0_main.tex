@@ -3,23 +3,27 @@
 \submissiontrue
 
 \documentclass[12pt]{ruthesis}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{multirow}
+\usepackage{appendix}
+\usepackage{url}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 \usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{latexsym}
-\usepackage{graphics}
-\usepackage{epsfig}
-\usepackage{epsf}
-\usepackage{rotating}
-\usepackage{subfigure}
-\usepackage{pictex}
-\usepackage{epsf}
-\usepackage{cite}
-\usepackage{theorem}
+\usepackage{color}
+\let\labelindent\relax %to avoid conflict with IEEEtran
+\usepackage{enumitem}
+\usepackage{listings}
+\usepackage{numprint}
+
+\npthousandsep{,}\npthousandthpartsep{}\npdecimalsign{.}
+\graphicspath{{figs/}}
+
 
 \input{macros}
 
-\title{Simple and Effcient Privacy-Preserving Computation}
-\ctitle{Simple and Effcient Privacy-Preserving Computation}
+\title{TinyGarble: Efficient, Scalable, and Versatile Privacy-Preserving Computation Through Sequential Garbled Circuit}
 
 \author{Ebrahim M. Songhori}
 \department{Electrical and Computer Engineering}
@@ -29,23 +33,23 @@
 \committee {
 Farinaz Koushanfar, Advisor \\
 Professor of Electrical and Computer Engineering \\
-University of California, San Diego
+University of California, San Diego, CA
 \and
 Joseph R. Cavallaro, Chair \\
 Professor of Electrical and Computer Engineering and Computer Science
-Rice University, TX
+Rice University, Houston, TX
 \and
 Aydin Babakhani\\
 Assistant Professor of Electrical and Computer Engineering\\
-Rice University, TX
+Rice University, Houston, TX
 \and
 Dan Wallach\\
 Professor of Computer Science and of Electrical and Computer Engineering\\
-Rice University, TX
+Rice University, Houston, TX
 \and
 Ahmad-Reza Sadeghi\\
 Professor Computer Science\\
-Technische Universit{\"a}t Darmstadt Darmstadt, Germany
+Technische Universit{\"a}t Darmstadt, Darmstadt, Germany
 }
 
 \address{Houston, Texas}
@@ -68,6 +72,16 @@ Technische Universit{\"a}t Darmstadt Darmstadt, Germany
 \linespacing{1.7}
 
 \include{02_introduction}
+\include{03_preliminary}
+\include{04_global_flow}
+\include{05_squential_garbled}
+\include{06_hdl_synthesis}
+\include{07_mips}
+\include{08_evaluation}
+\include{09_related_work}
+\include{10_conclusion}
+\appendices
+\include{11_appendix}
 
 \bibliographystyle{ieeetr}
 \bibliography{main_bib}
