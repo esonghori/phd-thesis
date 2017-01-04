@@ -60,28 +60,28 @@ Technische Universit{\"a}t Darmstadt, Darmstadt, Germany
    \pagenumbering{roman}
    %\makecover
    \maketitle
-   \include{01_abstract}
-   \include{ack}
+   \input{abstract}
+   \input{ack}
    \tableofcontents
    \listoffigures
    \listoftables
-   \include{ded}
+   \input{ded}
   \end{frontmatter}
 \pagenumbering{arabic}
 
 \linespacing{1.7}
 
-\include{02_introduction}
-\include{03_preliminary}
-\include{04_global_flow}
-\include{05_squential_garbled}
-\include{06_hdl_synthesis}
-\include{07_mips}
-\include{08_evaluation}
-\include{09_related_work}
-\include{10_conclusion}
-\appendices
-\include{11_appendix}
+\input{01_introduction}
+\input{02_prelim}
+\input{03_synthesis}
+\input{04_sequential}
+\input{05_skipgate}
+\input{06_processor}
+\input{07_evaluation}
+\input{08_related}
+\input{09_conclusion}
+%\appendices
+%\input{appendix}
 
 \bibliographystyle{ieeetr}
 \bibliography{main_bib}

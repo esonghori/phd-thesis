@@ -1,5 +1,5 @@
 % !TEX root = 0_main.tex
-\chapter{Evaluation}\label{chap:eval}
+\chapter{Evaluation}
 We use a variety of benchmark functions to evaluate the performance and practicability of \sys{}.
 In this section, we first describe our experimental setup (\sect{sect:exp}) and metrics for quantifying the performance of \sys{} (\sect{ssec:metrics}).
 We outline the performance comparison of \sys{} (with HDL synthesizer and our custom libraries) on combinational benchmark functions with PCF \cite{kreuter2013pcf}, one of the best known earlier automated methodologies to generate circuits for garbling in \sect{ssec:customlib}.
@@ -11,7 +11,7 @@ Lastly, \sect{ssec:mipsres} shows the result of our garbled processor and implem
 We also compare the performance of the commercial logic synthesis tool with the academic, open-source tools in Appendix \ref{app:seqos}.
 We show that in most cases, the performance of the open-source tool is comparable to the commercial tool.
 
-\section{Experimental Setup}\label{sec:setup}
+\section{Experimental Setup}
 The circuit generations are all done on a system with Linux RedHat Server 5.6, 8~GB of memory, and Intel Xeon X5450 CPU @ 3~GHz.
 We use another system with Ubuntu 14.10 Desktop, 12.0~GB of memory, and Intel Core i7-2600 CPU @ 3.4GHz to assess the timing performance of the sequential garbling scheme in \sect{ssec:cacheTime}.
 
@@ -21,7 +21,7 @@ We also use the Synopsis Library Compiler from the DC package to interpret our c
 In \sect{ssec:HLSeval}, we utilize Xilinx Vivado HLS \cite{tool:Vivado}, a commercially available HLS tool whose inputs are written in the C/C++ programming language.
 We emphasize that \sys{} can operate with any commercial or open-source sequential HDL-level (or HLS) synthesizer, as long as the synthesizer is capable of performing state-of-the-art logic optimization and mapping algorithms.
 
-\section{Performance Metrics}\label{sec:metrics}
+\section{Performance Metrics}
 We use the following metrics to measure the efficiency of \sys{} for generating garbled circuits:
 
 \begin{itemize}
@@ -41,7 +41,7 @@ We use the following metrics to measure the efficiency of \sys{} for generating 
 	However, in general, negative $\mathit{GTD}$ shows improvement in the number of non-XOR gates and generated garbled tables that results from logic synthesis optimization.
 \end{itemize}
 
-\section{Benchmark functions}\label{sec:funcs}
+\section{Benchmark functions}
 We evaluate \sys{}'s circuit generation method on various benchmark functions.
 Several of these functions have been used in previous works, e.g., PCF~\cite{kreuter2013pcf}.
 In the following, we introduce our benchmarks and explain how we fold them into a sequential representation.
@@ -52,13 +52,13 @@ Thus, it can be folded up to $N$ times without any significant overhead in numbe
 
 \textit{Hamming Distance.} This function receives two $N$-bit inputs and outputs the $\log_2(N)$-bit Hamming distance between them.
 The Hamming distance between two numbers is the number of positions at which the corresponding bits are different.
-A possible combinational implementation of the $N$-bit Hamming distance uses a binary tree of adders that sums all $1$-bit values from the bit differences to a final Hamming distance consisting of $\log_2(N)$ bits \cite{BP06}.
+A possible combinational implementation of the $N$-bit Hamming distance uses a binary tree of adders that sums all $1$-bit values from the bit differences to a final Hamming distance consisting of $\log_2(N)$ bits \cite{boyar2006concrete}.
 This implementation cannot be folded easily.
 However, we can fold this function into $N$-cycles of one XOR and one $\log_2(N)$-bit adder.
 This causes an overhead compared to the combinational circuit.
 
 \textit{Compare (Millionaires problem).} This function receives two $N$-bit unsigned input values and outputs a greater than signal consisting of one bit that indicates if the first input is greater than the second one.
-The comparison function can be implemented in $N$ steps of subtraction by keeping the carry bit \cite{KSS09}.
+The comparison function can be implemented in $N$ steps of subtraction by keeping the carry bit \cite{kolesnikov2009improved}.
 Thus, it can be folded up to $N$ times without any significant overhead.
 
 \textit{Multiplication.} This function receives two unsigned $N$-bit inputs and outputs their unsigned $N$-bit product.
@@ -79,7 +79,7 @@ We implement the Keccak-f permutations[$1600$] procedure for realizing this func
 The SHA3 function consists of 24 steps, each with a symmetric structure.
 It can be folded 24 times without any significant overhead.
 
-\section{Combinational Garbled Circuit}\label{sec:customlib}
+\section{Combinational Garbled Circuit}
 To show the performance gain of using our custom libraries, we compare \sys{} combinational circuits with circuits reported in PCF \cite{kreuter2013pcf}.
 We choose PCF because among the \emph{automated} GC tools available at the time of writing, it shows better results for most of the benchmarks.
 In some other work like FastGC \cite{huang2011faster}, a number of benchmark circuits have been more aggressively improved (compared to PCF) using ad-hoc and mostly manual optimizations, but without a generalizable methodology.
@@ -101,11 +101,11 @@ We emphasize that our sequential circuit ($c>1$) provides the exact same functio
 
 \subsection{Comparison with Hand-Optimized Circuits}
 The netlists generated by the automated flow of \sys{} show similar performance as the hand-optimized netlists in many cases.
-For example, \cite{KSS09} describe an $N$-bit sum circuit with $5N$ gates of which $N$ gates are non-XOR and an $N$-bit comparison circuit with $4N$ gates of which $N$ gates are non-XOR.
+For example, \cite{kolesnikov2009improved} describe an $N$-bit sum circuit with $5N$ gates of which $N$ gates are non-XOR and an $N$-bit comparison circuit with $4N$ gates of which $N$ gates are non-XOR.
 The circuits generated by \sys{} have about the same number of gates for these two functions.
 Note that one can always add any hand-optimized module to the synthesis library of \sys{}.
 
-\section{Sequential Garbled Circuit} \label{sec:seqeval}
+\section{Sequential Garbled Circuit}
 As described in \sect{sec:sequen}, the user has the degree of freedom to fold a combinational circuit and convert it to a sequential one to reduce the memory footprint.
 $c$ denotes the number of sequential cycles required to garble/evaluate the circuit.
 This value demonstrates the amount of folding that is performed before the circuit is input to the synthesizer.
@@ -152,7 +152,7 @@ Observe that the savings are typically more for larger bit-widths while extreme 
 
 Because of the \sys{} superior scalability, we are able to implement functions that have never been reported before, such as SHA-3, which can be represented using $\numprint{344059}$ and $\numprint{6788}$ gates respectively.
 
-\section{Effect of Folding on Garbling Time}\label{sec:cacheTime}
+\section{Effect of Folding on Garbling Time}
 So far, we have only reported the overhead in terms of garbled tables ($\mathit{GTD}$) that is a function of the number of non-XOR gates.
 As explained in \cite{bellare2013efficient}, if we see garbling as a cryptographic primitive, its computation time (without considering communication) will also be interesting.
 In practice, smaller circuits which can fit entirely in the processor cache result in fewer cache misses and therefore, consume less CPU cycles for garbling.
@@ -179,9 +179,9 @@ The CPU time in number of cycles and the approximate memory footprint in KBytes 
 	\label{fig:cpu_time}
 \end{figure}
 
-\section{High Level Synthesis Tools}\label{sec:HLSeval}
+\section{High Level Synthesis Tools}
 The design automation community has been working on tools that work with higher-level languages and abstractions than HDL.
-While a host of commercial and academic HLS tools are available \cite{tool:Vivado, tool:PandA, tool:MyHDL, Gupta2004}, we selected the Xilinx Vivado HLS for compiling C code to HDL which can then be synthesized using a conventional HDL synthesis tool.
+While a host of commercial and academic HLS tools are available \cite{tool:Vivado, tool:PandA, decaluwe2004myhdl, Gupta2004}, we selected the Xilinx Vivado HLS for compiling C code to HDL which can then be synthesized using a conventional HDL synthesis tool.
 The HLS engine in the Vivado suite is built upon the xPilot project \cite{Chapter:Zhang2008}.
 
 \begin{table*}[t]
@@ -195,7 +195,7 @@ Table \ref{table:hls} demonstrates a comparison between the performance of the c
 As can be seen from the table, the resulting memory footprint could increase by a factor between 1 and 4, while the number of garbled tables varies in a range of 3 to 9 times.
 It is well known that writing the HDL level code which contains the time information and more detailed structural/behavioral description would yield much more efficient circuits than the code written in a higher level language.
 
-\section{Evaluation of MIPS}\label{sec:mipsres}
+\section{Evaluation of MIPS}
 We implement general purpose processor for PF-SFE using MIPS~I where one user provide function description in assembly and the other provides the data.
 Support of sequential circuits in \sys{} enables us to use the MIPS circuit description in Plasma project \cite{rhoads2006plasma} without major modifications.
 In the following, we provide the result of MIPS implementation and its memory footprint and communication load.
@@ -245,3 +245,28 @@ It will store the Hamming distance of $A$ and $B$ in address $1$.
 \lstinputlisting{Hamming.s}
 \caption{Hamming distance assembly code.}\label{figure:hamminassembly}
 \end{figure}
+
+\section{Open Source Logic Synthesis Tools}
+\sys{} offers a generic methodology for generating GC that is transparent to the underlying logic synthesis tool.
+To show this point, we demonstrate an implementation of \sys{} using the Yosys \cite{tool:Yosys} and ABC \cite{tool:ABC} logic synthesis tool chain for circuit generation.
+Both of these tools are open-source and available online.
+We compare the performance of the commercial HDL synthesis tool, i.e., Synopsys DC, with this open-source synthesis tool chain.
+ABC is an academic package developed at the University of California Berkeley.
+Yosys is an HDL-based synthesis tool which calls ABC for its technology mapping.
+The HDL inputs for describing both sequential and combinational circuits are written in the Verilog programming language.
+
+We compare the performance of these open-source tools to the commercially available Synopsys DC.
+The results are presented in \tab{table:abc}.
+For comparison purposes, we compute $\mathit{GTD}$ and $\mathit{MFE}$ using the netlists generated by Synopsys DC as reference.
+For most of the benchmarks $\mathit{GTD}$s are either very small or zero which implies that the number of non-XOR gates in circuits generated by Yosys and by Synopsys DC are almost similar.
+In terms of memory footprint, different tools perform better for different benchmark functions.
+These results shows that \sys{} is transparent to the underlying logic synthesis tool as long as the tool is up to date with respect to the known methods for logic minimization and mapping.
+Since the logic synthesis tools perform a series of optimizations, they may use different (heuristic) algorithms for some of their internal steps which could lead to slightly different results.
+A user can choose between different synthesis tools based on their performance and availability.
+
+\begin{table}[h]
+\caption{Comparison of circuit generation performance between the commercial Synopsys DC and Yosys+ABC open source logic synthesizer.}
+\label{table:abc}
+\centering
+\includegraphics[scale=.9]{abc-crop.pdf}
+\end{table}

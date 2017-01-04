@@ -1,15 +1,18 @@
 % !TEX root = 0_main.tex
-\chapter{Private Function Evaluation}\label{chap:secproc}
+\chapter{Garbled Processor}
+\section{Garbled Stack Machine}
+\section{Garbled MIPS}
+\subsection{Private Function Evaluation}
 Two-party Private Function SFE (PF-SFE) allows secure computation of a function $f_{Alice}(\cdot)$ held by one party (Alice) operating on another party's data $x_{Bob}$ (Bob) while both the data and the function are kept private.
 This is in contrast to the usual setting of SFE where the function is known by both parties.
 PF-SFE is especially useful when the function is proprietary or classified.
 
 It is well known that PF-SFE can be reduced to regular SFE by securely evaluating a Universal Circuit (UC) \cite{sander1999non}.
-UC is a circuit capable of simulating any circuit (function) $f(\cdot)$ given the description of $f(\cdot)$ as input \cite{Valiant76,KS08UC}.
+UC is a circuit capable of simulating any circuit (function) $f(\cdot)$ given the description of $f(\cdot)$ as input \cite{valiant1976universal,kolesnikov2008practical}.
 More formally:
 $$UC(f_{Alice}(\cdot),x_{Bob}) = f_{Alice}(x_{Bob}).$$
 Secure evaluation of UC completely hides the functionality of $f(\cdot)$, including its topology.
-Subsequent works have shown how to allow PF-SFE while avoiding the overhead of UCs \cite{KatzM11, MohasselS13}.
+Subsequent works have shown how to allow PF-SFE while avoiding the overhead of UCs \cite{katz2011constant, mohassel2013hide}.
 
 A UC is similar to a Universal Turing Machine (UTM) \cite{turing1936computable,herken1995universal} that receives a Turing machine description $f_{Alice}(\cdot)$ and applies it to the input data ($x_{Bob}$) on its tape \cite{davis2001engines}.
 One party provides the machine description and the other one provides the initial data.
@@ -17,7 +20,7 @@ The output $f_{Alice}(x_{Bob})$ resides on the tape after the operation is compl
 A general purpose processor is a special realization of a UTM.
 It receives a list of \emph{instructions} $f_{Alice}(\cdot)$ and applies them to the input data $x_{Bob}$ in memory.
 
-\section{Arithmetic Logic Unit}
+\subsection{Arithmetic Logic Unit}
 The core of conventional processors is the Arithmetic Logic Unit (ALU) which receives two \emph{operands} and an \emph{opcode} indicating the desired operation.
 ALU supports an operation set consisting of operations like addition, multiplication, XOR, etc.
 The ALU circuit consists of multiple sub-circuits for these operations and a MUX which selects one of their outputs.
@@ -35,7 +38,7 @@ The idea of using an ALU or a \emph{universal next-instruction circuit} in the G
 The objective of that paper was improving efficiency of SFE where the function is known by both parties, unlike PF-SFE where the function is private.
 Nonetheless, instead of ALU they eventually decided to use an \emph{instruction-specific circuit} which leaks information about the function but results in less effort for non-private function evaluation.
 
-\section{Memory}
+\subsection{Memory}
 The processor accesses the memory while executing an instruction to read the instruction and data and write the data back.
 If the memory is securely evaluated along with the processor, the access patterns must be also oblivious to both parties.
 On the other hand, if the memory is not evaluated securely, the access patterns could be revealed that in turn could reveal information about the function to Bob and about the data to Alice.
@@ -44,12 +47,12 @@ Because of \sys{} sequential methodology, the memory can be easily implemented u
 Thus, it can be included in the processor circuit to be evaluated securely using the GC protocol.
 However, inclusion of MUXs and FFs increases the operation time and communication linearly with respect to the memory size.
 
-One alternative approach for hiding memory access patterns is the use of Oblivious Random-Access Machine (ORAM) protocols \cite{goldreich1996software} which allows oblivious load/store operations with amortized polylogarithmic overhead \cite{gordon2012secure,liu2014automating,LO13,gentry2014garbled}.
+One alternative approach for hiding memory access patterns is the use of Oblivious Random-Access Machine (ORAM) protocols \cite{goldreich1996software} which allows oblivious load/store operations with amortized polylogarithmic overhead \cite{gordon2012secure,liu2014automating,lu2013garble,gentry2014garbled}.
 For the sake of simplicity, we do not use ORAM in this work.
 However, one can simply connect our implementation of PF-SFE to an ORAM to benefit from its lower amortized complexity.
-As another alternate, \cite{ZE13} showed that algorithms can sometimes be rewritten to use data structures such as stacks, queues, or associative maps for which they give compact circuit constructions of poly-logarithmic size.
+As another alternate, \cite{zahur2013circuit} showed that algorithms can sometimes be rewritten to use data structures such as stacks, queues, or associative maps for which they give compact circuit constructions of poly-logarithmic size.
 
-\section{Secure Processor}
+\subsection{Secure Processor}
 We assume Alice provides the private function $f_{Alice}(\cdot)$ and Bob provides private data~$x_{Bob}$.
 At the end of the operation, only Bob learns the output $f_{Alice}(x_{Bob})$.
 Note that we are not considering the case where both parties learn the output as that would allow Alice to learn Bob's private data with an identity function ($f\equiv I$).
@@ -75,7 +78,7 @@ Because of secure evaluation using the GC protocol in Step 4, no information abo
 Without knowing internal values in the processor circuit, none of the parties can distinguish instructions or memory access patterns.
 In the following, we demonstrate an implementation of a processor supporting the MIPS (Microprocessor without Interlocked Pipeline Stages) ISA, as an example of a garbled processor for securely evaluating private functions.
 
-\section{MIPS}\label{sec:mips}
+\subsection{MIPS}
 MIPS is a text-book Reduced Instruction Set Computing (RISC) ISA \cite{kane1992mips}.
 The RISC ISA consists of a small set of simplified assembly instructions in contrast to Complex Instruction Set Computing (CISC) (e.g., x86 ISA) which includes more complex multi-step instructions \cite{hennessy2012computer}.
 We choose a RISC ISA processor instead of CISC for the following main reasons: (i) lower number of non-XOR gates, (ii) simple and straightforward implementation, and (iii) availability and diversity of open-source implementations.
@@ -114,3 +117,6 @@ ALU also receives an opcode from the controller unit.
 The output of ALU will be either written back to the register file or fed to DM as an address for load/store.
 The loaded data from DM is written back to the register file.
 In each cycle, PC is incremented by 4 to point to the next instruction in IM or is changed according to a branch or jump instruction.
+
+\section{ARM2GC}
+\section{Evaluation}

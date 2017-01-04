@@ -1,24 +1,24 @@
 % !TEX root = 0_main.tex
-\chapter{Introduction}\label{ch:intro}
+\chapter{Introduction}
 %what is the problem?
 Secure function evaluation (SFE) allows two or more parties to correctly compute a function of their respective private inputs without exposure.
 The seminal result by Yao introduced the GC protocol for addressing two-party SFE \cite{yao1986generate}.
 The GC protocol allows to securely evaluate a function given as a Boolean circuit that is represented as a series of binary gates.
 The inputs and outputs of each gate are masked such that the party evaluating the GC cannot gain any information about the inputs or  intermediate results that appear during function evaluation.
-The approach of obliviously evaluating a Boolean circuit can also be generalized to multi-party SFE \cite{goldreich1987play,Ben-DavidNP08}.
+The approach of obliviously evaluating a Boolean circuit can also be generalized to multi-party SFE \cite{goldreich1987play,ben2008fairplaymp}.
 
 %What has been done?
-Contemporary literature has cited multiple important privacy preserving and security critical applications that could benefit from a practical realization of SFE, including but not limited to: biometrics matching, face recognition, image/data classification, electronic auctions and voting, remote diagnosis, and secure search \cite{bringer2013privacy, evans2011efficient, barni2009secure, naor1999privacy, brickell2007privacy, JKS08}.
+Contemporary literature has cited multiple important privacy preserving and security critical applications that could benefit from a practical realization of SFE, including but not limited to: biometrics matching, face recognition, image/data classification, electronic auctions and voting, remote diagnosis, and secure search \cite{bringer2013privacy, evans2011efficient, barni2009secure, naor1999privacy, brickell2007privacy, jha2008towards}.
 While GC was considered to be prohibitively expensive and practically infeasible a decade ago, today we are witnessing a surge of theoretical, algorithmic, and tool developments that have significantly improved the efficiency and practicality of the GC protocol, see \cite{malkhi2004fairplay, kolesnikov2008improved, pinkas2009secure, huang2011faster, bellare2013efficient}.
 
 %classification of the work
-The research on producing Boolean functions for SFE can be roughly classified into two categories: optimizations of cryptographic constructs and protocols such as  \cite{kolesnikov2008improved,pinkas2009secure,bellare2012foundations,bellare2013efficient,kolesnikov2014flexor,zahur2014two}, and compiler/engineering techniques including but not limited to \cite{malkhi2004fairplay,kreuter2012billion,huang2011faster, malka2011vmcrypt,HS13,kreuter2013pcf,franz2014cbmc}.
+The research on producing Boolean functions for SFE can be roughly classified into two categories: optimizations of cryptographic constructs and protocols such as  \cite{kolesnikov2008improved,pinkas2009secure,bellare2012foundations,bellare2013efficient,kolesnikov2014flexor,zahur2015two}, and compiler/engineering techniques including but not limited to \cite{malkhi2004fairplay,kreuter2012billion,huang2011faster, malka2011vmcrypt,henecka2013faster,kreuter2013pcf,franz2014cbmc}.
 
 In the compiler/engineering realm two different approaches for circuit generation have been developed.
-One approach is based on building a custom library for a general purpose programming language such as Java along with functions for emitting the circuit, e.g., \cite{huang2011faster,malka2011vmcrypt,HS13}.
+One approach is based on building a custom library for a general purpose programming language such as Java along with functions for emitting the circuit, e.g., \cite{huang2011faster,malka2011vmcrypt,henecka2013faster}.
 For better usability, these libraries typically include frequently used modules such as adders and multipliers.
 However, library-based approaches require manual adjustment and do not perform global circuit optimization.
-Moreover, their memory management gets complicated when the number of gates is large thereby affecting performance and scalability \cite{HS13}.
+Moreover, their memory management gets complicated when the number of gates is large thereby affecting performance and scalability \cite{henecka2013faster}.
 
 The second approach is to write a new compiler for a higher-level language that translates the instructions into the Boolean logic, e.g., \cite{malkhi2004fairplay,kreuter2012billion,kreuter2013pcf,franz2014cbmc}.
 Although compiler-based approaches can perform global optimizations, they often unroll the circuits into a large list of gates.
@@ -26,11 +26,11 @@ For example, the description of a circuit with one billion gates has at least si
 To reduce circuit description size, the compiler proposed in \cite{kreuter2013pcf}, called PCF (Portable Circuit Format), does not unroll the loops in the circuit until the GC protocol runs, and therefore seems to have a better scalability than the other compilers.
 As we elaborate in related work (see \sect{sec:related}), the existing approaches, including the above proposals, have certain limitations when it comes to real implementation.
 
-\section{Our approach}\label{sec:into-approach}
+\section{Our approach}
 Our approach, \sys{}, is based on synthesizing and optimizing circuits for the GC protocol as sequential circuits while leveraging powerful logic synthesis techniques with our newly introduced custom-libraries.
 
 Our solution simply views the circuit generation for GC as an atypical logic synthesis task that, if properly defined, can still be addressed by conventional hardware synthesis tools.
-By posing the circuit generation for Yao's protocol as a hardware synthesis problem, \sys{} naturally benefits from the elegant algorithms and powerful techniques already incorporated in existing logic synthesis solutions, see, \cite{Techreport:Sentovich1992,Book:DeMicheli1994,Book:Devadas1994,TCAD:Brayton2006}.
+By posing the circuit generation for Yao's protocol as a hardware synthesis problem, \sys{} naturally benefits from the elegant algorithms and powerful techniques already incorporated in existing logic synthesis solutions, see, \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
 This view provides a radically different perspective on this important problem in contrast to the earlier work in this area that attempted to generate circuits by building new libraries for general purpose languages such as Java \cite{huang2011faster,malka2011vmcrypt}, custom compilers such as \cite{kreuter2013pcf,franz2014cbmc}, or introduction of new programming languages such as \cite{malkhi2004fairplay,rastogi2014wysteria}.
 
 \sys{} introduces new techniques for minimizing the number of non-XOR gates which directly results in reduced computation and communication required for the GC protocol.
@@ -64,7 +64,7 @@ Our implementation accepts assembly instructions of the private function as inpu
 Since a processor is inherently a sequential circuit, it was infeasible to be realized with previous GC tools.
 
 \sys{} accepts inputs in two different formats: a standard hardware description language (HDL), or a higher level language as long as it is compatible with the existing high level synthesis (HLS) tools, e.g., the C language for  SPARK \cite{Gupta2004} and Xilinx Vivado \cite{tool:Vivado}, or Python for PandA \cite{tool:PandA}, that converts the high level language to an HDL.
-Beside user's manual optimization, \sys{} performs various optimizations through standard HDL synthesis tools to generate an optimized \emph{netlist}, i.e., list of gates, which is then transformed to be used with a GC protocol implementation, e.g., JustGarble \cite{bellare2013efficient} or Half Gates \cite{zahur2014two}.
+Beside user's manual optimization, \sys{} performs various optimizations through standard HDL synthesis tools to generate an optimized \emph{netlist}, i.e., list of gates, which is then transformed to be used with a GC protocol implementation, e.g., JustGarble \cite{bellare2013efficient} or Half Gates \cite{zahur2015two}.
 
 \noindent \\
 \textbf{Contributions.} In brief, our contributions are as follows:

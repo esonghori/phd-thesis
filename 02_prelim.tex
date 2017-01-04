@@ -1,8 +1,10 @@
 % !TEX root = 0_main.tex
-\chapter{Preliminaries and Background}\label{chap:prem}
-In this section, we provide preliminaries and related background on garbled circuits (\chap{sec:preli_GC}) and HDL synthesis (\chap{sec:synthesis}).
+\chapter{Preliminaries and Background}
+In this chapter, we provide preliminaries and related background on garbled circuits (\chap{sec:preli_GC}) and HDL synthesis (\chap{sec:synthesis}).
 
-\section{Background on Garbled Circuit}\label{sec:preli_GC}
+\section{Secure Multi-party Computation}
+\section{Secure Function Evaluation}
+\section{Yao's Garbled Circuit Protocol}
 Yao introduced the GC protocol for 2-party Secure Function Evaluation (SFE) in the 1980's \cite{yao1986generate}.
 GC is described as a circuit whose wires carry a string valued-token instead of a bit.
 Consider two parties, Alice and Bob, who want to evaluate a function $f(\cdot)$ without revealing their inputs to each other.
@@ -52,9 +54,7 @@ Yao's protocol for this case is described below.
 	Finally, Alice reveals the type of the outputs and Bob determines their semantic values.
 \end{enumerate}
 
-We assume the honest-but-curious model as the basis for building a stronger security protocol.
-Generic ways of modifying GC-based protocols such that they achieve security against stronger malicious adversaries have been proposed, e.g., \cite{lindell2007efficient, lindell2012secure}.
-
+\section{Advancements on the GC Protocol}
 In our implementation, we make use of state-of-the-art optimizations for garbled circuits as described below.
 
 \subsection{Free XOR~\cite{kolesnikov2008improved}}
@@ -73,10 +73,18 @@ This method allows to efficiently garble and evaluate non-XOR gates using fixed-
 In this garbling scheme which is compatible with the Free XOR and Row Reduction techniques, the output key $X_{c}$ is encrypted with the input token $X_{a}$ and $X_{b}$ using the encryption function $E(X_a,X_b,T,X_c) = \pi(K) \oplus K \oplus X_c$, where $K=2X_a\oplus4X_b\oplus T$, $\pi$ is a fixed-key block cipher (e.g., instantiated with AES), and $T$ is a unique-per-gate number (e.g., gate identifier) called \emph{tweak}.
 The proof of security is given in~\cite{bellare2013efficient}.
 
-\section{Background on HDL Synthesis}\label{ssec:synthesis}
-HDL synthesis refers to the process of translating an abstract form of  function (circuit) presentation to the gate-level logic implementation using a series of sophisticated optimizations, transformations, and mapping \cite{Techreport:Sentovich1992,Book:DeMicheli1994,Book:Devadas1994,TCAD:Brayton2006}.
+\section{Adversary Model}
+We assume the honest-but-curious model as the basis for building a stronger security protocol.
+Generic ways of modifying GC-based protocols such that they achieve security against stronger malicious adversaries have been proposed, e.g., \cite{lindell2007efficient, lindell2012secure}.
+
+\section{Boolean Circuits}
+\subsection{Combinational Boolean Circuits}
+\subsection{Sequential Boolean Circuits}
+
+\section{Background on HDL Synthesis}
+HDL synthesis refers to the process of translating an abstract form of  function (circuit) presentation to the gate-level logic implementation using a series of sophisticated optimizations, transformations, and mapping \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
 An HDL synthesis tool is a computer program which typically accepts the input circuit in some algorithmic form, logic equation, or even a table, and outputs an implementation suitable for the target hardware platform.
-Classic commercial/open-source HDL synthesis tools accept the input functions in the HDL format, e.g., Verilog or VHDL~\cite{tool:DesignCompiler,tool:ABC,tool:Encounter,tool:HDLdesigner,tool:PandA,tool:MyHDL} but newer ones also accept high level format, e.g., C/C++~\cite{Gupta2004, tool:Vivado}.
+Classic commercial/open-source HDL synthesis tools accept the input functions in the HDL format, e.g., Verilog or VHDL~\cite{tool:DesignCompiler,tool:ABC,tool:Encounter,tool:HDLdesigner,tool:PandA,decaluwe2004myhdl} but newer ones also accept high level format, e.g., C/C++~\cite{Gupta2004, tool:Vivado}.
 The common target hardware platforms for the synthesized logic include Field Programmable Gate Arrays (FPGA), Programmable Array Logic (PAL), and Application-Specific Integrated Circuits (ASIC).
 
 The input functions (circuits), regardless of their HDL or higher level format, can be defined by the implementer to be purely combinational logic that is fully representable by Boolean functions, or they might be sequential logic which is a more general format.
@@ -84,15 +92,15 @@ The input functions (circuits), regardless of their HDL or higher level format, 
 Typical practical implementations of a logic function utilize a multi-level network of logic elements.
 The tools translate the input to the implementation in two steps: (i) Logic minimization; and (ii) logic optimization.
 Logic minimization simplifies the function by combining the separate terms into larger ones containing fewer variables.
-The best known algorithm for logic minimization is the ESPRESSO algorithm~\cite{book:Brayton1984}; although the resulting minimization is not guaranteed to be the global minimum, it provides a very close approximation of the optimal, while the solution is always free from redundancy.
+The best known algorithm for logic minimization is the ESPRESSO algorithm~\cite{brayton1984logic}; although the resulting minimization is not guaranteed to be the global minimum, it provides a very close approximation of the optimal, while the solution is always free from redundancy.
 This algorithm has been incorporated as a standard logic function minimization step in virtually any contemporary HDL synthesis tool.
 
 Logic optimization takes this minimized format, further processes it, and eventually maps it onto the available basic logic cells or library elements in the target technology.
 
 Mapping is limited by factors such as the available gates (logic functions or standard cells) in the technology library, as well as the drive sizes, delay, power, and area characteristics of each gate.
 
-Newer generations of synthesis programs, referred to as high level synthesis (HLS) tools, accept other forms of input in a higher level programming language \cite{Chapter:Zhang2008,ICCD:Chu89,TCAD:Corazao2006}, e.g., ANSI C, C++, SystemC, or Python.
-HLS tools are also available in both open-source and commercial forms, cf. \cite{tool:Vivado,tool:MyHDL,tool:PandA}.
+Newer generations of synthesis programs, referred to as high level synthesis (HLS) tools, accept other forms of input in a higher level programming language \cite{Chapter:Zhang2008,chu1989hyper,corazao1996performance}, e.g., ANSI C, C++, SystemC, or Python.
+HLS tools are also available in both open-source and commercial forms, cf. \cite{tool:Vivado,decaluwe2004myhdl,tool:PandA}.
 The limitation of the higher level languages is that the behavior of the function is typically decoupled from the timing.
 The HLS tools handle the micro-architecture and transform the untimed or partially timed functional code into a fully timed HDL implementation, which in turn can be compiled by a classic synthesis tool.
 It is well-known that the performance of the circuits resulting from automatically compiled HLS code into HDL is inferior to the performance of functions directly written in HDL.
