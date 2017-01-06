@@ -1,5 +1,169 @@
 % !TEX root = 0_main.tex
-\chapter{SkipGate}
-\section{Removing Overhead of Sequential Garbled Circuit}
-\section{Algorithm}
-\section{Evaluation}
+\chapter{{SkipGate}}
+\section{{SkipGate} Algorithm}
+SkipGate is a novel algorithm on top of the GC protocol.
+It removes garbling cost for a gate when its output can either be computed independently by Alice and Bob or has no effect on the final output.
+The cost reduction is especially significant in a sequential circuit where the control path is independent of the private inputs.
+Before presenting SkipGate, we introduce the following notations and definitions.
+
+In a classic Boolean circuit, each wire $w$ carries a value ($x_w\in\{0, 1\}$), whereas in a garbled circuit, each wire carries a pair of labels ($X_w^{0}$ and $X_w^{1}$) on Alice's side and one label ($X_w \in \{X_w^{0}, X_w^{1}\}$) on Bob's.
+If $X_w = X_w^{0}$, the actual Boolean value is 0 and if $X_w = X_w^{1}$, it is 1.
+This means that the information is shared between two parties.
+In our scheme, we combine these notions of Boolean and garbled circuits.
+Each wire either carries a Boolean value known to both parties independently (\textit{public} wire) or it carries a (pair of) label(s) (\textit{secret} wire).
+As a result, the scheme supports functions in the form of $c = f(a, b, p)$ where $p$ is a public input known to both parties.
+
+\subsection{Motivational Example}
+Assume a sequential circuit that has a 2-to-1 MUX whose inputs come from two sub-circuits f$_0$ and f$_1$.
+If at a certain clock cycle, the select wire of the MUX is public, say 1, both parties know that the gates in the sub-circuit f$_0$ do not need to be garbled/evaluated since they have no effect on the final output.
+The gates in the MUX itself act as wires and pass the output of f$_1$ to the MUX output, thus they do not need to be garbled/evaluated in that clock cycle either.
+In the following subsection, we explain how the SkipGate algorithm identifies such gates to reduce the garbling cost in circuits with public wires.
+
+Note that the Boolean value of a wire can change at every clock cycle in a sequential garbled circuit~\cite{songhori2015tinygarble}.
+The wire can also alter between being secret and public.
+The SkipGate algorithm is executed each clock cycle by both parties just before GC operation to either pre-compute gates or mark them for skipping.
+Thus, SkipGate is different compared to offline circuit simplification methods such as the one introduced in~\cite{pinkas2009secure} which remove gates with known constant inputs.
+The constant gates are already removed in our circuits by the conventional HDL synthesis tools.
+
+\subsection{Gate Categories}\label{ssec:skipgate_example}
+The SkipGate algorithm classifies the gates into four categories in terms of the parties' knowledge about their inputs:
+
+\begin{enumerate}[label=\roman*]
+  \item \textit{Gate with two public inputs.} In this case, the output is public.
+  \item \textit{Gate with one public input.}
+  	Depending on the gate type, the output becomes either public or secret.
+  	For example, for an AND gate with 0 at one input, the output becomes 0.
+  	This means that if the secret input is not connected to any other gate, the gate generating it can be skipped for garbling/evaluation.
+  	If the public input is 1, then the AND gate acts as a wire and the output wire carries the label of the secret input.
+  \item \textit{Gate with secret inputs that have identical (or swapped) labels.}
+    This indicates that the two secret inputs have identical (or inverted) Boolean values.
+    (We will explain shortly how Bob identifies the swapped case.)
+    Depending on the gate type, the output becomes either public or secret.
+    For example, the output of an XOR gate with two inverted inputs (either secret or public) is always 1 (public).
+  	Similar to (ii), the gate generating the inputs, if not connected to any other gates, can be skipped for garbling/evaluation.
+  \item \textit{Gate with secret unrelated inputs.}
+  	The output is always secret.
+  	They have to be garbled/evaluated conventionally according to the GC protocol.
+\end{enumerate}
+
+\subsection{Algorithm}\label{ssec:skipgate_algorithm}
+In the SkipGate algorithm, the netlist's inputs are marked as secret or public by the parties.
+An integer, \texttt{label\_fanout}, is associated with each gate and indicates the number of times the gate's output label is used as a circuits output or an input to other gates.
+Initially, the \texttt{label\_fanout} is set to the gate fanout in the circuit.
+Next, SkipGate computes the outputs of the gates in categories i-iii.
+In the process, \texttt{label\_fanout} of a gate may decrease if its output is connected to a gate in those categories.
+If \texttt{label\_fanout} reaches 0, the gate is marked for skipping which in turn decreases the \texttt{label\_fanout} of its input gates recursively.
+Finally, the gates in category iv that have not been marked for skipping are garbled/evaluated.
+\alg{skipgate_algorithm} shows SkipGate for both Alice and Bob.
+The algorithm receives a topologically sorted netlist.
+For each clock cycle, Alice first runs the algorithm, generates garbled tables, and sends them to Bob.
+Bob then starts the algorithm after receiving the garbled tables.
+This process can be pipelined.
+
+Alice and Bob find and compute the gates that belong to categories (i, ii) in Phase 1 of \alg{skipgate_algorithm}.
+\texttt{label\_fanout}s of the gates in these categories are set to zero.
+For gates in category ii, SkipGate decreases the \texttt{label\_fanout} of the secret input's originating gates recursively by invoking \texttt{recursive\_reduction} (\alg{skipgate_reduction}).
+In Phase 2, both parties perform the same task for category iii.
+Alice also generates garbled tables for gates with non-zero \texttt{label\_fanout} in category iv.
+By the end of Phase 2, due to the recursive nature of the fanout reduction, \texttt{label\_fanout} of some gates that have already been garbled may become 0.
+Alice filters the garbled tables that have non-zero \texttt{label\_fanout} to be sent to Bob in Phase 3.
+This reduces the communication cost between Alice and Bob which is the main bottleneck of the GC protocol~\cite{gueron2015fast}.
+
+Bob evaluates garbled tables sent by Alice in Phase 2.
+He assigns random labels for gates in category iv that are not marked for skip but were filtered by Alice in her Phase 3.
+These gates were marked for skip in Alice's Phase 2 during computation of category iii.
+Bob uses the random labels to keep track of identical (or swapped) input labels to compute the output of the gates in category iii.
+
+\begin{algorithm}[t!]
+\caption{SkipGate Algorithm.}\label{skipgate_algorithm}
+\textbf{Inputs:} Topologically sorted \texttt{netlist} whose \texttt{label\_fanout} is initialized with the gate fanout. \texttt{user} which indicates if the code is run by Alice or Bob. If run by Bob, \texttt{garbled\_tables} queue from Alice.\\
+\textbf{Outputs:} If Alice, \texttt{garbled\_tables} queue containing the garbled table and gate ID. If Bob, the final output labels.\\
+\begin{algorithmic}[1]
+\STATE{\bf{Phase 1}:}
+\FOR{g in netlist}
+	\IF{g.i0 is public and g.i1 is public \textit{//category i}}
+		\STATE{g.o = g.public\_calculate()}
+		\STATE{g.fanout $= 0$}
+	\ELSIF{g.i0 is public or g.i1 is public \textit{//category ii}}
+		\STATE{g.o = g.half\_public\_calculate()}
+		\IF{g.o is public}
+			\STATE{g.fanout $= 1$ \textit{//to be zero in recursive\_reduction}}
+			\STATE{netlist.recursive\_reduction(g)}
+		\ENDIF
+	\ENDIF
+\ENDFOR
+\STATE{\bf{Phase 2}:}
+\FOR{g in netlist where g.fanout $> 0$}
+	\IF{(g.i0.label is equal g.i1.label or\\
+		g.i0.label is inverted g.i1.label) \textit{//category iii}}
+		\STATE{g.o = g.related\_secret\_calculate()}
+		\IF{g.o is public}
+			\STATE{g.fanout $= 1$ \textit{//to be zero in recursive\_reduction}}
+			\STATE{netlist.recursive\_reduction(g)}
+		\ENDIF
+	\ELSE
+    \STATE{\textit{//category iv}}
+    \IF{user is Alice}
+      \STATE{(g.o, g.table) = g.garble() \textit{//table=null for XOR}}
+      \IF{g is non-XOR}
+       \STATE{garbled\_tables.enqueue(g.id, g.table)}
+      \ENDIF
+    \ELSIF{user is Bob}
+      \IF{g is XOR}
+       \STATE{g.o = g.eval()}
+      \ELSIF{g.id is garbled\_tables.top().id}
+       \STATE{g.o = g.eval(garbled\_tables.dequeue().table)}
+      \ELSE
+       \STATE{g.o = random()}
+      \ENDIF
+    \ENDIF
+	\ENDIF
+\ENDFOR
+\STATE{\bf{Phase 3}:}
+\IF{user is Alice}
+  \STATE{garbled\_tables.filter(t : netlist[t.id].fanout $> 0$)}
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\alg{skipgate_reduction} illustrates the pseudo-code for the recursive fanout reduction.
+It receives the netlist and a gate inside the netlist.
+It first decreases the \texttt{label\_fanout} of the given gate.
+If the \texttt{label\_fanout} becomes 0, it recursively calls itself with the gates that generate the secret input(s).
+
+\begin{algorithm}[t!]
+\caption{Recursive Fanout Reduction in SkipGate Algorithm.}
+\textbf{Inputs:} \texttt{netlist} and \texttt{g} (to start the reduction).\\
+\textbf{Outputs:} None.\\
+\label{skipgate_reduction}
+\begin{algorithmic}[1]
+
+\STATE{netlist.recursive\_reduction(g):}
+\IF{g.fanout is  0}
+	\STATE{return}
+\ENDIF
+\STATE{g.fanout = g.fanout - 1}
+\IF{g.fanout is  0}
+	\IF{g.i0 is secret}
+		\STATE{netlist.recursive\_reduction(netlist[g.i0])}
+	\ENDIF
+	\IF{g.i1 is secret}
+		\STATE{netlist.recursive\_reduction(netlist[g.i1])}
+	\ENDIF
+\ENDIF
+\end{algorithmic}
+\end{algorithm}
+
+\subsection{Identification of identical and inverted labels} According to the GC protocol, Bob receives only one label $X_w$ for each secret wire $w$.
+Due to Free XOR~\cite{kolesnikov2008improved}, he does not need to do anything with a label when it passes a NOT gate because the label's association with Boolean value is flipped by Alice.
+Thus, he cannot tell apart an identical and inverted secret values just by storing labels.
+However, he can keep track of these flips by storing one bit along with the label.
+After evaluating a NOT gate, he simply flips the bit.
+The bit helps him to differentiate between identical and inverted secret values which is crucial for Phase 2.
+
+\subsection{Security Proof} The GC protocol is secure under honest-but-curious adversary model for any function in the form of $f(a,b)$.
+In our scheme, the function is in the form of $f(a,b,p)$.
+SkipGate dynamically reduces $f(a,b,p)$ into $f_p(a,b)$ and garbles/evaluates $f_p$.
+In this reduction process, we only use the public input $p$ which is known to both parties.
+In other words, no information about the private inputs $a$ and $b$ is revealed.
+Therefore, the security proof of the GC protocol still holds for SkipGate.
