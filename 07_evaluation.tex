@@ -126,7 +126,7 @@ We also compare the number of garbled tables of sequential circuits with combina
 \caption{Comparison of TinyGarble combinational circuits with PCF.
 In case of AES 128, the result is compared with FastGC.}
 \label{table:result-comb}
-\includegraphics[scale=0.9]{results-comb-crop.pdf}
+\includegraphics[width=0.7\textwidth]{results-comb-crop.pdf}
 \end{table*}
 
 \begin{table*}
@@ -134,7 +134,7 @@ In case of AES 128, the result is compared with FastGC.}
 \caption{Comparison of TinyGarble sequential circuits with PCF and TinyGarble combinational circuits.
 In case of AES 128, the result is compared with FastGC.}
 \label{table:result-seq}
-\includegraphics[scale=.9]{results-seq-crop.pdf}
+\includegraphics[width=0.7\textwidth]{results-seq-crop.pdf}
 \end{table*}
 
 \tab{table:result-seq} shows the number of total gates, non-XOR gates, $\mathit{MFE}$, $\mathit{GTD}$, $\mathit{MFE}$\textsuperscript{PCF}, and $\mathit{GTD}$\textsuperscript{PCF} of the benchmark circuits for various input widths.
@@ -188,7 +188,7 @@ The HLS engine in the Vivado suite is built upon the xPilot project \cite{Chapte
 \centering
 \caption{Comparison of performance of the circuits generated using C input to HLS and a direct Verilog input to the HDL synthesizer.}
 \label{table:hls}
-\includegraphics[scale=.9]{HLS-crop.pdf}
+\includegraphics[width=0.7\textwidth]{HLS-crop.pdf}
 \end{table*}
 
 Table \ref{table:hls} demonstrates a comparison between the performance of the circuits generated using C input to the HLS tool (C$\rightarrow$Verilog) and a direct Verilog input.
@@ -209,7 +209,7 @@ However, when the modules are combined together to form the entire MIPS processo
 The memory footprint for storing tokens during garbling MIPS is approximately the size of two tokens times the total number of gates which is $2 \times 128 \times \numprint{31719}$bit $=991$~KB for token bit-width $k=128$.
 The communication load between parties for invocation of one instruction (one sequential cycle) is approximately the size of three tokens times the number of non-XOR gates which is $3\times 128 \times \numprint{12755}$bit $=598$~KB with Row Reduction optimization.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Number of total gates and non-XOR gates in the MIPS implementation.
 The global optimization of TinyGarble reduces the overall number of gates compared to that of the sum of individual modules.}\label{table:mipsres}
@@ -262,11 +262,11 @@ These results shows that TinyGarble is transparent to the underlying logic synth
 Since the logic synthesis tools perform a series of optimizations, they may use different (heuristic) algorithms for some of their internal steps which could lead to slightly different results.
 A user can choose between different synthesis tools based on their performance and availability.
 
-\begin{table}[h]
+\begin{table}[ht]
 \caption{Comparison of circuit generation performance between the commercial Synopsys DC and Yosys+ABC open source logic synthesizer.}
 \label{table:abc}
 \centering
-\includegraphics[scale=.9]{abc-crop.pdf}
+\includegraphics[width=0.7\textwidth]{abc-crop.pdf}
 \end{table}
 
 \section{ARM2GC vs HDL Synthesis}
@@ -367,7 +367,7 @@ We create different instances of a single-cycle MIPS architecture with specific,
 \section{Benchmarks}\label{ssec:bench}
 As benchmarks we used Hamming distance, private set intersection and AES. We compile these benchmarks from high-level C to MIPS binary using a MIPS cross-compiler. For some benchmarks, assembly code manipulation allows to reduce the number of clock cycles required. To assure correctness of both benchmarks and IS under test, we simulate the resulting binary file using the Modelsim simulator and calculate the number of required cycles to compute each of the benchmarks, reported in~\tab{tab:cyc_bench}, for accurate performance measurements. For Hamming distance, the number of cycles depends on the size of the input strings. In the PSI benchmark, we compute a variant of PSI called PSI cardinality (PSI-CA) where only the number of common elements is revealed. The sets can have different sizes where each element is 32-bit.  For AES, we assume that one party holds a 128-bit message and the other party holds eleven round keys each of 128-bit length to avoid unnecessary garbling and evaluation of the round-key generation function.
 
-\begin{table}[htbp]
+\begin{table}[ht]
 \caption{Number of required cycles to compute benchmarks.}\label{tab:cyc_bench}
 \centering
 \small
@@ -394,15 +394,8 @@ AES (no key expansion) & $\numprint{128}$ & $\numprint{6178}$\\
 \section{Synthesis of the GarbledCPU IS}
 We synthesize the MIPS architecture, shown in~\fig{figure:mips}, with Synopsys DC for different ISs and memory sizes: 32 to 512 32-bit words for instruction and data memories. Generating these Boolean circuits is a one-time process and the circuits can be re-used without incurring further compilation costs. \tab{tab:synres} shows the synthesis time and number of non-XOR gates of the IS's with different sizes of memories.
 
-\begin{figure}[t!]
-\centering
-\includegraphics[width=0.85\columnwidth]{mips-plasma-crop.pdf}
-\caption{Single-Cycle MIPS architecture.} \label{figure:mips}
-\end{figure}
-
-\begin{table}[htbp]
-\caption{Synthesis results of different variants of (IS)}
-\label{tab:synres}
+\begin{table}[ht]
+\caption{Synthesis results of different variants of (IS)}\label{tab:synres}
 \centering
 \begin{tabular}{l|r|r|r}
 \multicolumn{1}{c|}{Memory Size} & \multicolumn{1}{c|}{Synthesis Time} &  \multicolumn{1}{c|}{\# of Combinatorial} & \multicolumn{1}{c}{\# of Sequential} \\
@@ -487,7 +480,7 @@ DM, IM = 512 & $\numprint{616.750}$~$s$ & $\numprint{69423}$ & $\numprint{17470}
 \section{Performance Evaluation}
 \subsection{Area} \tab{table:resource} shows the resource allocation and utilization of our GC Evaluator on a Xilinx Virtex-7 FPGA. Note that the FPGA utilization does not vary for different memory sizes and instances of the MIPS processor since the evaluator logic remains unaltered. For different memory sizes and IS instances, only the non-XOR gate count varies. This only impacts the garbled labels and tables memory which significantly affects the off-chip memory utilized for storing the garbled tables, and the Block Random-Access Memory (BRAM) resources utilization only to a small extent.
 
-\begin{table}[h]
+\begin{table}[ht]
 \centering
 \caption{Resource allocation and utilization of GarbledCPU GC Evaluator on a Xilinx Virtex-7 FPGA.}
 \label{table:resource}
@@ -501,27 +494,12 @@ BUFG & $\numprint{2}$ & $\numprint{6.25}$
  \end{tabular}
 \end{table}
 
-\begin{table*}[h]
-\centering
-\caption{Resource allocation and utilization of MIPS with three memory sizes.}
-\label{table:resource}
-\begin{tabular}{l|r|r|r|r|r|r||r}
-Memory size & \multicolumn{2}{c|}{16}                                               & \multicolumn{2}{c|}{32}                                               & \multicolumn{2}{c||}{64}                                               & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}Available in \\ Virtex-7\end{tabular}} \\ \hline \hline
-Resource    & \multicolumn{1}{c|}{Estimation} & \multicolumn{1}{c|}{Utilization \%} & \multicolumn{1}{c|}{Estimation} & \multicolumn{1}{c|}{Utilization \%} & \multicolumn{1}{c|}{Estimation} & \multicolumn{1}{c||}{Utilization \%} & \multicolumn{1}{l}{}                                                                 \\ \hline \hline
-FF          & $\numprint{19524}$                           & $\numprint{1.4}$                                 & $\numprint{20381}$                           & $\numprint{1.4}$                                 & $\numprint{20407}$                           & $\numprint{1.4}$                                 & $\numprint{1424000}$                                                                              \\ \hline
-LUT         & $\numprint{370728}$                          & $\numprint{52.1}$                                & $\numprint{442894}$                          & $\numprint{62.2}$                                & $\numprint{448714}$                          & $\numprint{63}$                                  & $\numprint{712000}$                                                                               \\ \hline
-Memory LUT  & $\numprint{219904}$                          & $\numprint{77.6}$                                & $\numprint{263680}$                          & $\numprint{93.1}$                                & $\numprint{263680}$                          & $\numprint{93.1}$                                & $\numprint{283200}$                                                                               \\ \hline
-BRAM        & $\numprint{171}$                             & $\numprint{9.1}$                                 & $\numprint{171}$                             & $\numprint{9.1}$                                 & $\numprint{171}$                             & $\numprint{9.1}$                                 & $\numprint{1880}$                                                                                 \\ \hline
-BUFG        & $\numprint{1}$                               & $\numprint{0.8}$                                 & $\numprint{1}$                              & $\numprint{0.8}$                                 & $\numprint{1}$                               & $\numprint{0.8}$                                 & $\numprint{128}$
-\end{tabular}
-\end{table*}
-
 \subsection{Performance} \tab{table:performance} presents the runtime required to evaluate GarbledCPU for one instruction in terms of clock cycles and $\mu\textrm{s}$. Our GC evaluator operates at $100\textrm{MHz}$ on the FPGA. This is used to compute an average evaluation runtime of 1.1 clock cycles per gate for our pipelined GC evaluator which translates to an average of $11\textrm{ns}$ per gate in our FPGA implementation. The reported runtime can be further improved by providing tighter timing constraints.
 
 \subsection{Comparison with Other Work}
 \tab{tab:comp} shows a comparison with other GC evaluator implementations. However, for fairness, we are leveraging GC optimizations that were not available at the time for \cite{jarvinen2010garbled}. We compare with our two implementations, the 21-stage pipelined evaluator and un-pipelined variant to show the effect of pipelining in improving our performance by a factor of 7.8. \tab{tab:comp} compares our results with interpolated results estimated for other works. Results indicate that our pipelined GC evaluator FPGA implementation takes $51\times$ fewer clock cycles compared to the fastest software implementation JustGarble \cite{bellare2013efficient}. Although the CPU clock frequency ($3.0\textrm{GHz}$) is $30\times$ faster than that of our Virtex-7 FPGA ($100\textrm{MHz}$), our pipelined implementation would still be almost $2\times$ faster than JustGarble in terms of absolute time. Note that our implementation is just a prototype on a reconfigurable FPGA as opposed to a custom design of Intel AES-NI in CPU. Implementing GarbledCPU on an ASIC would improve its performance in terms of absolute time even further. Moreover, our implementation is two orders of magnitude faster than the previously fastest hardware implementation of \cite{jarvinen2010garbled}.
 
-\begin{table}[htb]
+\begin{table}[ht]
 \centering
 \caption{Performance of GarbledCPU for different (ISs) with different memory sizes at $100\textrm{MHz}$ clock frequency.}\label{table:performance}
 \begin{tabular}{l|r|r|r|r|r}
@@ -562,7 +540,7 @@ Avg. Time per gate (cc)  & $\numprint{1.12}$     & $\numprint{1.11}$   & $\numpr
 \end{tabular}
 \end{table}
 
-\begin{table}[htb]
+\begin{table}[ht]
 \centering
 \caption{Comparing our GC evaluator implementation with other works' estimation for MIPS with 64-word memory.}\label{tab:comp}
 \begin{tabular}{l||r|r}

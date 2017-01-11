@@ -74,7 +74,7 @@ He assigns random labels for gates in category iv that are not marked for skip b
 These gates were marked for skip in Alice's Phase 2 during computation of category iii.
 Bob uses the random labels to keep track of identical (or swapped) input labels to compute the output of the gates in category iii.
 
-\begin{algorithm}[t!]
+\begin{algorithm}[ht]
 \caption{SkipGate Algorithm.}\label{skipgate_algorithm}
 \textbf{Inputs:} Topologically sorted \texttt{netlist} whose \texttt{label\_fanout} is initialized with the gate fanout. \texttt{user} which indicates if the code is run by Alice or Bob. If run by Bob, \texttt{garbled\_tables} queue from Alice.\\
 \textbf{Outputs:} If Alice, \texttt{garbled\_tables} queue containing the garbled table and gate ID. If Bob, the final output labels.\\
@@ -131,7 +131,7 @@ It receives the netlist and a gate inside the netlist.
 It first decreases the \texttt{label\_fanout} of the given gate.
 If the \texttt{label\_fanout} becomes 0, it recursively calls itself with the gates that generate the secret input(s).
 
-\begin{algorithm}[t!]
+\begin{algorithm}[ht]
 \caption{Recursive Fanout Reduction in SkipGate Algorithm.}
 \textbf{Inputs:} \texttt{netlist} and \texttt{g} (to start the reduction).\\
 \textbf{Outputs:} None.\\
