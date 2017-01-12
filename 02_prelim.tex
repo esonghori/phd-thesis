@@ -13,13 +13,21 @@ We have mutually suspicious parties that each has a private attribute (e.g., sal
 They have to use some distributed protocol to evaluate and learn the output of the function without leaking their private information to other parties.
 If we could find a third party that all the individuals trust, they could give her the inputs and she computes the function and returns the result to the parties.
 Of course such a trusted party cannot be found in real scenarios of distributed systems.
-Thus at best, we can emulate such a trusted third party with a cryptographic protocol.\cite{goldreich2013general}.
+Thus at best, we can emulate such a trusted third party with a cryptographic protocol~\cite{goldreich2013general}.
+\fig{fig:multi-party-model} shows the idea model with a trusted third party and its emulation in a real model using a secure multi-party computation protocol.
 
 \begin{figure}[ht]
-\centering
-\includegraphics[width=0.95\textwidth]{emulation.pdf}
-\caption{Emulation of a trusted third-party in secure two-party computation~\cite{goldreich2013general}.}
-\label{fig:globalflow}
+    \centering
+    \begin{subfigure}[tl]{0.35\textwidth}
+        \includegraphics[width=\textwidth]{emulate_ideal-crop.pdf}
+        \caption{Ideal Model}\label{fig:ideal-model}
+    \end{subfigure}
+		~~~~
+    \begin{subfigure}[tr]{0.35\textwidth}
+        \includegraphics[width=\textwidth]{emulate_real-crop.pdf}
+        \caption{Real Model}\label{fig:real-model}
+    \end{subfigure}\\
+    \caption{Emulation of a trusted third-party in secure multi-party computation (schematic based on~\cite{goldreich2013general}).}\label{fig:multi-party-model}
 \end{figure}
 
 Such emulation is possible under assumption about the emulation such as security level and type of the function that can be evaluated.
@@ -28,11 +36,20 @@ Homomorphic encryption and Shamir's secret sharing are able to evaluate special 
 In this thesis, we focus on the general secure multi-party computation where arbitrary desired function can be evaluated by the protocol.
 
 \section{Secure Function Evaluation Definition}
-The general secure multi-party computation is also known as secure function evaluation (SFE). It can be defined as follow: P parties, p1, p2 ..., pm: each have an attribute: i1, ... im. They want to compute function o = f(i1,i2, .. im) where o is a tuple (o1, o2, ..., om) such that ok belongs to the kth party. (A special case is that oi are same and all parties revives the same result, e.g., the average of salaries).
+The general secure multi-party computation is also known as secure function evaluation (SFE). It can be defined as follow: p parties each have an attribute: i1, ... ip. They want to compute function o = f(i1,i2, .. ip) where o is a tuple (o1, o2, ..., op) such that ok belongs to the kth party.
+the function f can also be described as a tuple of functions f = (f1, f2, ...,  fp) where the output of fk(p1, p2, .. pm) = ok belongs to kth party.
+(A common special case is that fi's are the same and all parties revives the same output. For example in case of the average of salaries, the result of the average function is evaluated and shared with all the participating parties).
 
 \section{Two-Party Secure Function Evaluation}
 two-party SFE is an important special case of general secure multi-party computation that was solved initially by Andrew Yao and GMW.
-There are two parties Alice and Bob each has an input a and b and they want to compute o = f(a,b).
+There are two parties Alice and Bob each has an input a and b and they want to compute (o1, o2) = (f1(a,b), f2(a,b)) where o1 belong to Alice and o2 belongs to Bob.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.70\textwidth]{two_party_SFE-crop.pdf}
+\caption{The two-party secure function evaluation (SFE) protocol.}
+\label{fig:globalflow}
+\end{figure}
 
 \section{Adversary Model}
 We assume that all the parties are semi-honest which means that they follow the protocol exactly as specified without deviation or malicious behavior but they try to learn as much as possible about the other party's input from the information they receive during the protocol.
