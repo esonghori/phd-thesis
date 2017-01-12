@@ -62,7 +62,7 @@ Nearly all commercial circuits used in digital hardware are designed in sequenti
 There are multiple reasons for preferring sequential circuit description over combinational including the reduction in complexity, area, power, and cost, as well as natural mapping of finite state machine control functions into a sequential format.
 Some of these reasons also provide a rationale for sequential description of a function in GC, including: (i) reduction in size and memory footprint that is achieved by introducing the state elements and feedback loop from output to input; (ii) removing the need to perform costly compile-time/runtime loop unrolling by embracing loops within the sequential feedback loop; (iii) providing a new degree of freedom for folding by the placement of memory elements in the long combinational paths--the placement can be done in accordance with the user's objective.
 
-\begin{figure}[t]
+\begin{figure}[ht]
     \centering
 	\includegraphics[width=0.8\textwidth]{sequential-open-crop.pdf}
 	\caption{Functionally equivalent unrolled sequential circuit corresponding to \fig{fig:sequential}.}

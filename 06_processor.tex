@@ -92,12 +92,12 @@ The parties' inputs are connected to the initial signal inputs of FFs in the mem
 Bob's outputs are connected to the outputs of FFs in the specified address of DM.
 The output address in DM is part of the agreed memory configuration.
 
-\begin{figure*}[ht]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=0.95\textwidth]{mips-complex-crop.pdf}
 \caption{Lite MIPS architecture.
   Alice's and Bob's inputs and the output are shown.}\label{figure:mips}
-\end{figure*}
+\end{figure}
 
 \fig{figure:mips} shows the overall architecture of our 32-bit MIPS processor.
 It is based on the Plasma project in opencores \cite{rhoads2006plasma}.
@@ -184,7 +184,7 @@ The ARM2GC framework allows users to write two-party SFE program in C/C++ (or an
 The SFE program is compiled using an ARM cross-compiler, e.g., gcc-arm-linux-gnueabi.
 The compiled binary code and the synthesized ARM processor circuit are fed to the SkipGate algorithm as a public input and netlist respectively.
 
-\begin{figure}[t]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=0.45\textwidth]{frwk_overview-crop.pdf}
 \caption{Overview of the ARM2GC framework.}\label{fig:frwk_overview}
@@ -231,7 +231,7 @@ Replacing conditional branches with conditional instructions in garbled ARM gene
 Moreover, we modify the ARM controller such that a conditional instruction always takes the same number of cycles regardless of its condition.
 This is because when the condition is secret, mismatch in the number of cycles of the instructions makes the program flow dependent on a secret value.
 
-\begin{figure}[t]
+\begin{figure}[ht]
     \centering
     \begin{subfigure}{0.40\textwidth}
         \centering

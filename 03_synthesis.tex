@@ -4,14 +4,14 @@
 The global flow of TinyGarble is shown in \fig{fig:globalflow}.
 It consists of the following four steps:
 
-\begin{figure*}
+\begin{figure}[ht]
 \centering
 \includegraphics[width=0.95\textwidth]{flow_chart-crop.pdf}
 \caption{Global flow of TinyGarble for both combinational and sequential synthesis.
   The inputs can be either a C/C++ program (translatable to HDL via a standard HLS tool) or a direct HDL description.
   TinyGarble is able to provide circuit description for any given GC framework.}
 \label{fig:globalflow}
-\end{figure*}
+\end{figure}
 
 \begin{enumerate}
 \item
@@ -32,12 +32,12 @@ It consists of the following four steps:
   The circuit description is provided to both the garbler and evaluator to securely evaluate the function by the GC framework.
 \end{enumerate}
 
-\begin{figure*}
+\begin{figure}[ht]
 \centering
 \includegraphics[width=\textwidth]{HLS_HDL_netlist-crop.pdf}
 \caption{Sample files at the different steps of TinyGarble's flow for Hamming distance function.}
 \label{fig:globalflow_sample}
-\end{figure*}
+\end{figure}
 
 \fig{fig:globalflow_sample} shows examples of files at different steps of TinyGarble's flow for the Hamming distance function.
 The \textsl{hamming.c} file contains the description of the function in the C language.
