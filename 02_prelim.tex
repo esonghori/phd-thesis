@@ -126,8 +126,18 @@ This method allows to efficiently garble and evaluate non-XOR gates using fixed-
 In this garbling scheme which is compatible with the Free XOR and Row Reduction techniques, the output key $X_{c}$ is encrypted with the input token $X_{a}$ and $X_{b}$ using the encryption function $E(X_a,X_b,T,X_c) = \pi(K) \oplus K \oplus X_c$, where $K=2X_a\oplus4X_b\oplus T$, $\pi$ is a fixed-key block cipher (e.g., instantiated with AES), and $T$ is a unique-per-gate number (e.g., gate identifier) called \emph{tweak}.
 The proof of security is given in~\cite{bellare2013efficient}.
 
-
-
 \section{Boolean Circuits}
+In SFE, the parties are able to evaluate a function on their private inputs.
+In a number of SFE protocols including Yao's Garbled Circuit and GMW, the function has to be represented as a Boolean circuit.
+In this context, Boolean circuit can be defined as a directed graph where nodes are Boolean gates (e.g., AND, OR, NOT, XOR, etc.) and inputs and edges are wires connecting the gates.
+
 \subsection{Combinational Boolean Circuits}
+The conventional Boolean circuits that are used in Yao's seminal work and later works on GC and GMW are combinational Boolean circuit.
+Combinational circuit is a circuit whose graph does not have a loop and all the paths start from the inputs to outputs.
+The combinational circuit can be modeled as a directed acyclic graph.
+
 \subsection{Sequential Boolean Circuits}
+In context of SFE, sequential circuit is similar to combination circuit except for a new element called flip-flops as node in the graph of the cirucit.
+A flip-flop stores the value of its input wire (usually denoted by D) to be reused later.
+A periodic square signal called clock are used to synchronized sampling the value in flip-flops and using it.
+Simply, sequential circuit are similar to combination circuit but they are evaluated for multiple clock-cycles.
