@@ -1,5 +1,5 @@
 % !TEX root = 0_main.tex
-\chapter{Preliminaries and Background}
+\chapter{Preliminaries and Background}\label{ch:prelim}
 In this chapter,
 -we provide general background information about secure multi-party computation
 -we also introduce the generalized problem of secure function evaluation (SFE). and it two-party version and the threat model.
@@ -57,7 +57,7 @@ This model is often called honest-but-curious (HBC) adversary model in the liter
 
 In related work chapter \ref{ch:related}, we mention some of the recent approaches to extend the adversary model for two-party SFE to make it secure against the malicious adversary who can deviate from the protocol.
 
-\section{Yao's Garbled Circuit Protocol}
+\section{Yao's Garbled Circuit Protocol}\label{sec:prelim_gc}
 Yao introduced the GC protocol for 2-party Secure Function Evaluation (SFE) in the 1980's \cite{yao1986generate}.
 GC is described as a circuit whose wires carry a string valued-token instead of a bit.
 Consider two parties, Alice and Bob, who want to evaluate a function $f(\cdot)$ without revealing their inputs to each other.

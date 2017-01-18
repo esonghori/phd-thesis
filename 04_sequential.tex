@@ -52,4 +52,18 @@ In TinyGarble, to ensure the uniqueness property, we set tweak $T$ for each gate
 \footnote{An alternative method would be to use a monotonic counter in the circuit generation/evaluation routines which is increased by one for each gate.}
 As in previous work, security and correctness of the GC garbling/evaluation follow from the uniqueness of the tweak $T$ and the existing proofs of security and correctness, see \cite{lindell2009proof,bellare2013efficient}.
 
+\section{Synthesis Sequential Circuit}
+For synthesis of sequential circuits, the technology library includes memory elements.
+These elements can be implemented as FFs which are connected to a clock signal.
+Although in conventional ASIC design FFs are typically as costly as four AND gates, in our GC application, FFs do not have any impact on the garbling/evaluation process as they require no cryptographic operations.
+Therefore, we set the area of FFs to 0 to show its lack of impact on computation and communication time of garbling/evaluation.
+Moreover, we modify our FFs such that they can accept an initial value.
+This helps us remove extra MUXs in standard FF design for initialization.
+
+
+Fortunately, the sequential description helps to overcome most limitations as it generates more compact circuits.
+Sequential circuits are radically smaller than combinational ones with the same functionality.
+This property allows synthesis tools to perform more effective circuit optimization.
+Moreover, the compatibility of our sequential descriptions with standard synthesis tools simplifies the workflow of circuit generation for SFE applications.
+
 \section{Overhead of Sequential Garbled Circuit}
