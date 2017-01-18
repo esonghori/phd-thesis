@@ -48,6 +48,31 @@ The \textsl{hamming.v} file is provided to an HDL synthesis tool along with the 
 The netlist describes the same function as \textsl{hamming.c} and \textsl{hamming.v} but uses the logic cells provided in the technology library.
 The technology library contains 2-input-1-output logic cells to be compatible with front-end garbling tools~\cite{malkhi2004fairplay, bellare2013efficient}.
 
+\section{Background on HDL Synthesis}
+HDL synthesis refers to the process of translating an abstract form of  function (circuit) presentation to the gate-level logic implementation using a series of sophisticated optimizations, transformations, and mapping \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
+An HDL synthesis tool is a computer program which typically accepts the input circuit in some algorithmic form, logic equation, or even a table, and outputs an implementation suitable for the target hardware platform.
+Classic commercial/open-source HDL synthesis tools accept the input functions in the HDL format, e.g., Verilog or VHDL~\cite{tool:DesignCompiler,tool:ABC,tool:Encounter,tool:HDLdesigner,tool:PandA,decaluwe2004myhdl} but newer ones also accept high level format, e.g., C/C++~\cite{Gupta2004, tool:Vivado}.
+The common target hardware platforms for the synthesized logic include Field Programmable Gate Arrays (FPGA), Programmable Array Logic (PAL), and Application-Specific Integrated Circuits (ASIC).
+
+The input functions (circuits), regardless of their HDL or higher level format, can be defined by the implementer to be purely combinational logic that is fully representable by Boolean functions, or they might be sequential logic which is a more general format.
+
+Typical practical implementations of a logic function utilize a multi-level network of logic elements.
+The tools translate the input to the implementation in two steps: (i) Logic minimization; and (ii) logic optimization.
+Logic minimization simplifies the function by combining the separate terms into larger ones containing fewer variables.
+The best known algorithm for logic minimization is the ESPRESSO algorithm~\cite{brayton1984logic}; although the resulting minimization is not guaranteed to be the global minimum, it provides a very close approximation of the optimal, while the solution is always free from redundancy.
+This algorithm has been incorporated as a standard logic function minimization step in virtually any contemporary HDL synthesis tool.
+
+Logic optimization takes this minimized format, further processes it, and eventually maps it onto the available basic logic cells or library elements in the target technology.
+
+Mapping is limited by factors such as the available gates (logic functions or standard cells) in the technology library, as well as the drive sizes, delay, power, and area characteristics of each gate.
+
+Newer generations of synthesis programs, referred to as high level synthesis (HLS) tools, accept other forms of input in a higher level programming language \cite{Chapter:Zhang2008,chu1989hyper,corazao1996performance}, e.g., ANSI C, C++, SystemC, or Python.
+HLS tools are also available in both open-source and commercial forms, cf. \cite{tool:Vivado,decaluwe2004myhdl,tool:PandA}.
+The limitation of the higher level languages is that the behavior of the function is typically decoupled from the timing.
+The HLS tools handle the micro-architecture and transform the untimed or partially timed functional code into a fully timed HDL implementation, which in turn can be compiled by a classic synthesis tool.
+It is well-known that the performance of the circuits resulting from automatically compiled HLS code into HDL is inferior to the performance of functions directly written in HDL.
+Therefore, the main driver for the development of HLS tools is user-friendliness and not performance.
+
 \section{HDL Synthesis}
 As described in \sect{subsec:preli_GC}, Yao's protocol requires the function to be represented as a Boolean circuit.
 Previous work like FairPlay \cite{malkhi2004fairplay} and WYSTERIA \cite{rastogi2014wysteria} used custom-made languages to describe a function and generate the circuit for GC operations.
@@ -110,6 +135,9 @@ This property allows synthesis tools to perform more effective circuit optimizat
 Moreover, the compatibility of our sequential descriptions with standard synthesis tools simplifies the workflow of circuit generation for SFE applications.
 
 \section{Limitation}
-
-
-\section{Evaluation}
+-Hardware synthesis techniques and tools are not designed to be scalable for large combinational circuits.
+-It takes a lot of recourses time and memory to generate a large combinational circuit
+-This happens even with recurring structure like large multiplication function.
+This means hardware synthesis for garbled circuit cannot be scaled, at least automatically, for large functions using the current setting.
+-In hardware design in order to overcome this problem they usually use sequential circuit which is a folded version of combinational circuit but has to be evaluated for multiple number of times.
+In the next chapter, we will discuss possibility of using sequential circuit for the GC protocol.

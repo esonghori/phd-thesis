@@ -7,34 +7,6 @@ In the following section we first describe the concept of sequential circuits (\
 
 \begin{figure}[ht]
     \centering
-    \begin{subfigure}[t]{0.35\textwidth}
-        \includegraphics[width=\textwidth]{combinational-crop.pdf}
-        \caption{Combinational circuit}\label{fig:combinational}
-    \end{subfigure}
-    \begin{subfigure}[t]{0.30\textwidth}
-        \includegraphics[width=\textwidth]{sequential-crop.pdf}
-        \caption{Sequential circuit}\label{fig:sequential}
-    \end{subfigure}\\
-    \caption{(a) Combinational circuit where outputs are functions of only inputs.
-    (b) Sequential circuit where outputs are functions of inputs and present states.}
-\end{figure}
-
-Yao's GC algorithm allows secure evaluation of a Boolean circuit, i.e., an acyclic graph of binary gates (e.g., AND, OR, XOR, etc.).
-In digital circuit theory, such a circuit is called \emph{combinational circuit} and defined as a memory-less circuit in which outputs are functions only of inputs, see \fig{fig:combinational}.
-
-Another class of circuits in digital circuit theory are \emph{sequential circuits} in which unlike in the combinational case, circuit outputs are functions of both inputs and circuit \emph{states}.
-Circuit states are kept in memory elements such as Flip Flops (FF).
-The states can change at the end of each \emph{clock cycle}\footnote{The clock signal oscillates between a low and a high state and its (rising) edge is typically utilized to coordinate the memory updates.}.
-
-As seen in \fig{fig:sequential}, a sequential circuit can be represented as an ensemble of a combinational circuit and feedback loops with memory elements.
-At each clock cycle, circuit inputs as well as the present states are fed to the combinational part.
-Then, it generates the outputs and next states which will be stored in the memory elements for the next cycle.
-The initial value of the memory elements are either a known constant value ($0$ or $1$) or determined by an initial input value\footnote{In digital hardware, FF initialization is usually done by \emph{reset} or \emph{set} signals.
-In TinyGarble, we use a new signal for FF that determines the initial value.
-It can be connected to a constant value or input wire.}.
-
-\begin{figure}[ht]
-    \centering
     \includegraphics[width=0.7\textwidth]{adder-crop.pdf}
     \caption{Combinational and sequential design of a 4-bit Adder.
   (a) HA circuit.
