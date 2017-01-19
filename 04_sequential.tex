@@ -29,7 +29,6 @@ The circuit should be evaluated for 4 cycles.
 At the first cycle the carry bit is $z_0=0$.
 Note that, in the combinational circuit we use three FAs and one HA whereas in the sequential circuit, we have to use one FA for 4 sequential cycles.
 This asymmetry in the loop of Addition function introduces a small \emph{overhead} in GC computation and communication time as an HA circuit has fewer gates compared to a FA circuit.
-(In the next chapter, we will discuss how to remove this overhead using an algorithm to skip unnecessary garbling/evaluation of a FA instead of a HA.)
 
 However, the total number of gates for representing the function is reduced approximately by a factor of 4 when using a sequential circuit (one FA for sequential compared with three FA and one HA for combinational).
 This helps to limit the memory footprint for garbling and evaluation required for storing circuit description and wire keys ($k$-bit per wire, see \sect{subsect:preli_GC}).
@@ -77,4 +76,27 @@ Sequential circuits are radically smaller than combinational ones with the same 
 This property allows synthesis tools to perform more effective circuit optimization.
 Moreover, the compatibility of our sequential descriptions with standard synthesis tools simplifies the workflow of circuit generation for SFE applications.
 
-\section{Overhead of Sequential Garbled Circuit}
+\section{Overhead of Sequential Circuit}
+As described earlier in the example of \fig{fig:combSeq}, sequential circuit may incur an overhead compared to combination circuit.
+This overhead is due to the asymmetry in the loop of functions.
+In the following, we explain the source of the overhead using a more general example.
+
+\begin{figure}[ht]
+    \centering
+	\includegraphics[width=0.8\textwidth]{sequential-overhead-crop.pdf}
+	\caption{Sequential Overhead}\label{fig:sequential-overhead}
+\end{figure}
+
+\fig{fig:sequential-overhead}a shows an example of a function that is represented as a combinational circuit.
+Each block represent a sub-circuit.
+This combinational circuit can be rearrange as a more compact sequential circuit using a MUX and FFs to select the sub-circuit and store the intermediate result respectively, see \fig{fig:sequential-overhead}b.
+The MUX selects the output of the sub-circuits according to the cycle index.
+At each cycle, the corresponding sub-circuit process the input and its output is stored in the FFs.
+It means the rest of sub-circuits are idle in that cycle.
+
+The number of gate that has to garbled/evaluated in the combinational circuit is:
+And since the sequential circuit has to be garbled/evaluated for $X$ times, the total gates for sequential circuit is $X*Y$ which is larger than the one for combinational circuit.
+We call the difference between these two circuit representation, the sequential circuit overhead.
+
+The source of the overhead is the idle sub-circuits in the sequential circuit.
+In the next chapter, we will discuss how to remove this overhead using an algorithm to skip unnecessary garbling/evaluation of a FA instead of a HA.
