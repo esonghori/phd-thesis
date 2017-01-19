@@ -57,12 +57,12 @@ This model is often called honest-but-curious (HBC) adversary model in the liter
 
 In related work chapter \ref{ch:related}, we mention some of the recent approaches to extend the adversary model for two-party SFE to make it secure against the malicious adversary who can deviate from the protocol.
 
-\section{Oblivious Transfer}\label{sec:prelim_OT}
+\section{Oblivious Transfer}\label{sect:prelim-OT}
 Oblivious Transfer (OT)~\cite{NaorP05} is a cryptographic protocol based on public key encryption executed between two parties: Alice (sender) Alice and Bob (receiver).
 Through OT, Bob selects and receives one message from a pair of messages provided by Alice without revealing his selection to her.
 More formally, in a $1$-out-of-$2$ OT protocol ($\textrm{OT}^2_1$), Alice holds a pair of messages $(m_{0},\, m_{1})$; Bob holds a selection bit $b \in {0,1}$ and obtains $m_{b}$ without revealing $b$ to Alice and learns nothing about $m_{1-b}$.
 
-\section{Yao's Garbled Circuit Protocol}\label{sec:prelim_gc}
+\section{Yao's Garbled Circuit Protocol}\label{sect:prelim_gc}
 Yao's Garbled Circuit protocol~\cite{Yao86} allows two parties Alice, called the \textit{Garbler} and Bob, called the \textit{Evaluator}, to jointly compute a function $o = f(x, y)$ on their private inputs $x$, provided by Alice and $y$, provided by Bob such that none of them reveal their inputs to each other.
 In the end, one or both of them learns the output $o$.
 The steps of Yao's protocol are described below.

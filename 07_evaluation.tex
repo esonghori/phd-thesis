@@ -1,24 +1,24 @@
 % !TEX root = 0_main.tex
 \chapter{Evaluation}
 We use a variety of benchmark functions to evaluate the performance and practicability of TinyGarble.
-In this section, we first describe our experimental setup (\sect{sect:exp}) and metrics for quantifying the performance of TinyGarble (\sect{ssec:metrics}).
-We outline the performance comparison of TinyGarble (with HDL synthesizer and our custom libraries) on combinational benchmark functions with PCF \cite{kreuter2013pcf}, one of the best known earlier automated methodologies to generate circuits for garbling in \sect{ssec:customlib}.
-TinyGarble's performance in generating sequential circuits for benchmark functions using a standard HDL synthesis tool is demonstrated in \sect{ssec:seqeval}.
-\sect{ssec:cacheTime} shows the CPU time for various numbers of sequential cycles which demonstrates the effect of memory footprint reduction in garbling time.
-\sect{ssec:HLSeval} shows a comparison between TinyGarble's performance using an HLS tool (input written in C) and using a conventional HDL synthesis tool (input given in Verilog).
-Lastly, \sect{ssec:mipsres} shows the result of our garbled processor and implementation of Hamming distance as a benchmark.
+In this section, we first describe our experimental setup (\sect{sect:exp}) and metrics for quantifying the performance of TinyGarble (\sect{ssect:metrics}).
+We outline the performance comparison of TinyGarble (with HDL synthesizer and our custom libraries) on combinational benchmark functions with PCF \cite{kreuter2013pcf}, one of the best known earlier automated methodologies to generate circuits for garbling in \sect{ssect:customlib}.
+TinyGarble's performance in generating sequential circuits for benchmark functions using a standard HDL synthesis tool is demonstrated in \sect{ssect:seqeval}.
+\sect{ssect:cacheTime} shows the CPU time for various numbers of sequential cycles which demonstrates the effect of memory footprint reduction in garbling time.
+\sect{ssect:HLSeval} shows a comparison between TinyGarble's performance using an HLS tool (input written in C) and using a conventional HDL synthesis tool (input given in Verilog).
+Lastly, \sect{ssect:mipsres} shows the result of our garbled processor and implementation of Hamming distance as a benchmark.
 
 We also compare the performance of the commercial logic synthesis tool with the academic, open-source tools in Appendix \ref{app:seqos}.
 We show that in most cases, the performance of the open-source tool is comparable to the commercial tool.
 
 \section{Experimental Setup}
 The circuit generations are all done on a system with Linux RedHat Server 5.6, 8~GB of memory, and Intel Xeon X5450 CPU @ 3~GHz.
-We use another system with Ubuntu 14.10 Desktop, 12.0~GB of memory, and Intel Core i7-2600 CPU @ 3.4GHz to assess the timing performance of the sequential garbling scheme in \sect{ssec:cacheTime}.
+We use another system with Ubuntu 14.10 Desktop, 12.0~GB of memory, and Intel Core i7-2600 CPU @ 3.4GHz to assess the timing performance of the sequential garbling scheme in \sect{ssect:cacheTime}.
 
 Two sets of HDL synthesis tool chains are used in our experiments: one commercial and one open-source (Appendix \ref{app:seqos}).
 Our commercial HDL level synthesis tool is Synopsis Design Compiler (DC) 2010.03-SP4 \cite{tool:DesignCompiler}.
 We also use the Synopsis Library Compiler from the DC package to interpret our custom technology library.
-In \sect{ssec:HLSeval}, we utilize Xilinx Vivado HLS \cite{tool:Vivado}, a commercially available HLS tool whose inputs are written in the C/C++ programming language.
+In \sect{ssect:HLSeval}, we utilize Xilinx Vivado HLS \cite{tool:Vivado}, a commercially available HLS tool whose inputs are written in the C/C++ programming language.
 We emphasize that TinyGarble can operate with any commercial or open-source sequential HDL-level (or HLS) synthesizer, as long as the synthesizer is capable of performing state-of-the-art logic optimization and mapping algorithms.
 
 \section{Performance Metrics}
@@ -37,7 +37,7 @@ We use the following metrics to measure the efficiency of TinyGarble for generat
 
 \item
 	\textit{Garbled Tables Difference} ($\mathit{GTD}$ (\%)): $$\mathit{GTD} = \dfrac{\mathit{\#GT} - \mathit{\#GT}_{0}}{\mathit{\#GT}_{0}} \times 100,$$ where $\mathit{\#GT}_{0}$ is the total number of garbled tables for the reference circuit and $\mathit{\#GT}$ is the total number of garbled tables for the circuit under evaluation.
-	When comparing a sequential with a combination circuit, positive $\mathit{GTD}$ shows an \emph{overhead} (caused by folding a circuit with an asymmetric loop, see \sect{sec:sequen}) in total computation and communication time resulting from an excessive number of garbled tables generated in the sequential circuits.
+	When comparing a sequential with a combination circuit, positive $\mathit{GTD}$ shows an \emph{overhead} (caused by folding a circuit with an asymmetric loop, see \sect{sect:sequen}) in total computation and communication time resulting from an excessive number of garbled tables generated in the sequential circuits.
 	However, in general, negative $\mathit{GTD}$ shows improvement in the number of non-XOR gates and generated garbled tables that results from logic synthesis optimization.
 \end{itemize}
 
@@ -85,7 +85,7 @@ We choose PCF because among the \emph{automated} GC tools available at the time 
 In some other work like FastGC \cite{huang2011faster}, a number of benchmark circuits have been more aggressively improved (compared to PCF) using ad-hoc and mostly manual optimizations, but without a generalizable methodology.
 
 The comparison is shown in \tab{table:result-comb}.
-We compute the garbled tables difference $\mathit{GTD}$ (see \sect{ssec:metrics}) of various benchmarks by using circuits reported in PCF as reference ($\mathit{GTD}$\textsuperscript{PCF}).
+We compute the garbled tables difference $\mathit{GTD}$ (see \sect{ssect:metrics}) of various benchmarks by using circuits reported in PCF as reference ($\mathit{GTD}$\textsuperscript{PCF}).
 It can be seen that the combinational circuits generated by TinyGarble have non-positive $\mathit{GTD}$\textsuperscript{PCF} which means that the number of garbled tables are less than or equal to that of PCF circuits.
 We also compare the memory footprint by computing the memory footprint efficiency $\mathit{MFE}$ with PCF as reference ($\mathit{MFE}$\textsuperscript{PCF}).
 We observe that $\mathit{MFE}$\textsuperscript{PCF} is larger than 1 (up to 9.3).
@@ -106,7 +106,7 @@ The circuits generated by TinyGarble have about the same number of gates for the
 Note that one can always add any hand-optimized module to the synthesis library of TinyGarble.
 
 \section{Sequential Garbled Circuit}
-As described in \sect{sec:sequen}, the user has the degree of freedom to fold a combinational circuit and convert it to a sequential one to reduce the memory footprint.
+As described in \sect{sect:sequen}, the user has the degree of freedom to fold a combinational circuit and convert it to a sequential one to reduce the memory footprint.
 $c$ denotes the number of sequential cycles required to garble/evaluate the circuit.
 This value demonstrates the amount of folding that is performed before the circuit is input to the synthesizer.
 The user defines the value of $c$ and writes her own input function in an HDL or a higher level language such that the function is evaluated in $c$ sequential cycles.
@@ -116,7 +116,7 @@ We use TinyGarble combinational circuits ($c=1$) as reference.
 The ideal $\mathit{MFE}$ for a circuit with $c$ sequential cycles is $c$.
 We also compare the memory footprints of sequential circuits with combinational circuits reported in PCF ($\mathit{MFE}$\textsuperscript{PCF}).
 
-As explained in \sect{ssec:sqcirc}, the folding process may introduce some overhead on the total number of garbled tables.
+As explained in \sect{ssect:sqcirc}, the folding process may introduce some overhead on the total number of garbled tables.
 To assess this overhead, we compute the Garbled Tables Difference ($\mathit{GTD}$) of the sequential circuit using TinyGarble combinational circuits as reference.
 The ideal $\mathit{GTD}$ is $0\%$, which means that the total number of garbled tables should be equal to those for a functionally equivalent combinational circuit.
 We also compare the number of garbled tables of sequential circuits with combinational circuits reported in PCF ($\mathit{GTD}$\textsuperscript{PCF}) to show that even with the incurred overhead, the number of garbled tables for sequential circuits is still less than that of PCF for most cases.
@@ -159,10 +159,10 @@ In practice, smaller circuits which can fit entirely in the processor cache resu
 To better observe the impact of cache speed-up for the compact circuits resulting from TinyGarble, \fig{fig:cpu_time} depicts the CPU Time (left y-axis) and the memory footprint of wire tokens (right y-axis) versus $c$ (x-axis) for the $\numprint{32768}$-bit Sum function.
 As mentioned earlier, the memory footprint is directly proportional to the total number of gates in the sequential circuit.
 
-This experiment is done using our sequential garbling scheme based on JustGarble \cite{bellare2013efficient} that includes using Free XOR, Row Reduction, and Fixed-key AES garbling techniques (see \sect{subsec:preli_GC}).
+This experiment is done using our sequential garbling scheme based on JustGarble \cite{bellare2013efficient} that includes using Free XOR, Row Reduction, and Fixed-key AES garbling techniques (see \sect{subsect:preli_GC}).
 We use an Intel Core i7 CPU @ 3.40GHz which supports the AES-NI instruction set.
 The CPU cycle is measured as the average of $10,000$ trials using RDTSC instruction.
-For security parameter $k=128$ (the bit-width of wire token, see \sect{subsec:preli_GC}), we store $128$-bit per tokens.
+For security parameter $k=128$ (the bit-width of wire token, see \sect{subsect:preli_GC}), we store $128$-bit per tokens.
 For garbling in JustGarble, we store 2 tokens, 2 32-bit input indexes, and an 8-bit gate-type per gate.
 Thus, the memory footprint is approximately $328$-bit per gate in garbling operation.
 Folding the circuit by a factor of $c \in [1:\numprint{32768}]$ constantly decreases the memory footprint while the computation effort remains almost constant.
@@ -353,7 +353,7 @@ AES 128$\dagger$ & 15,807 & 6,400 & 9,407 & 59.5\%
 \footnotesize{{$\dagger$}We add the missing key expansion module to AES 128 of~\cite{songhori2015tinygarble} here.}
 \end{table}
 
-As described in \sect{sec:skipgate}, the SkipGate algorithm avoids redundant garbling/evaluation of gates in sequential circuits with public wires.
+As described in \sect{sect:skipgate}, the SkipGate algorithm avoids redundant garbling/evaluation of gates in sequential circuits with public wires.
 In the sequential benchmark circuits reported in TinyGarble~\cite{songhori2015tinygarble}, the flip-flops were initialized with known values but their output wires were treated as secret.
 We applied SkipGate to the same benchmark to demonstrate the cost reduction.
 In \tab{tab:sys_impvoment}, we compare the cost of garbling for circuits generated by TinyGarble~\cite{songhori2015tinygarble} with and without applying the SkipGate algorithm.
@@ -361,10 +361,10 @@ As can be seen, cost reduction by SkipGate can be as high as $59.5\%$ for AES an
 The improvement depends on the structure of the circuit and whether or not the flip-flops are connected to non-XOR gates.
 
 
-\section{Evaluation Setup of GarbledCPU}\label{ssec:evalset}
+\section{Evaluation Setup of GarbledCPU}\label{ssect:evalset}
 We create different instances of a single-cycle MIPS architecture with specific, restricted, and full IS to support a trade-off between efficiency and privacy. (Full IS was proposed in \cite{songhori2015tinygarble} and is reported for comparison.) The different MIPS instances are synthesized using Synopsys Design Compiler DC H-2013.03-SP4 to generate optimized sequential Boolean circuits. These circuits are then evaluated on our hardware GC evaluator implemented using Vivado 2014.4.1 on a Xilinx Virtex-7 FPGA.
 
-\section{Benchmarks}\label{ssec:bench}
+\section{Benchmarks}\label{ssect:bench}
 As benchmarks we used Hamming distance, private set intersection and AES. We compile these benchmarks from high-level C to MIPS binary using a MIPS cross-compiler. For some benchmarks, assembly code manipulation allows to reduce the number of clock cycles required. To assure correctness of both benchmarks and IS under test, we simulate the resulting binary file using the Modelsim simulator and calculate the number of required cycles to compute each of the benchmarks, reported in~\tab{tab:cyc_bench}, for accurate performance measurements. For Hamming distance, the number of cycles depends on the size of the input strings. In the PSI benchmark, we compute a variant of PSI called PSI cardinality (PSI-CA) where only the number of common elements is revealed. The sets can have different sizes where each element is 32-bit.  For AES, we assume that one party holds a 128-bit message and the other party holds eleven round keys each of 128-bit length to avoid unnecessary garbling and evaluation of the round-key generation function.
 
 \begin{table}[ht]

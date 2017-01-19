@@ -25,7 +25,7 @@ The SkipGate algorithm is executed each clock cycle by both parties just before 
 Thus, SkipGate is different compared to offline circuit simplification methods such as the one introduced in~\cite{pinkas2009secure} which remove gates with known constant inputs.
 The constant gates are already removed in our circuits by the conventional HDL synthesis tools.
 
-\subsection{Gate Categories}\label{ssec:skipgate_example}
+\subsection{Gate Categories}\label{ssect:skipgate_example}
 The SkipGate algorithm classifies the gates into four categories in terms of the parties' knowledge about their inputs:
 
 \begin{enumerate}[label=\roman*]
@@ -46,7 +46,7 @@ The SkipGate algorithm classifies the gates into four categories in terms of the
   	They have to be garbled/evaluated conventionally according to the GC protocol.
 \end{enumerate}
 
-\subsection{Algorithm}\label{ssec:skipgate_algorithm}
+\subsection{Algorithm}\label{ssect:skipgate_algorithm}
 In the SkipGate algorithm, the netlist's inputs are marked as secret or public by the parties.
 An integer, \texttt{label\_fanout}, is associated with each gate and indicates the number of times the gate's output label is used as a circuits output or an input to other gates.
 Initially, the \texttt{label\_fanout} is set to the gate fanout in the circuit.

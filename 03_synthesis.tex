@@ -1,10 +1,10 @@
 % !TEX root = 0_main.tex
-\chapter{Hardware Synthesis for GC}
+\chapter{Hardware Synthesis for GC}\label{ch:syn}
 In this chapter, first we review the background of the HDL synthesis for digital circuits.
 Next, we explain our approach for generating optimized combinational circuit for the GC protocol using HDL synthesis.
 Finally we discuss the limitation of HDL synthesis techniques and tools for generating large combinational circuits.
 
-\section{Background on HDL Synthesis}
+\section{Background on HDL Synthesis}\label{sect:syn-back}
 HDL synthesis refers to the process of translating an abstract form of  function (circuit) presentation to the gate-level logic implementation using a series of sophisticated optimizations, transformations, and mapping \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
 An HDL synthesis tool is a computer program which typically accepts the input circuit in some algorithmic form, logic equation, or even a table, and outputs an implementation suitable for the target hardware platform.
 Classic commercial/open-source HDL synthesis tools accept the input functions in the HDL format, e.g., Verilog or VHDL~\cite{tool:DesignCompiler,tool:ABC,tool:Encounter,tool:HDLdesigner,tool:PandA,decaluwe2004myhdl} but newer ones also accept high level format, e.g., C/C++~\cite{Gupta2004, tool:Vivado}.
@@ -30,7 +30,7 @@ It is well-known that the performance of the circuits resulting from automatical
 Therefore, the main driver for the development of HLS tools is user-friendliness and not performance.
 
 \section{TinyGarble HDL Synthesis}
-As explained in \sect{sec:prelim_gc}, Yao's GC protocol requires the underlying function to be represented as a Boolean circuit.
+As explained in \sect{sect:prelim_gc}, Yao's GC protocol requires the underlying function to be represented as a Boolean circuit.
 Previous work like FairPlay \cite{malkhi2004fairplay} and WYSTERIA \cite{rastogi2014wysteria} used custom-made languages to describe a function and generate the circuit for GC computation.
 In TinyGarble framework, the user may describe a function in a standard HDL like Verilog or VHDL.
 (She may also write the function in a high level language like C/C++ and convert it to HDL using a HLS tool.)
@@ -52,7 +52,7 @@ A library that consists of these various implementations is called a \emph{synth
 We develop our own synthesis library that includes implementations customized for the GC protocl.
 In this library, we build the arithmetic operations based on a full adder with one AND gate \cite{boyar2006concrete} and conditional operations based on a 2-to-1 multiplexer (MUX) with one AND gate \cite{kolesnikov2008improved}.
 
-\subsection{Technology library}\label{sec:syn_tech}
+\subsection{Technology library}\label{sect:syn-tech}
 The next step is to map the structural representation onto a \emph{technology library} to generate the netlist.
 A technology library contains basic units available in the target platform.
 For example, tools targeting Field Programmable Gate Arrays (FPGAs) like Xilinx ISE or Quartus contain Look-Up Tables and Flip Flops in their technology libraries, which form the architecture of an FPGA.
@@ -82,7 +82,7 @@ It also enables the use of beneficial synthesis optimization techniques that wer
 Moreover, the synthesis tools have a global view of the circuit, unlike previous work that manually optimized small modules of the circuit.
 This allows more effective optimization for any arbitrary function and set of constraints.
 
-\section{Limitation}\label{sec:syn_limit}
+\section{Limitation}\label{sect:syn-limit}
 The synthesis approach has certain limitations when it comes to generating combinational circuits for extremely large functions.
 Generating and optimizing large combinational circuits using synthesis tools take a lot of timing and memory resources.
 These tools are not designed to support large scale combination description.
