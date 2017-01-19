@@ -57,74 +57,52 @@ This model is often called honest-but-curious (HBC) adversary model in the liter
 
 In related work chapter \ref{ch:related}, we mention some of the recent approaches to extend the adversary model for two-party SFE to make it secure against the malicious adversary who can deviate from the protocol.
 
+\section{Oblivious Transfer}\label{sec:prelim_OT}
+Oblivious Transfer (OT)~\cite{NaorP05} is a cryptographic protocol based on public key encryption executed between two parties: Alice (sender) Alice and Bob (receiver).
+Through OT, Bob selects and receives one message from a pair of messages provided by Alice without revealing his selection to her.
+More formally, in a $1$-out-of-$2$ OT protocol ($\textrm{OT}^2_1$), Alice holds a pair of messages $(m_{0},\, m_{1})$; Bob holds a selection bit $b \in {0,1}$ and obtains $m_{b}$ without revealing $b$ to Alice and learns nothing about $m_{1-b}$.
+
 \section{Yao's Garbled Circuit Protocol}\label{sec:prelim_gc}
-Yao introduced the GC protocol for 2-party Secure Function Evaluation (SFE) in the 1980's \cite{yao1986generate}.
-GC is described as a circuit whose wires carry a string valued-token instead of a bit.
-Consider two parties, Alice and Bob, who want to evaluate a function $f(\cdot)$ without revealing their inputs to each other.
-The function needs to be represented as a combinational Boolean circuit.
-To begin with, we assume the circuit consists of a single gate with two input wires, $w_{a}$, $w_{b}$ and one output wire $w_{c}$.
-Alice knows the value of input $w_{a}$ denoted by $v_{a}$ and Bob knows the value of input $w_{b}$ denoted by $v_{b}$.
-The gate is also represented by a four-entry truth table $G[v_{a}, v_{b}]$.
-There are two main phases in Yao's protocol.
-First, Alice encodes or garbles the circuit by generating garbled tables.
-Second, Bob evaluates the output denoted by $v_{c}$ without knowing anything about $v_{a}$ other than what can be deduced from the output and his own input.
+Yao's Garbled Circuit protocol~\cite{Yao86} allows two parties Alice, called the \textit{Garbler} and Bob, called the \textit{Evaluator}, to jointly compute a function $o = f(x, y)$ on their private inputs $x$, provided by Alice and $y$, provided by Bob such that none of them reveal their inputs to each other.
+In the end, one or both of them learns the output $o$.
+The steps of Yao's protocol are described below.
 
-The steps of Yao's approach are described below.
-
-\begin{enumerate}
-\item
-	For each wire $w_a$, Alice selects one random bit $t_a$ called \emph{type} and two random $(k-1)$-bit values $Y_a^{0}$ and $Y_a^{1}$, where $k$ is a symmetric security parameter (e.g., $k=128$).
-	The concatenations of the first random string and the type $X_a^{0} =  Y_a^{0}\parallel t_a$ and $X_a^{1} =  Y_a^{1}\parallel \bar{t}_a$ are called token for semantic bit $0$ and $1$ respectively.
-
-\item
-	For each gate, Alice symmetrically encrypts the respective output tokens with the four possible combinations of the input tokens.
-	The resulting table of ciphertexts is called \emph{garbled table}.
-
-\item
-	Alice sends to Bob the garbled tables and the token corresponding to her input value.
-
-\item
-	Bob obliviously receives the tokens corresponding to his input through oblivious transfer (OT) \cite{rabin2005exchange}.
-
-\item
-	Bob decrypts the corresponding entry in the garbled table based on the received input tokens and gets the output token.
-
-\item
-	Finally, Alice reveals the type of the output and Bob determines its semantic value.
-\end{enumerate}
-
-In general, the circuit consists of multiple gates.
-Yao's protocol for this case is described below.
-
-\begin{enumerate}
-\item
-	Alice chooses tokens for all the wires, constructs the garbled tables for each gate and sends these to Bob along with the tokens corresponding to her inputs.
-\item
-	Bob obliviously receives the tokens corresponding to his input values through oblivious transfer.
-\item
-	Using these tokens, Bob evaluates the circuit gate-by-gate until he evaluates all gates.
-\item
-	Finally, Alice reveals the type of the outputs and Bob determines their semantic values.
+\begin{enumerate}[label=\roman*.]
+\item The function $f$ to be computed is represented as a Boolean circuit, called \textit{netlist}, consisting of 2-input 1-output logic gates (a four entry truth table).
+\item For each wire $a$ in the netlist, Alice assigns two $k$-bit random strings, called \textit{labels}, $X_a^{0}$ and $X_a^{1}$ respectively corresponding to 0 and 1 Boolean values.
+      $k$ is the security parameter -- typically $k=128$ is sufficient~\cite{bellare2013efficient}.
+\item For each gate, she encrypts the output label in each row of the truth table with the corresponding input labels.
+      The resulting table of ciphertexts is then randomly rearranged and called the \textit{garbled table}.
+\item She then sends the garbled tables along with the labels corresponding to her input values to Bob.
+      Bob obtains the labels corresponding to his input values obliviously through 1-out-of-2 OT protocol.
+\item Bob uses these input labels to decrypt the garbled tables gate by gate.
+      The label for the output wire of one gate are the label(s) for the input wire(s) of the subsequent gate(s).
+\item In the end, Bob learns the labels for the final output wire and Alice has its mapping to 0 and 1, so that the actual value of the output can be determined.
 \end{enumerate}
 
 \section{Advancements on the GC Protocol}
-In our implementation, we make use of state-of-the-art optimizations for garbled circuits as described below.
+Throughout the years, the GC protocol has gone through a number of optimizations that reduce its computation and communication.
+We describe the most important optimizations here.
 
 \subsection{Free XOR~\cite{kolesnikov2008improved}}
-In this method, Alice generates a global random ($k-1$)-bit value $R$ which is just known to her.
-During garbling operation for any wire $w_a$, she only generates a token $X_a^{0}$ and computes the other token $X_a^{1}$ as $X_a^{1} = X_a^{0} \oplus (R \parallel 1)$.
-With this convention, the token for the output wire of the XOR gates with input wires $w_{a}$, $w_{b}$ and output wire $w_{c}$ can be simply computed as $X_{c} = X_{a} \oplus X_{b}$.
-The proof of security for this optimization is given in \cite{kolesnikov2008improved}.
+The most significant optimization to GC so far is \textbf{\textit{Free XOR}} proposed in~\cite{kolesnikov2008improved}.
+In this optimization, for any wire $a$, Alice only generates the label $X_a^{0}$ and computes the label corresponding to 1 as $X_a^{0}\oplus (R \parallel 1)$ where $\parallel$ represents bit concatenation and
+$R$ is a global random ($k-1$)-bit value known only to Alice.
+With this convention, the label for the output of an XOR gate with inputs $a$, $b$ and output $c$ can simply be computed as $X_{c} = X_{a} \oplus X_{b}$.
+Thus it does not need computation or transfer of the garbled tables and the XOR gate becomes \textit{free}.
 
 \subsection{Row Reduction~\cite{naor1999privacy}}
 This optimization reduces the size of the tables for the non-XOR gates by $25\%$.
-Here, instead of generating a token for the output wire of a gate randomly, the output token is produced as a function of the tokens of the inputs.
-Alice generates the output token such that the first entry of the garbled table becomes all $0$ and no longer needs to be sent.
+Here, instead of generating a label for the output wire of a gate randomly, the output label is produced as a function of the labels of the inputs.
+Alice generates the output label such that the first entry of the garbled table becomes all $0$ and no longer needs to be sent.
 
 \subsection{Garbling With a Fixed-key Block Cipher~\cite{bellare2013efficient}}
 This method allows to efficiently garble and evaluate non-XOR gates using fixed-key AES.
-In this garbling scheme which is compatible with the Free XOR and Row Reduction techniques, the output key $X_{c}$ is encrypted with the input token $X_{a}$ and $X_{b}$ using the encryption function $E(X_a,X_b,T,X_c) = \pi(K) \oplus K \oplus X_c$, where $K=2X_a\oplus4X_b\oplus T$, $\pi$ is a fixed-key block cipher (e.g., instantiated with AES), and $T$ is a unique-per-gate number (e.g., gate identifier) called \emph{tweak}.
+In this garbling scheme which is compatible with the Free XOR and Row Reduction techniques, the output key $X_{c}$ is encrypted with the input label $X_{a}$ and $X_{b}$ using the encryption function $E(X_a,X_b,T,X_c) = \pi(K) \oplus K \oplus X_c$, where $K=2X_a\oplus4X_b\oplus T$, $\pi$ is a fixed-key block cipher (e.g., instantiated with AES), and $T$ is a unique-per-gate number (e.g., gate identifier) called \emph{tweak}.
 The proof of security is given in~\cite{bellare2013efficient}.
+
+\subsection{Half Gate~\cite{zahur2015two}}
+The \textbf{\textit{Half Gate}} method~\cite{zahur2015two} utilizes both free-XOR and row reduction and reduces the cost of AND gates by an additional $25\%$.
 
 \section{Boolean Circuits}
 In SFE, the parties are able to evaluate a function on their private inputs.

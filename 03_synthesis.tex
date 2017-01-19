@@ -52,7 +52,7 @@ A library that consists of these various implementations is called a \emph{synth
 We develop our own synthesis library that includes implementations customized for the GC protocl.
 In this library, we build the arithmetic operations based on a full adder with one AND gate \cite{boyar2006concrete} and conditional operations based on a 2-to-1 multiplexer (MUX) with one AND gate \cite{kolesnikov2008improved}.
 
-\subsection{Technology library}
+\subsection{Technology library}\label{sec:syn_tech}
 The next step is to map the structural representation onto a \emph{technology library} to generate the netlist.
 A technology library contains basic units available in the target platform.
 For example, tools targeting Field Programmable Gate Arrays (FPGAs) like Xilinx ISE or Quartus contain Look-Up Tables and Flip Flops in their technology libraries, which form the architecture of an FPGA.
@@ -82,7 +82,7 @@ It also enables the use of beneficial synthesis optimization techniques that wer
 Moreover, the synthesis tools have a global view of the circuit, unlike previous work that manually optimized small modules of the circuit.
 This allows more effective optimization for any arbitrary function and set of constraints.
 
-\section{Limitation}
+\section{Limitation}\label{sec:syn_limit}
 The synthesis approach has certain limitations when it comes to generating combinational circuits for extremely large functions.
 Generating and optimizing large combinational circuits using synthesis tools take a lot of timing and memory resources.
 These tools are not designed to support large scale combination description.

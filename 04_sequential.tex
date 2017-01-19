@@ -1,9 +1,15 @@
 % !TEX root = 0_main.tex
-\chapter{Sequential Garbled Circuits}
-Sequential circuits can be used as a very compact circuit description.
-In the following section we first describe the concept of sequential circuits (\sect{sec:sqcirc}) using an example and then explain the modifications required to garble/evaluate them.
+\chapter{Sequential Garbled Circuits}\label{ch:seq}
+Sequential circuits can be used as a very compact Boolean circuit description. We use sequential description to overcome the scalability limitation of the synthesis approach for combinational circuits.
+In the following chapter, we first describe the concept of sequential circuits using an example.
+Next, we discuss synthesizing sequential circuit for the GC protocol.
+Then, we explain the modifications required to garble/evaluate sequential circuits.
 
 \section{Sequential Circuits}
+In the context of the GC protocol, we can defined sequential circuit as a folded version of combinational circuit that needs to be evaluated multiple cycle.
+Unlike combinational circuits where the output depends only on the inputs, the output of sequential circuit depends on both input and the state of the circuit stored in its memory.
+Usually, intermediate values during computation is stored as a state of the circuit and is used in later cycles to complete computation of the function.
+In following, we illustrate the difference between combination and sequential circuit using a simple 4-bit adder as a function.
 
 \begin{figure}[ht]
     \centering
@@ -15,24 +21,25 @@ In the following section we first describe the concept of sequential circuits (\
   (d) Sequential 4-bit Adder using one FA.}\label{fig:combSeq}
 \end{figure}
 
-\fig{fig:combSeq} demonstrates an example of a combinational and a sequential implementation for a 4-bit Adder with inputs $x = \overline{x_3x_2x_1x_0}$ and $y = \overline{y_3y_2y_1y_0}$, producing sum $s = \overline{s_3s_2s_1s_0}$.
+\fig{fig:combSeq} demonstrates an example of a combinational and a sequential implementation for a 4-bit Adder function with inputs $x = \overline{x_3x_2x_1x_0}$ and $y = \overline{y_3y_2y_1y_0}$, producing sum $s  = \overline{s_3s_2s_1s_0} = f(x, y) = x + y$.
 \fig{fig:combSeq}a and \ref{fig:combSeq}b show the internal combinational circuit of a half Adder (HA) and a full Adder (FA) respectively.
 In \fig{fig:combSeq}c a combinational Adder is built by cascading 3 FAs and one HA.
 \fig{fig:combSeq}d represents a sequential implementation of a 4-bit Adder which uses one FA and a one bit FF to save the carry bit from the previous cycle.
-The circuit should be evaluated in 4 cycles.
+The circuit should be evaluated for 4 cycles.
 At the first cycle the carry bit is $z_0=0$.
 Note that, in the combinational circuit we use three FAs and one HA whereas in the sequential circuit, we have to use one FA for 4 sequential cycles.
-This asymmetry in the loop of Addition function introduces a very small \emph{overhead} in GC computation and communication time as an HA circuit has fewer gates compared to a FA circuit.
+This asymmetry in the loop of Addition function introduces a small \emph{overhead} in GC computation and communication time as an HA circuit has fewer gates compared to a FA circuit.
+(In the next chapter, we will discuss how to remove this overhead using an algorithm to skip unnecessary garbling/evaluation of a FA instead of a HA.)
 
 However, the total number of gates for representing the function is reduced approximately by a factor of 4 when using a sequential circuit (one FA for sequential compared with three FA and one HA for combinational).
-This helps to limit the memory footprint for garbling and evaluation required for storing circuit description and wire tokens ($k$-bit per wire, see \sect{subsec:preli_GC}).
-In a sequential circuit, the number of tokens that need to be stored in memory at any moment is proportional to the number of gates in the circuit.
-The wire tokens are simply over-written at each sequential cycle.
-Only tokens corresponding to FFs are kept for the next cycle.
+This helps to limit the memory footprint for garbling and evaluation required for storing circuit description and wire keys ($k$-bit per wire, see \sect{subsec:preli_GC}).
+In a sequential circuit, the number of labels that need to be stored in memory at any moment is proportional to the number of gates in the circuit.
+The wire labels are simply over-written at each sequential cycle.
+Only labels corresponding to FFs are kept for the next cycle.
 
 Nearly all commercial circuits used in digital hardware are designed in sequential format.
 There are multiple reasons for preferring sequential circuit description over combinational including the reduction in complexity, area, power, and cost, as well as natural mapping of finite state machine control functions into a sequential format.
-Some of these reasons also provide a rationale for sequential description of a function in GC, including: (i) reduction in size and memory footprint that is achieved by introducing the state elements and feedback loop from output to input; (ii) removing the need to perform costly compile-time/runtime loop unrolling by embracing loops within the sequential feedback loop; (iii) providing a new degree of freedom for folding by the placement of memory elements in the long combinational paths--the placement can be done in accordance with the user's objective.
+Some of these reasons also provide a rationale for sequential description of a function in GC, including: (i) reduction in size and memory footprint that is achieved by introducing the state elements and feedback loop from output to input; (ii) removing the need to perform costly compile-time/runtime loop unrolling by embracing loops within the sequential feedback loop; (iii) providing a new degree of freedom for folding by the placement of memory elements in the long combinational paths--the placement can be done in accordance with the user's objective; (iv) solving the limitation of synthesis techniques and tools for large function (see /sec{sec:syn_limit}) by describing circuits in compact sequential format.
 
 \begin{figure}[ht]
     \centering
@@ -43,19 +50,23 @@ Some of these reasons also provide a rationale for sequential description of a f
 
 During the evaluation of a sequential circuit, the combinational block is evaluated $c$ times where $c$ is the number of sequential cycles that the circuit operates.
 We can visualize this process as the unrolled combinational representation of the sequential circuit as shown in \fig{fig:open-sequential}.
+$c$ also shows the folding factor of the sequential circuit ($c=1$ means the circuit is combinational).
 The inputs/outputs of the unrolled circuit are the inputs/outputs of the combinational block in all the cycles.
 The present states at each cycle $\textrm{cid}$, where $0 \le \textrm{cid} < c$, are equal to the next states at the previous cycle ($\textrm{cid}-1$).
 The present states at $\textrm{cid}=0$ are equal to the input initial value.
 
 During generation and evaluation of the garbled circuit, it must be ensured that the encryption tweaks $T$ (see \sect{subsec:preli_GC}) for each gate is unique because otherwise security is broken \cite[Sect. 3.4]{henecka2013faster}.
-In TinyGarble, to ensure the uniqueness property, we set tweak $T$ for each gate to be the concatenation of the cycle index (cid) and the unique gate identifiers (gid) in the combinational part of the sequential circuit, i.e., $T = \textrm{cid} || \textrm{gid}$.
-\footnote{An alternative method would be to use a monotonic counter in the circuit generation/evaluation routines which is increased by one for each gate.}
-As in previous work, security and correctness of the GC garbling/evaluation follow from the uniqueness of the tweak $T$ and the existing proofs of security and correctness, see \cite{lindell2009proof,bellare2013efficient}.
+In TinyGarble GC engine, to ensure the uniqueness property, we set tweak $T$ for each gate to be the concatenation of the cycle index (cid) and the unique gate identifiers (gid) in the combinational part of the sequential circuit, i.e., $T = \textrm{cid} || \textrm{gid}$.
+An alternative method would be to use a monotonic counter in the circuit generation/evaluation routines which is increased by one for each gate.
+As in previous work, security and correctness of the GC garbling/evaluation follow from the uniqueness of the tweak $T$ and the existing proofs of security and correctness, see \cite{lindell2009proof, bellare2013efficient}.
 
 \section{Synthesis Sequential Circuit}
-For synthesis of sequential circuits, the technology library includes memory elements.
+Since the synthesis tools support sequential circuits, it is straightforward to support synthesizing sequential circuit in TinyGarble GC synthesis framework.
+To do so, we add the memory element of sequential circuits into the technology library of TinyGarble (described in \sec{sec:syn_tech}).
 These elements can be implemented as FFs which are connected to a clock signal.
-Although in conventional ASIC design FFs are typically as costly as four AND gates, in our GC application, FFs do not have any impact on the garbling/evaluation process as they require no cryptographic operations.
+Although in conventional ASIC design FFs are typically as costly as four AND gates, as seen above in our GC application, FFs do not have any impact on the garbling/evaluation process as they require no cryptographic operations.
+FF acts as a wire between two
+
 Therefore, we set the area of FFs to 0 to show its lack of impact on computation and communication time of garbling/evaluation.
 Moreover, we modify our FFs such that they can accept an initial value.
 This helps us remove extra MUXs in standard FF design for initialization.
