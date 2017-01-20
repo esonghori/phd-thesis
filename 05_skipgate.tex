@@ -1,6 +1,5 @@
 % !TEX root = 0_main.tex
-\chapter{{SkipGate}}
-\section{{SkipGate} Algorithm}
+\chapter{{SkipGate}: Reducing Sequential Overhead}\label{chap:skipgate}
 SkipGate is a novel algorithm on top of the GC protocol.
 It removes garbling cost for a gate when its output can either be computed independently by Alice and Bob or has no effect on the final output.
 The cost reduction is especially significant in a sequential circuit where the control path is independent of the private inputs.
@@ -13,7 +12,7 @@ In our scheme, we combine these notions of Boolean and garbled circuits.
 Each wire either carries a Boolean value known to both parties independently (\textit{public} wire) or it carries a (pair of) label(s) (\textit{secret} wire).
 As a result, the scheme supports functions in the form of $c = f(a, b, p)$ where $p$ is a public input known to both parties.
 
-\subsection{Motivational Example}
+\section{Motivational Example}
 Assume a sequential circuit that has a 2-to-1 MUX whose inputs come from two sub-circuits f$_0$ and f$_1$.
 If at a certain clock cycle, the select wire of the MUX is public, say 1, both parties know that the gates in the sub-circuit f$_0$ do not need to be garbled/evaluated since they have no effect on the final output.
 The gates in the MUX itself act as wires and pass the output of f$_1$ to the MUX output, thus they do not need to be garbled/evaluated in that clock cycle either.
@@ -25,7 +24,7 @@ The SkipGate algorithm is executed each clock cycle by both parties just before 
 Thus, SkipGate is different compared to offline circuit simplification methods such as the one introduced in~\cite{pinkas2009secure} which remove gates with known constant inputs.
 The constant gates are already removed in our circuits by the conventional HDL synthesis tools.
 
-\subsection{Gate Categories}\label{ssect:skipgate_example}
+\section{Gate Categories}\label{ssect:skipgate_example}
 The SkipGate algorithm classifies the gates into four categories in terms of the parties' knowledge about their inputs:
 
 \begin{enumerate}[label=\roman*]
@@ -46,7 +45,7 @@ The SkipGate algorithm classifies the gates into four categories in terms of the
   	They have to be garbled/evaluated conventionally according to the GC protocol.
 \end{enumerate}
 
-\subsection{Algorithm}\label{ssect:skipgate_algorithm}
+\section{{SkipGate} Algorithm}\label{ssect:skipgate_algorithm}
 In the SkipGate algorithm, the netlist's inputs are marked as secret or public by the parties.
 An integer, \texttt{label\_fanout}, is associated with each gate and indicates the number of times the gate's output label is used as a circuits output or an input to other gates.
 Initially, the \texttt{label\_fanout} is set to the gate fanout in the circuit.
@@ -161,7 +160,27 @@ However, he can keep track of these flips by storing one bit along with the labe
 After evaluating a NOT gate, he simply flips the bit.
 The bit helps him to differentiate between identical and inverted secret values which is crucial for Phase 2.
 
-\subsection{Security Proof} The GC protocol is secure under honest-but-curious adversary model for any function in the form of $f(a,b)$.
+\section{Computation Complexity}\label{ssec:skipgate_complexity}
+The original GC protocol for both Garbler and Evaluator has a linear complexity\footnote{Note that because of Free-XOR optimization~\cite{kolesnikov2008improved}, the constant coefficient for AND gates is much larger than the one for XOR gates.
+Thus, the number of AND gates is the dominant factor in computation cost.} in terms of the number of gates in the circuit.
+We show that, despite its recursive appearance, the SkipGate algorithm does not increase the overall complexity of the GC protocol.
+All parts of the SkipGate algorithm, except \textit{recursive\_reduction} procedure (\alg{skipgate_reduction}), is executed once per gate, thus they have the same linear complexity as the original GC protocol.
+The only possible source of complexity increase is recursive\_reduction function whose number of invocations depends on the underlying circuit and whether input wires are secret or public.
+This makes it hard to calculate the exact number of invocations.
+As a result, to find the complexity of SkipGate, we compute an upper bound on number of invocations for recursive\_reduction function.
+
+The termination condition in recursive\_reduction is when the fanout reaches zero (Lines 2 and 6 of \alg{skipgate_reduction}).
+Thus, the worst case scenario is when the function reduces the fanout of all the gates to zero.
+For this, fanout reduction (Line 5) should be called at most the sum of all the initialized fanouts.
+The fanout variable is initialized with the gate fanout in the circuit.
+The upper bound of the sum of all the fanout in the circuit is $$F = \sum_{i=1}^{n} g[i].fannout \le 2n - m + p,$$ where $n$ is number of gates, $p$ is number of output,  and $m$ is number of inputs.
+Each gate has two inputs and each input creates a fanout in previous gates unless it is an input wire.
+Also, each output wire incurs the fanout of one.
+Both $p$ and $m$ are typically less than or at most in the order of $n$.
+Thus, $F$ and subsequently the number of invocation of recursive\_reduction function are $\BigO{n}$.
+This means SkipGate does not increase the overall linear complexity of the GC protocol.
+
+\section{Security Proof} The GC protocol is secure under honest-but-curious adversary model for any function in the form of $f(a,b)$.
 In our scheme, the function is in the form of $f(a,b,p)$.
 SkipGate dynamically reduces $f(a,b,p)$ into $f_p(a,b)$ and garbles/evaluates $f_p$.
 In this reduction process, we only use the public input $p$ which is known to both parties.
