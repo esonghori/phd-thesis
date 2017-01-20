@@ -76,8 +76,10 @@ This property allows synthesis tools to not only generates the circuit with less
 Moreover, the compatibility of our sequential descriptions with standard synthesis tools simplifies the workflow of circuit generation for SFE applications.
 
 \section{Overhead of Sequential Circuit}
-As described earlier in the example of \fig{fig:combSeq}, sequential circuit may incur an overhead compared to combination circuit.
-This overhead is due to the asymmetry in the loop of functions.
+
+sequential circuit folds the function into a single loop.
+The computation in many functions are not perfectly symmetric.
+Thus these function when are described in seqeuntial circuits incure an overhead similar to the one explained earlier in the example of \fig{fig:combSeq}.
 In the following, we explain the source of the overhead using a more general example.
 
 \begin{figure}[ht]

@@ -129,3 +129,8 @@ These tools are not designed to support large scale combination description.
 This means hardware synthesis for garbled circuit cannot be scaled, at least automatically, for large functions using the current setting.
 In hardware design, the function has to be folded and described in a sequential format in order to scale circuit to cover more complex functions.
 In the next chapter, we will discuss possibility of using sequential circuit for the GC protocol.
+
+Many algorithm has a loop.
+\cite{} also uses rolling this loop online to make GC scalable for large function.
+we will show how can we exploit loop with sequential circuit while the circuit generation remain offline.
+This allows us to befit from synthesis tools optimization even for large functions.
