@@ -91,6 +91,13 @@ Bob uses the random labels to keep track of identical (or swapped) input labels 
 		\ENDIF
 	\ENDIF
 \ENDFOR
+\algstore{myalg1}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[ht]
+\begin{algorithmic}[1]
+\algrestore{myalg1}
 \STATE{\bf{Phase 2}:}
 \FOR{g in netlist where g.fanout $> 0$}
 	\IF{(g.i0.label is equal g.i1.label or\\
@@ -118,6 +125,13 @@ Bob uses the random labels to keep track of identical (or swapped) input labels 
     \ENDIF
 	\ENDIF
 \ENDFOR
+\algstore{myalg2}
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[ht]
+\begin{algorithmic}[1]
+\algrestore{myalg2}
 \STATE{\bf{Phase 3}:}
 \IF{user is Alice}
   \STATE{garbled\_tables.filter(t : netlist[t.id].fanout $> 0$)}
