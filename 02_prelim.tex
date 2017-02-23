@@ -80,7 +80,7 @@ The steps of Yao's protocol are described below.
 \item In the end, Bob learns the labels for the final output wire and Alice has its mapping to 0 and 1, so that the actual value of the output can be determined.
 \end{enumerate}
 
-\section{Advancements on the GC Protocol}
+\section{Recent Improvements on the GC Protocol}
 Throughout the years, the GC protocol has gone through a number of optimizations that reduce its computation and communication.
 We describe the most important optimizations here.
 
@@ -139,7 +139,6 @@ A flip-flop stores the value of its input wire (usually denoted by D) to be reus
 A periodic square signal called clock are used to synchronized sampling the value in flip-flops and using it.
 The duration between to rising (or falling) edge of clock signal is called a clock cycle.
 To put it simply, the gates between to combination circuit but they are evaluated for multiple clock-cycles.
-
 
 Another class of circuits in digital circuit theory are \emph{sequential circuits} in which unlike in the combinational case, circuit outputs are functions of both inputs and circuit \emph{states}.
 Circuit states are kept in memory elements such as Flip Flops (FF).

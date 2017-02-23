@@ -167,7 +167,6 @@ Our GC evaluator is based on the most recent optimizations listed in \sect{ssect
 
 As shown in \fig{fig:evaluator}, Bob's input labels in the Label memory are initialized by the OT protocol with Alice. The rest of the labels in the Labels memory and the Garbled Tables memory are received in clear-text from Alice.
 
-
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{Evaluator-crop.pdf}
@@ -186,10 +185,18 @@ We only use on-chip memory for our proof-of-concept in this work. However, this 
 Such extensions would incur additional area and performance overheads, but would allow upscaling of our implementation to support garbled processor circuits and benchmarks in the Gigabytes range. We emphasize that we provide in this work a proof-of-concept prototype to motivate further research in this direction to bring garbled processors some steps closer to the realm of feasible practical implementations.
 
 \section{ARM2GC}
+In this section, we present ARM2GC, a GC framework based on a garbled ARM processor and the SkipGate algorithm.
+The framework aims to simplify the development of privacy-preserving applications while keeping the garbling cost as low as the best optimized garbled circuits.
+We first describe the overview of ARM2GC and its API for GC development.
+Then, we explain how ARM's unique architecture helps to decrease garbling overhead.
+Next, the effect of SkipGate in reducing the garbling cost is discussed.
+Finally, we discuss why we do not employ Oblivious RAM for ARM2GC.
+
+\subsection{Global Flow}\label{ssec:arm-global}
 The ARM2GC framework allows users to write two-party SFE program in C/C++ (or any language that can be compiled to ARM binary code).
 \fig{fig:frwk_overview} shows the overview of the framework.
 The SFE program is compiled using an ARM cross-compiler, e.g., gcc-arm-linux-gnueabi.
-The compiled binary code and the synthesized ARM processor circuit are fed to the SkipGate algorithm as a public input and netlist respectively.
+The compiled binary code and the synthesized ARM processor circuit are fed to the SkipGate algorithm as the public input $p$ and the Boolean circuit, respectively.
 
 \begin{figure}[ht]
 \centering
@@ -208,45 +215,40 @@ void gc_main(
 \end{lstlisting}
 
 The entry function, \texttt{gc\_main}, receives three arguments: pointers to Alice's input, Bob's input, and the output.
-The framework has five separate memory elements (consisting of flip-flops and MUXs) to store: Alice's inputs, Bob's input, output, stack, and instruction.
+The framework has five separate memory elements (consisting of flip-flops and MUXs) to store: Alice's inputs, Bob's inputs, output, stack, and instructions.
 The flip-flops in the instruction memory are initialized with the compiled binary code that is known to both parties (the public input $p$).
-The flip-flops in Alice's and Bob's memories are initialized with the labels corresponding to their private inputs $a$ and $b$ respectively.
-The other flip-flops in stack, output, pipeline registers, and register files are initialized to zero.
-The netlist is garbled/evaluated for a pre-specified number of cycles.
+The flip-flops in Alice's and Bob's memories are initialized with labels corresponding to their private inputs $a$ and $b$ respectively.
+The other flip-flops in the stack, output, pipeline registers, and the register file are initialized to zero.
+The ARM circuit is garbled using sequential garbling process~\cite{songhori2015tinygarble} for a pre-specified number of clock cycles $cc$.
 
-\subsection{How SkipGate Helps}
-Implementation of ARM processor results in a complex and large netlist ($\approx 5$ times larger than MIPS).
-Thus, using ARM instead of MIPS in the previous garbled processor approaches~\cite{wang2015secure, songhori2016garbledcpu} would incur even higher cost.
-However, majority of the components of the ARM processor remain idle during  execution of an instruction.
-SkipGate utilizes this to minimize the cost of garbling the ARM processor.
-Since the instruction memory is initialized with public values, if the program counter (the address of the next instruction) is public, the next instruction becomes public.
-As a result, the control path also becomes public and SkipGate can detect the idle components to mark them for skipping.
-Moreover due to SkipGate, the gates of the active components that are only transporting data between memory, register file, and ALU act as wires and do not incur any cost.
-Therefore, the main garbling cost is paid for the actual computation on the secret values inside the ALU.
-As explained in the previous section, SkipGate performs these optimizations at the gate-level, in contrast to instruction-level of~\cite{wang2015secure, songhori2016garbledcpu}.
+A signal called \textit{terminate} is produced by the ARM circuit that indicates if \texttt{gc\_main} function is returned.
+The signal can be revealed to the parties once in $T$ cycles (predetermined by parties) to reduce the total number of cycles for garbling.
+For $T=1$, the parties instantly identify the termination, but the exact number of cycles the function evaluated for the given inputs is revealed.
+A larger $T$ would reduce this information leakage, but increase the garbling cost.
+Eventually, when the function is executed, the parties reveal the content of the output memory to each other.
+Appendix \ref{sec:engine} provides more details about the support of the terminate signal support in TinyGarble GC engine.
 
-\subsection{ARM as a Garbled Processor}\label{ssect:arm}
+\subsection{ARM as a Garbled Processor}\label{ssec:arm}
 In this work, we choose ARM as our garbled processor which is a more ubiquitous and sophisticated processor compared to MIPS~\cite{songhori2015tinygarble, wang2015secure, songhori2016garbledcpu}.
 ARM has two main advantages:
 (1) Pervasiveness: the compilers and tool-sets of ARM are under constant scrutiny, updating, and probably, more optimized as a result.
 (2) Conditional Execution: Designed to improve performance and code density, conditional execution in ARM allows each instruction to be executed only if a specific condition is satisfied~\cite{sloss2004arm}.
 
-ARM compiler tends to replace conditional branches with conditional instructions to make the flow of the program predictable, and thus, lower the cost of branch mis-prediction.
-Similarly in garbled processor, the main design effort is to make sure that the flow of the program is predictable so that the next instruction is public.
+ARM compilers tend to replace conditional branches with conditional instructions to make the flow of the program predictable, and thus, lower the cost of branch mis-prediction.
+Similarly, in garbled processor, the main design effort is to make sure that the flow of the program is predictable so that the next instruction remains public.
 Replacing conditional branches with conditional instructions in garbled ARM generates a code with a predictable flow.
 \fig{fig:conditional_exec} shows an example function compiled into assembly with and without the conditional execution.
-Moreover, we modify the ARM controller such that a conditional instruction always takes the same number of cycles regardless of its condition.
-This is because when the condition is secret, mismatch in the number of cycles of the instructions makes the program flow dependent on a secret value.
+Moreover, we modify the ARM controller such that conditional instructions always take the same number of cycles regardless of their condition (taken or not taken). Otherwise, the program flow will be dependent on the secret condition and as a result, program flow itself will become secret which in turn reduces the efficiency of the execution.
 
-\begin{figure}[ht]
+\begin{figure}[t]
     \centering
-    \begin{subfigure}{0.40\textwidth}
+    \begin{subfigure}{0.40\columnwidth}
         \centering
         \includegraphics[width=\textwidth]{conditional_exec_wo-crop.pdf}
         \caption{Without Conditional Execution}
     \end{subfigure}
     ~
-    \begin{subfigure}{0.40\textwidth}
+    \begin{subfigure}{0.40\columnwidth}
         \centering
         \includegraphics[width=\textwidth]{conditional_exec_w-crop.pdf}
         \caption{With Conditional Execution}
@@ -258,3 +260,78 @@ We modify and remove a few features from the ARM processor like interrupts, co-p
 The last group does not bring any performance advantages in the GC protocol, as the circuit is garbled/evaluated gate by gate (serially).
 Note that unlike in hardware, the performance of GC does not increase by parallelizing gates in the circuit.
 In the GC protocol, the total number of non-XOR gates is the only factor affecting the performance, not the circuit's topology.
+
+Implementation of ARM processor results in a complex and large netlist ($\approx 5$ times larger than MIPS processor).
+Thus, using ARM instead of MIPS in the previous garbled processor approaches~\cite{wang2015secure, songhori2016garbledcpu} would incur even a higher cost.
+However, majority of the components of the ARM processor remain idle during  execution of an instruction.
+In the next section we describe how SkipGate utilizes this characteristic to minimize the cost of garbling the ARM processor.
+
+\subsection{How SkipGate Helps}
+As explained above, the instruction memory of the ARM processor is initialized with public values. Therefore, if the program counter (the address of the next instruction) is public, the next instruction becomes public as well.
+As a result, the control path also becomes public and SkipGate can easily detect the idle components to mark them for skipping.
+Moreover, due to SkipGate, the gates of the active components that are only transporting data between memory, register file, and ALU act as wires and do not incur any cost.
+According to SkipGate's notation, the ARM Boolean circuit is a 3-input function $c = f(a,b,p)$ where $p$ is the public binary code and $a$ and $b$ are the parties' private inputs.
+SkipGate reduces the ARM circuit into a smaller circuit of $c = f_p(a,b)$ where $f_p$ is able to perform the exact operation required in the public binary code $p$, e.g., for example $c = a + b$.
+Therefore, the main garbling cost is paid only for the actual computation on the secret values.
+As explained in the previous section, SkipGate performs these optimizations at the gate-level, in contrast to instruction-level of~\cite{wang2015secure, songhori2016garbledcpu}.
+
+\subsection{Why not Sub-linear Oblivious RAM?}
+As mentioned in \sect{ssec:arm-global}, we use an array of MUXs and flip-flops to implement the register file in ARM circuit.
+This means that the cost of accessing the register file, when performed obliviously, is linear with respect to its size.
+One natural question would be why we did not employ Oblivious RAM (ORAM) that enables oblivious access to memories in the GC protocol with sub-linear cost~\cite{wang2014scoram, zahur2016revisit}.
+The reason is that, in most cases, the access to the register file is not required to be oblivious.
+Since the instructions come from a publicly known instruction memory, both parties know which register of the register file is read or written.
+The SkipGate algorithm utilizes this to skip garbling of the gates in the MUXs of the register file, thus, no cost is required for such accesses.
+With ORAM, all the accesses to the register file would be the costly oblivious access of ORAM.
+
+In rare occasions where two or more instructions should be garbled at a time, accessing a register would not be free using MUXs and SkipGate.
+These cases only happen when ARM compiler fails to replace a conditional branch on a secret value with conditional instructions.
+The user can typically alter the program in a way that the compiler avoids such branches and replaces it with conditional instructions instead.
+However, in these cases, the SkipGate algorithm removes most of the gates in the register file.
+Since the cost of fetching instructions remains smaller than that of break-even points of sub-linear ORAMs, using ORAM would not improve the efficiency for this case either.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.60\columnwidth]{branch-crop.pdf}
+\caption{In case of compiler failure to replace a secret branch with conditional instructions, the parties do not know which instruction is executed after the branch.
+Thus, the instruction becomes secret.}
+\label{fig:branch}
+\vspace{-5pt}
+\end{figure}
+
+\fig{fig:branch} shows an example where after execution of a branch on a secret value, the next instruction becomes secret and unknown to parties.
+In this example, the program counter can be either 3 or 6 depending on the outcome of the comparison in Line 1.
+Thus, two instructions \texttt{add \$1, \$2, \$3} (\texttt{\$3 = \$1 + \$2}) and \texttt{sub \$5, \$6, \$7} (\texttt{\$5 = \$6 - \$7}) have to be garbled/evaluated at the same time.
+For fetching the second register in instruction from the register file, we only have two choices: \texttt{\$2} and \texttt{\$6}.
+This means that, instead of having a complete oblivious access to the register file with 16 choices, we only have to obliviously select between 2 of the 16 registers.
+This costs far less than 1-out-of-16 oblivious access.
+The cost of oblivious access using MUXs and SkipGate to a {\it subset} of a memory is equal to an oblivious access to a memory with size of the subset.
+
+\begin{figure*}[ht]
+\centering
+\includegraphics[width=0.65\textwidth]{registers-crop.pdf}
+\caption{Bit-precise details of how source register is fetched while executing two instructions \texttt{add \$1, \$2, \$3} and \texttt{sub \$5, \$6, \$7} at the same time after a branch on a secret condition value \texttt{S}.}
+\label{fig:registers}
+\end{figure*}
+
+\fig{fig:registers} illustrates the details of the above example where bit \texttt{S} is the secret bit that separates the branches of computation that each leading into a different instruction.
+The address of the source register is computed by a MUX over the two options in the two instructions: MUX(\texttt{\$2, \$6, S}) = MUX(\texttt{0010b, 0110b, S}) = \texttt{0S10b}.
+The most and least significant bits are, in either case, zero, and thus it will remain zero in the output.
+The bit 1 is one in both cases and remains one.
+The bit 2 is zero if \texttt{S==0} and is one if \texttt{S==1}, and thus this bit is equal to \texttt{S}.
+Now, let us look at the MUXs in the registers files that fetch the source register.
+The MUXs connected to the known bit can be evaluated separately by both parties, and thus they will be avoided by SkipGate.
+Within the MUXs connected to \texttt{S}, only the one that selects between \texttt{[\$2]} and \texttt{[\$6]} remains for garbling and the rest will be removed due to non-positive fanout.
+
+% why not ORAM for code and data memory
+The rationale for using array of MUXs in the register file also applies to the code, data, and stack memories where the access is almost always public and known to both parties.
+In the worst case, only a subset of memory are accessed obliviously, thus making the cost of memory access below the threshold of switching to ORAMs.
+% However, when a user explicitly develops a program where a large enough array is accessed obliviously, a sub-linear ORAM~\cite{zahur2016revisit, liu2015oblivm, wang2014scoram} can be integrated as the additional memory to our framework.
+% It can be done by adding an ORAM client circuit beside ARM processor and connecting the necessary wires.
+
+% Research question
+The mixture of the SkipGate algorithm and garbled processor introduces an unusual use-case for oblivious memory where oblivious access is performed only on a varying subset of the memory.
+The subset can be different from one access to the other.
+The current sub-linear ORAM protocols cannot address this scenario efficiently. Thus, an interesting research question is raised:
+
+\textbf{Is it possible to \textit{obliviously} access (read/write) a varying subset of the memory with a \textit{sub-linear} cost in terms of the subset size?}

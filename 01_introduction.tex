@@ -1,20 +1,27 @@
 % !TEX root = 0_main.tex
 \chapter{Introduction}
-%what is the problem?
-Secure function evaluation (SFE) allows two or more parties to correctly compute a function of their respective private inputs without exposure.
-The seminal result by Yao introduced the GC protocol for addressing two-party SFE \cite{yao1986generate}.
-The GC protocol allows to securely evaluate a function given as a Boolean circuit that is represented as a series of binary gates.
-The inputs and outputs of each gate are masked such that the party evaluating the GC cannot gain any information about the inputs or  intermediate results that appear during function evaluation.
-The approach of obliviously evaluating a Boolean circuit can also be generalized to multi-party SFE \cite{goldreich1987play,ben2008fairplaymp}.
+%what are SFE and GC
+Secure Function Evaluation (SFE) allows two or more parties to evaluate an arbitrary function on their private data.
+The parties learn the output of the function without revealing any information about their private data.
+Two-party SFE is an important special case where Alice and Bob want to find $f(a, b)$ where $a$ and $b$ are Alice's and Bob's private inputs respectively and $f(., .)$ is a predetermined arbitrary function.
+By far the most promising and efficient solution for two-party SFE is Yao's Garble Circuit (GC) protocol that was proposed by Andrew C. Yao in his seminal work \cite{yao1986generate}.
+The GC protocol requires the function $f(., .)$ to be represented in a Boolean circuits consisting of binary gates (e.g., AND, OR, and XOR).
+In the GC protocol, Alice encrypts the circuits and Bob decrypts it to learn the output.
+The input and intermediate values in the circuit are masked such that no party can gain any information about the private inputs.
+Secure evaluating of a Boolean circuit can also be generalized to multi-party SFE \cite{goldreich1987play, ben2008fairplaymp}.
 
 %What has been done?
-Contemporary literature has cited multiple important privacy preserving and security critical applications that could benefit from a practical realization of SFE, including but not limited to: biometrics matching, face recognition, image/data classification, electronic auctions and voting, remote diagnosis, and secure search \cite{bringer2013privacy, evans2011efficient, barni2009secure, naor1999privacy, brickell2007privacy, jha2008towards}.
-While GC was considered to be prohibitively expensive and practically infeasible a decade ago, today we are witnessing a surge of theoretical, algorithmic, and tool developments that have significantly improved the efficiency and practicality of the GC protocol, see \cite{malkhi2004fairplay, kolesnikov2008improved, pinkas2009secure, huang2011faster, bellare2013efficient}.
+A host of privacy preserving and security critical applications can directly benefit from a practical and efficient realization of SFE, including but not limited to: biometrics matching, face recognition, image/data classification, electronic auctions and voting, remote diagnosis, secure search, and stable matching \cite{riazi2017toward, zhang2016robust, bringer2013privacy, evans2011efficient, barni2009secure, naor1999privacy, brickell2007privacy, jha2008towards}.
+For a few decades after its introduction, the GC protocol had been thought to be too expensive to be practically feasible.
+Firplay \cite{malkhi2004fairplay} was the first implementation of the GC protocol that paved the way for later theoretical, algorithmic, and tool developments that have significantly improved the efficiency and practicality of the GC protocol until today, see \cite{malkhi2004fairplay, kolesnikov2008improved, pinkas2009secure, huang2011faster, bellare2013efficient, zahur2015two, zahur2015obliv, liu2015oblivm}.
+
+%what is the problem of circuit generation?
+One of the most challenging part of realization of the GC protocol is generating the Boolean circuit for the underlying function $f(., .)$ in SFE.
+The function is usually described by users in high-level languages and is translated into a Boolean circuit with binary gates.
+The main objective of the GC circuit generation is to create a logically equivalent Boolean circuit with minimum number gates such that its secure evaluation incurs minimum cost.
 
 %classification of the work
-The research on producing Boolean functions for SFE can be roughly classified into two categories: optimizations of cryptographic constructs and protocols such as  \cite{kolesnikov2008improved,pinkas2009secure,bellare2012foundations,bellare2013efficient,kolesnikov2014flexor,zahur2015two}, and compiler/engineering techniques including but not limited to \cite{malkhi2004fairplay,kreuter2012billion,huang2011faster, malka2011vmcrypt,henecka2013faster,kreuter2013pcf,franz2014cbmc}.
-
-In the compiler/engineering realm two different approaches for circuit generation have been developed.
+The previous work on circuit generation for the GC protocol can be roughly classified into two groups.
 One approach is based on building a custom library for a general purpose programming language such as Java along with functions for emitting the circuit, e.g., \cite{huang2011faster,malka2011vmcrypt,henecka2013faster}.
 For better usability, these libraries typically include frequently used modules such as adders and multipliers.
 However, library-based approaches require manual adjustment and do not perform global circuit optimization.

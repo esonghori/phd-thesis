@@ -124,13 +124,14 @@ This allows more effective optimization for any arbitrary function and set of co
 
 \section{Limitation}\label{sect:syn-limit}
 The synthesis approach has certain limitations when it comes to generating combinational circuits for extremely large functions.
-Generating and optimizing large combinational circuits using synthesis tools take a lot of timing and memory resources.
-These tools are not designed to support large scale combination description.
-This means hardware synthesis for garbled circuit cannot be scaled, at least automatically, for large functions using the current setting.
-In hardware design, the function has to be folded and described in a sequential format in order to scale circuit to cover more complex functions.
-In the next chapter, we will discuss possibility of using sequential circuit for the GC protocol.
+The amount of memory and computation resources required by HDL synthesis tools considerably increase for generating large combinational circuits.
+Generally, synthesis tools are not designed to support such large scale combination circuits.
+This means HDL synthesis for GC cannot be scaled, at least automatically, for large functions using current setting, i.e., synthesizing its combinational circuit.
 
-Many algorithm has a loop.
-\cite{} also uses rolling this loop online to make GC scalable for large function.
-we will show how can we exploit loop with sequential circuit while the circuit generation remain offline.
+However, most of these large functions include one or more recurring computation blocks (a.k.a, loops).
+In combinational representation, these loops have to be unfolded and represented as repeated blocks in the circuits.
+In hardware design, these functions are folded around their loops and are described using sequential circuits.
+A sequential circuit has feedback loops and is evaluated for multiple times (sequential cycles), thus it is the most suited to represent the recurring blocks in large functions.
+In the next chapter, we will discuss possibility of using sequential circuit for the GC protocol.
+We will show how can we exploit loops in sequential circuits while the process of optimized circuit generation remains the same.
 This allows us to befit from synthesis tools optimization even for large functions.

@@ -54,12 +54,14 @@ The inputs/outputs of the unrolled circuit are the inputs/outputs of the combina
 The present states at each cycle $\textrm{cid}$, where $0 \le \textrm{cid} < c$, are equal to the next states at the previous cycle ($\textrm{cid}-1$).
 The present states at $\textrm{cid}=0$ are equal to the input initial value.
 
-FF acts as a wire between recurring combinational circuits.
+In digital hardware, at edge of a cycle, the value of D of an FF is latched and then transfered to the Q in the next clock cycle.
+In garbling/evaluating of a sequential circuit, an FF operates as a simple wire connection between the the unrolled combinational circuit in two consecutive cycles.
+Thus, it can be dealt with latching the labels from the flip-Flop input D in $\textrm{cid}$ to output Q in $\textrm{cid}+1$.
+Signal clk and rst of FF can be ignored in sequential GC.
 
-During generation and evaluation of the garbled circuit, it must be ensured that the encryption tweaks $T$ (see \sect{subsect:preli_GC}) for each gate is unique because otherwise security is broken \cite[Sect. 3.4]{henecka2013faster}.
-In TinyGarble GC engine, to ensure the uniqueness property, we set tweak $T$ for each gate to be the concatenation of the cycle index (cid) and the unique gate identifiers (gid) in the combinational part of the sequential circuit, i.e., $T = \textrm{cid} || \textrm{gid}$.
-An alternative method would be to use a monotonic counter in the circuit generation/evaluation routines which is increased by one for each gate.
-As in previous work, security and correctness of the GC garbling/evaluation follow from the uniqueness of the tweak $T$ and the existing proofs of security and correctness, see \cite{lindell2009proof, bellare2013efficient}.
+Garbling/evaluation of the sequential circuit is equivalent of garbling its gates for $c$ times.
+To make sure that the security and correctness of the GC protocol still holds for the sequential circuits, we use combination of cycle index and gate identifier for the the encryption tweaks $T$ (see \sect{subsec:preli_GC}).
+This way a unique tweak is assigned for the same gates in different cycles makes it same as garbling a unrolled combinational circuit (see Apendix \ref{ssec:engine-gc} for more details).
 
 \section{Synthesis Sequential Circuit}
 Fortunately, extending TinyGarble GC synthesis to support sequential circuits is straightforward since the synthesis tools are designed to work them in the first place.
@@ -76,7 +78,6 @@ This property allows synthesis tools to not only generates the circuit with less
 Moreover, the compatibility of our sequential descriptions with standard synthesis tools simplifies the workflow of circuit generation for SFE applications.
 
 \section{Overhead of Sequential Circuit}
-
 sequential circuit folds the function into a single loop.
 The computation in many functions are not perfectly symmetric.
 Thus these function when are described in seqeuntial circuits incure an overhead similar to the one explained earlier in the example of \fig{fig:combSeq}.

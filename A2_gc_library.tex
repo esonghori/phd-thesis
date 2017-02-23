@@ -1,0 +1,140 @@
+\chapter{Garbled Circuit Library}\label{sec:library}
+In this section, we introduce TinyGarble library that consists of GC optimized circuits for complex mathematical/logical operations that can be used as a building blocks practical applications.
+The SSCD and netlist files of the circuits in the library can be found in TinyGarble repository\footnote{\url{https://github.com/esonghori/TinyGarble/blob/master/scd/netlists/v.tar.gz}}.
+
+
+\section{Division and Remainder}
+The TinyGarble library includes the circuit for integer division which takes two numbers as inputs and outputs quotient and remainder (modulus).
+The library includes the circuits for 16-, 32-, and 64-bit integers.
+Two additional circuits are also included in the library that output only quotient and remainder respectively and have fewer number of gates compared to the original circuit.
+
+\section{Floating Point Operations}
+The TinyGarble library includes an extensive set of operations for both IEEE-754 single- and double-precision floating-point numbers.
+It supports addition (fp\_add), subtraction (fp\_sub), division (fp\_div), and multiplication (fp\_mult) of two inputs.
+A comparison circuit (fp\_cmp) is also included that outputs three bits: less than, greater than, equal signals.
+The natural exponentiation circuit (fp\_exp) receives a floating-point input $a$ and computes $e^a$.
+The logarithm circuit (fp\_log2) calculates logarithm of the input in base 2.
+Other floating-point operations include square (fp\_square), and square-root (fp\_sqrt).
+
+\section{Encoder}
+Encoder circuit converts a one-hot representation into a binary one.
+One-hot representation has only one active bit (usually equal one).
+Number $i$ is represented in one-hot by activating the $i^{\text{th}}$ bit.
+Thus, the encoder circuit outputs the index of the active input bit of the one-hot representation.
+Therefore, for $n$-bit one-hot input, the output $o$ is $\log(n)$ bit wide.
+For example, if the $n=16$ and the $5^{\text{th}}$ bit is one, the output should be $o=0101$ (4-bit wide).
+If none of the inputs is one, the encoder outputs zero.
+
+We implement the encoder operation using a recursive structure.
+An encoder for $n$-bit input is implemented using two smaller encoder for $n/2$-bit input.
+the first half of the input ($0$ to $n/2-1$) is given to the first small encoder and the rest ($n/2$ to $n-1$) is given to the second one.
+One of the these two small encoder that receives the inactive part of input outputs zero and the other one outputs the binary representation in its half.
+Depending on which half was active, a bit is attached as the Most Significant Bit (MSB) to the final output.
+In other words, the MSB of $o$ is set to one if the output of the second encoder is nonzero and otherwise zero.
+
+\section{Argmax}
+Given an array of numbers, Argmax circuit outputs the largest number along with its index in the array.
+Current implementation supports integers but it can easily be extended to support any type of inputs with appropriate comparison block.
+The size of the array ($n$) and the number of bits ($b$) for each number are parameters of the circuit and can be set before compilation.
+The combinational circuit of Argmax has $n-1$ comparison blocks, $n-1$ two-to-one $b$-bit-wide MUXs, and $n-1$ two-to-one $\log_2{n}$-bit-wide MUXs.
+Its sequential circuit has one comparison blocks, and two MUXs for selecting the index and the largest number and two registers to store them.
+The sequential circuit has to be evaluated for $n-1$ sequential cycles.
+
+\section{K-Nearest Neighbors Search}
+This module outputs the K-Nearest Neighbors (KNN) of a given point from set of points.
+Each point is described as a binary vector.
+The closeness metric can be any arbitrary measurement (here: Hamming distance) and can be implemented separately as well for different similarity metrics.
+The KNN module is implemented as a sequential circuit which takes one point from the dataset at each clock cycle.
+The K nearest points are stored in the registers (Flip-Flops) in a sorted fashion.
+That is, register 1 stores the closest point to the target point, register 2 stores the second closest point and so on.
+These registers are initialized by maximum number possible (all ones in the case of unsigned integers).
+At each clock cycle, the distance form the new input point and the target point is computed.
+The rest of the circuit acts as a min priority queue where the priority of each item is its distance from the target point.
+For example, when K=5 and the correct position of the new point is at position 3, the value of position 3 is stored at position 4 and the value of position 4 will be stored at position 5.
+After that the new value is stored at position 3.
+The circuit includes 1 Hamming distance computation, $2\times K-1$ Comparison blocks, and $4\times K-2$ two-to-one MUXs.
+The sequential circuit has to be evaluated for $n$ times where $n$ is the total number of points in the dataset.
+The final output of the circuit are the K nearest neighbors which are stored in the registers.
+
+\section{CORDIC}
+COordinate Rotation DIgital Computer (CORDIC) circuit computes hyperbolic and trigonometric functions.
+It is an iterative algorithm that improves the accuracy of the result by (typically) one bit at each iteration.
+We have implemented CORIDC as a sequential circuit which performs one iteration at each sequential cycle.
+It includes a lookup table, shift, addition, and subtraction operations.
+CORDIC circuit takes three inputs ($x_0$, $y_0$, and $z_0$) and outputs three values ($x_n$, $y_n$, and $z_n$).
+The subscript $n$ denotes the final outputs after running $n$ iterations CORDIC.
+All of the inputs, outputs, and intermediate results are in fixed-point representation.
+The number of integer bits and fractional bits are parameters that can be set before compilation.
+
+CORIDC has three operation modes:
+(i) Circular, (ii) hyperbolic, and (iii) linear.
+The circular mode can rotate an arbitrary vector by a given angle.
+With specifically chosen inputs ($x_0=1$, $y_0=0$, and $z_0=\theta$) in circular mode, the circuit computes the trigonometric functions ($x_n=\cos(\theta)$, $y_n=\sin(\theta)$, and $z_n=0$).
+The circuit computes two different functions without facing any more overhead compared to computing only one of them.
+Similarly, the hyperbolic mode can compute hyperbolic functions.
+Please note that in the hyperbolic mode iterations $3\times i+1$ need to be computed twice.
+The linear mode can compute the multiplication of the inputs ($x_n=x_0, y_n=y_0z_0, z_n=0$).
+By leveraging the ability of CORDIC, number of other non-linear functions can be computed as well.
+For example,
+$\tan(\theta)=\frac{\sin(\theta)}{\cos(\theta)}$,
+$\tanh(\theta)=\frac{\sinh(\theta)}{\cosh(\theta)}$,
+$\exp(x)=\sinh (x) + \cosh (x)$, and
+$Sigmoid(\theta)=\frac{1}{1+\cosh(\theta)-\sinh(\theta)}$.
+
+\section{Evaluation}
+\tab{table:div} reports the result of integer devision and reminder functions for various bit-widths.
+Div\_rem function calculates both the reminder and division in the same circuit.
+A few of the previous work reported the number of non-XOR gates for 32-bit integer division only: 1,437 \cite{mood2016frigate}, 1,210 \cite{zahur2015obliv}, and 2,236 \cite{liu2015oblivm}.
+As shown in the table, the number of non-XOR gates for our 32-bit division is 599.
+It means 2 to 3.7 times improvement compared to the previous custom compilers.
+
+\begin{table}[]
+\center
+\caption{The result of integer division and reminder functions.}\label{table:div}
+\begin{tabular}{l||r||r|r}
+	Function                  & \multicolumn{1}{c|}{Bit-width} & \multicolumn{1}{c|}{Non-XOR} & \multicolumn{1}{c}{Total gates} \\ \hline \hline
+\multirow{3}{*}{Reminder} & 16        & 186     & 500         \\
+                          & 32        & 631     & 1,777       \\
+                          & 64        & 2,290   & 6,636       \\ \hline \hline
+\multirow{3}{*}{Division} & 16        & 170     & 452         \\
+                          & 32        & 599     & 1,681       \\
+                          & 64        & 2,226   & 6,444       \\ \hline \hline
+\multirow{3}{*}{Div\_rem} & 16        & 186     & 501         \\
+                          & 32        & 631     & 1,778       \\
+                          & 64        & 2,290   & 6,637
+\end{tabular}
+\end{table}
+
+\tab{table:float} illustrates the number of non-XOR and total gates for the floating point operations.
+The results of both single precision (float) and double precision (double) are reported in the table.
+Pullonen et al, is the only previous work that reported the result for the similar floating-point operations \cite{pullonen2015combining}.
+They used the custom compiler of CBMC-GC \cite{franz2014cbmc} to compile software implementations of these floating-point operations.
+As can be seen in the table, the circuits in TinyGarble library outperforms the implementation in \cite{pullonen2015combining}.
+
+\begin{table}[]
+\center
+\caption{The result of floating-point functions.}\label{table:float}
+\begin{tabular}{l|l||rr||rr||rr}
+\multirow{2}{*}{Function}   & \multicolumn{1}{c||}{\multirow{2}{*}{Precision}} & \multicolumn{2}{c||}{\begin{tabular}[c]{@{}c@{}}Previous work\\\cite{pullonen2015combining}\end{tabular}}                             & \multicolumn{2}{c||}{\begin{tabular}[c]{@{}c@{}}TinyGarble \\Library\end{tabular}}                                & \multicolumn{2}{c}{Comparison}                   \\ \cline{3-8}
+                            & \multicolumn{1}{c||}{}                           & \multicolumn{1}{c}{Non-XOR} & \multicolumn{1}{c||}{Total gates} & \multicolumn{1}{c}{Non-XOR} & \multicolumn{1}{c||}{Total gates} & \multicolumn{1}{c}{GTD} & \multicolumn{1}{c}{MFE} \\ \hline \hline
+\multirow{2}{*}{fp\_add}    & Single                                          & 5,671                       & 7,052                            & 936                         & 1,562                            & -83.5\%                 & 4.51                    \\
+                            & Double                                          & 13,129                      & 15,882                           & 2,030                       & 3,533                            & -84.5\%                 & 4.50                    \\ \hline \hline
+\multirow{2}{*}{fp\_sub}    & Single                                          & 5,671                       & 7,052                            & 936                         & 1,562                            & -83.5\%	                & 4.51                    \\
+                            & Double                                          & 13,129                      & 15,882                           & 2,032                       & 3,537                            & -84.5\%                 & 4.49                    \\ \hline
+\multirow{2}{*}{fp\_mult}   & Single                                          & 5,138                       & 7,701                            & 3,554                       & 4,839                            & -30.8\%                 & 1.59                    \\
+                            & Double                                          & 13,104                      & 25,276                           & 17,019                      & 23,484                           & 29.9\%                  & 1.08                    \\ \hline \hline
+\multirow{2}{*}{fp\_div}    & Single                                          & 12,851                      & 21,384                           & 3,810                       & 6,275                            & -70.4\%                 & 3.41                    \\
+                            & Double                                          & 36,133                      & 73,684                           & 17,585                      & 29,130                           & -51.3\%                 & 2.53                    \\ \hline \hline
+\multirow{2}{*}{fp\_cmp}    & Single                                          & -                           & -                                & 213                         & 239                              & -                       & -                       \\
+                            & Double                                          & -                           & -                                & 435                         & 463                              & -                       & -                       \\ \hline \hline
+\multirow{2}{*}{fp\_exp}    & Single                                          & -                           & -                                & 12,596                      & 16,250                           & -                       & -                       \\
+                            & Double                                          & 393,807                     & 579,281                          & -                           & -                                & -                       & -                       \\ \hline \hline
+\multirow{2}{*}{fp\_log2}   & Single                                          & -                           & -                                & 13,072                      & 16,727                           & -                       & -                       \\
+                            & Double                                          & -                           & -                                & 16,355                      & 23,484                           & -                       & -                       \\ \hline \hline
+\multirow{2}{*}{fp\_square} & Single                                          & -                           & -                                & 1,763                       & 2,391                            & -                       & -                       \\
+                            & Double                                          & -                           & -                                & 8,461                       & 11,457                           & -                       & -                       \\ \hline \hline
+\multirow{2}{*}{fp\_sqrt}   & Single                                          & 35,987                      & 66,003                           & 1,842                       & 3,360                            & -94.9\%                 & 19.64                   \\
+                            & Double                                          & 85,975                      & 169,932                          & 8,636                       & 15,801                           & -90.0\%                 & 10.75
+\end{tabular}
+
+\end{table}

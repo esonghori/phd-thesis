@@ -269,98 +269,6 @@ A user can choose between different synthesis tools based on their performance a
 \includegraphics[width=0.7\textwidth]{abc-crop.pdf}
 \end{table}
 
-\section{ARM2GC vs HDL Synthesis}
-\tab{table:hw_vs_frwk} compares the cost of garbling of functions developed in Verilog HDL and constructed by the hardware synthesis technique of TinyGarble~\cite{songhori2015tinygarble} with functions developed in C and constructed by the ARM2GC framework.
-As expected, ARM2GC incurs only a small overhead (at most 6.2\% for MatrixMult8x8) compared to hardware synthesis method.
-In case of Hamming distance functions, ARM2GC results in even less number of non-XOR gates (up to $78\%$ improvement).
-Note that we use an efficient binary tree-based method~\cite{huang2011faster} for Hamming distance realization in C.
-
-\begin{table}[t]
-\centering
-\caption{Number of garbled non-XOR gates for the benchmark functions. Comparing ARM2GC to TinyGarble's hardware synthesis~\cite{songhori2015tinygarble}.}\label{table:hw_vs_frwk}
-\begin{tabular}{l||r|r||r}
-Function (bit) & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble\\ (Verilog)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c||}{\begin{tabular}[c]{@{}c@{}}ARM2GC\\ (C)\end{tabular}} & \multicolumn{1}{c}{Overhead} \\ \hline \hline
-Sum 32 & 31 & 31 & 0.0\% \\
-Sum 1024 & 1,023 & 1,023 & 0.0\% \\
-Compare 32 & 32 & 32 & 0.0\% \\
-Compare 16,384 & 16,384 & 16,384 & 0.0\% \\
-Hamming 32 & 160 & 57 & -64.4\% \\
-Hamming 160 & 1,120 & 247 & -77.9\% \\
-Hamming 512 & 4,608 & 1,012 & -78.0\% \\
-Mult 32 & 1,023 & 993 & -2.9\% \\
-MatrixMult3x3 32 & 27,369 & 27,369 & 0.0\% \\
-MatrixMult5x5 32 & 120,125 & 127,225 & 5.9\% \\
-MatrixMult8x8 32 & 492,032 & 522,304 & 6.2\% \\
-SHA3 256 & 38,400 & 37,760 & -1.7\% \\
-AES 128$\dagger$ & 6,400 & 6,400 & 0.0\%
-\end{tabular}
-\\
-\footnotesize{{$\dagger$}Here, we added the cost of missing key expansion in AES 128 to the reposted result in~\cite{songhori2015tinygarble}.}
-\end{table}
-
-\section{ARM2GC vs GC Frameworks Supporting High-level Languages}
-\begin{table*}[t]
-\centering
-\caption{Number of garbled non-XOR gates for the benchmark functions. Comparing ARM2GC to previous work.}\label{table:other_vs_frwk}
-\begin{tabular}{l||r|r|r|r|r|r||r}
-Function (bit) & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}ANSI-C \\ (C)~\cite{holzer2012secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble HLS \\ (C $\rightarrow$ Verilog)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble MIPS \\ (C)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}SFE MIPS \\ (C)~\cite{wang2015secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}GarbledCPU \\ (C)~\cite{songhori2016garbledcpu}\end{tabular}} & \multicolumn{1}{c||}{\begin{tabular}[c]{@{}c@{}}Frigate \\ (C)~\cite{mood2016frigate}\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}ARM2Garble\\ (C)\end{tabular}} \\ \hline \hline
-Sum 32 & 32 & 288 & - & - & - & - & 31 \\
-Sum 1024 & - & 9,216 & - & - & - & 1,025 & 1,023 \\
-Compare 32 & 65 & 102 & - &  & - & - & 32 \\
-Compare 16,384 & - & 52,224 & - & - & - & 16,386 & 16,384 \\
-Hamming 32 & 601 & 253 & 3,762,725 & 481,000 & 2,860,590 & - & 57 \\
-Hamming 160 & 3,003 & 1,264 & 18,456,485 & - & 14,302,950 & 719 & 247 \\
-Hamming 512 & 9,610 & 4,045 & 58,864,325 & 49,600,000 & 45,769,440 & - & 1,012 \\
-Mult 32 & 1,741 & - & - & - & - & 995 & 993 \\
-MatrixMult3x3 32 & 47,583 & - & - & - & - & - & 27,369 \\
-MatrixMult5x5 32 & 220,825 & - & - & - & - & 128,252 & 127,225 \\
-MatrixMult8x8 32 & 905,728 & - & - & - & - & - & 522,304 \\
-SHA3 256 & - & - & - & - & - & - & 37,760 \\
-AES 128 & - & - & - & - & 198,789,506 & 10,383 & 6,400
-\end{tabular}
-\end{table*}
-
-
-\tab{table:other_vs_frwk} reports the cost of garbling for the benchmark functions constructed by the prior-art GC frameworks~\cite{holzer2012secure, songhori2015tinygarble, mood2016frigate} and garbled processors~\cite{wang2015secure, songhori2016garbledcpu} along with the ARM2GC framework.
-The corresponding programming language is shown between parentheses.
-Note that this is not an exhaustive list and only includes the most recent GC frameworks that report the best results on the benchmark functions.
-In all cases, ARM2GC outperforms the earlier frameworks in terms of garbling cost.
-For example, ARM2GC results $12.2\times$,  $5.1\times$, $74,000\times$, $57,000\times$, and $2.9\times$ less number of non-XOR gates for 160-bit Hamming distance compared to ANSI-C~\cite{holzer2012secure}, TinyGarble high-level synthesis (HLS)~\cite{songhori2015tinygarble}, PF-SFE MIPS~\cite{songhori2015tinygarble}, GarbledCPU~\cite{songhori2016garbledcpu}, and Frigate~\cite{mood2016frigate} respectively.
-ARM2GC also results in $38.3\%$ less non-XOR gates compared to Frigate~\cite{mood2016frigate} for AES function.
-
-\section{Effect of SkipGate on Sequential GC}
-\begin{table}[t]
-\centering
-\caption{SkipGate algorithm improvement on sequential circuits generated by TinyGarble (TG)~\cite{songhori2015tinygarble}.}\label{tab:sys_impvoment}
-\begin{tabular}{l||r|r|r||r}
-\multirow{2}{*}{Function (bit)} & \multicolumn{2}{c|}{Garbled non-XOR} & \multicolumn{1}{c||}{\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Skipped\\ non-XOR\end{tabular}}} & \multicolumn{1}{c}{\multirow{2}{*}{Improv.}} \\ \cline{2-3}
- & \multicolumn{1}{c|}{TG~\cite{songhori2015tinygarble}} & \multicolumn{1}{c|}{SkipGate} & \multicolumn{1}{c||}{} & \multicolumn{1}{c}{} \\ \hline \hline
-Sum 32 & 32 & 31 & 1 & 3.1\% \\
-Sum 1024 & 1,024 & 1,023 & 1 & 0.1\% \\
-Compare 32 & 32 & 32 & 0 & 0.0\% \\
-Compare 16,384 & 16,384 & 16,384 & 0 & 0.0\% \\
-Hamming 32 & 160 & 145 & 15 & 9.4\% \\
-Hamming 160 & 1,120 & 1,092 & 28 & 2.5\% \\
-Hamming 512 & 4,608 & 4,563 & 45 & 1.0\% \\
-Mult 32 & 2,048 & 2,016 & 32 & 1.6\% \\
-MatrixMult3x3 32 & 25,947 & 25,668 & 279 & 1.1\% \\
-MatrixMult5x5 32 & 120,125 & 119,350 & 775 & 0.6\% \\
-MatrixMult8x8 32 & 492,032 & 490,048 & 1,984 & 0.4\% \\
-SHA3 256 & 40,032 & 38,400 & 1,632 & 4.1\% \\
-AES 128$\dagger$ & 15,807 & 6,400 & 9,407 & 59.5\%
-\end{tabular}
-\\
-\footnotesize{{$\dagger$}We add the missing key expansion module to AES 128 of~\cite{songhori2015tinygarble} here.}
-\end{table}
-
-As described in \sect{sect:skipgate}, the SkipGate algorithm avoids redundant garbling/evaluation of gates in sequential circuits with public wires.
-In the sequential benchmark circuits reported in TinyGarble~\cite{songhori2015tinygarble}, the flip-flops were initialized with known values but their output wires were treated as secret.
-We applied SkipGate to the same benchmark to demonstrate the cost reduction.
-In \tab{tab:sys_impvoment}, we compare the cost of garbling for circuits generated by TinyGarble~\cite{songhori2015tinygarble} with and without applying the SkipGate algorithm.
-As can be seen, cost reduction by SkipGate can be as high as $59.5\%$ for AES and as little as $0\%$ in Compare function.
-The improvement depends on the structure of the circuit and whether or not the flip-flops are connected to non-XOR gates.
-
-
 \section{Evaluation Setup of GarbledCPU}\label{ssect:evalset}
 We create different instances of a single-cycle MIPS architecture with specific, restricted, and full IS to support a trade-off between efficiency and privacy. (Full IS was proposed in \cite{songhori2015tinygarble} and is reported for comparison.) The different MIPS instances are synthesized using Synopsys Design Compiler DC H-2013.03-SP4 to generate optimized sequential Boolean circuits. These circuits are then evaluated on our hardware GC evaluator implemented using Vivado 2014.4.1 on a Xilinx Virtex-7 FPGA.
 
@@ -553,4 +461,214 @@ Our work w/ pipeline & $\numprint{18500}$ & $\numprint{1.1}$
 \end{tabular}
 \end{table}
 
+\section{Evaluation of ARM2GC}\label{sec:eval}
 We also compare the overall performance of our GarbledCPU with the performance of the proposed software solution in \cite{wang2015secure} on the compatible benchmarks. For computing Hamming distance on two 32-bit integer arrays, Wang et al.'s solution takes $1.24s$ to garble 481K gates (see Table 4 in \cite{wang2015secure}). GarbledCPU requires \numprint{6715} non-XOR gates and \numprint{426} cycles (see Tables \ref{tab:synres} and \ref{tab:cyc_bench}), and thus it takes only $0.0314s$ to evaluate 2.8M gates. Given that garbling time is double the evaluation time, this indicates a speedup of factor 18 for GarbledCPU but with $6\times$ more AND gates for the same functionality. In terms of throughput, GarbledCPU can evaluate 90.8M gates and Wang et al.'s solution can evaluate 776K gates which makes GarbledCPU 117 times faster owing to our hardware implementation. However, this speedup assumes on-chip memory and is likely to be much smaller when utilizing off-chip memory.
+
+\subsection{Evaluation Setup}
+We use Synopsis Design Compiler (DC) H-2013.03-SP4~\cite{tool:DesignCompiler} along with TinyGarble~\cite{songhori2015tinygarble} synthesis and technology libraries to generate the netlists for the benchmark circuits and the ARM processor.
+
+For the ARM2GC framework, we use the Amber ARM project, an open-source implementation of ARM v2a ISA on opencores~\cite{santifort2010amber}.
+The ARM circuit is modified as explained in \sect{ssec:arm}.
+Synthesizing the ARM processor with Synopsis DC takes few hours.
+However, the process is done only once for a given memory size and it can be used for any set of functions and inputs afterwards.
+The benchmark functions for ARM2GC are implemented in C and compiled using GNU gcc-arm-linux-gnueabi (Ubuntu/Linaro 5.3.1-14ubuntu2).
+We used \texttt{-Os} compiler optimization flag in order to reduce the number of instructions.
+We modified the header assembly code to change the addresses of stack, code, and data memories in the compiled binary.
+We do not apply any optimization on the binary code.
+Thus, similar to a normal software compilation, it takes less than a few seconds to compile a function into an ARM binary code.
+
+\subsection{Benchmark Functions and Metrics}
+We use the benchmark functions that have been frequently used for evaluation in the GC literature~\cite{holzer2012secure, songhori2015tinygarble, wang2015secure}. The benchmarks are as follows:
+
+\begin{itemize}
+\vspace{-0.06in}
+\item Sum adds two integers.
+\vspace{-0.1in}
+\item Compare compares two integers.
+\vspace{-0.1in}
+\item Hamming finds the Hamming distance between two integers.
+\vspace{-0.1in}
+\item Mult calculates the product of two integers.
+\vspace{-0.1in}
+\item MatrixMult$N\times N$ computes matrix multiplication of two $N\times N$ matrices.
+\vspace{-0.1in}
+\item SHA3 finds SHA3-256 hash of a string.
+\vspace{-0.1in}
+\item AES computes AES-128 encryption given two 128-bit numbers as the key and the message.
+\end{itemize}
+
+%Metric
+The most important metric to compare the cost of garbling is the total number of garbled non-XOR gates.
+This metric encompasses both the cost of computation (encrypting/decrypting garbled tables) and the cost of communication (transferring garbled tables) in the GC protocol \cite{kolesnikov2008improved}.
+
+\begin{table}
+\centering
+\caption{SkipGate algorithm improvement on sequential circuits generated by TinyGarble (TG)~\cite{songhori2015tinygarble}. These functions do not have public inputs. SkipGate benefits from the small number of flip-flops initial values that are public to reduce their garbling cost.}\label{tab:sys_impvoment}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{l||r|r|r||r}
+\multirow{2}{*}{Function (bit)} & \multicolumn{2}{c|}{\# of garbled non-XOR} & \multicolumn{1}{c||}{\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}\# of skipped\\ non-XOR\end{tabular}}} & \multicolumn{1}{c}{\multirow{2}{*}{Improv.}} \\ \cline{2-3}
+ & \multicolumn{1}{c|}{TG~\cite{songhori2015tinygarble}} & \multicolumn{1}{c|}{SkipGate} & \multicolumn{1}{c||}{} & \multicolumn{1}{c}{} \\ \hline \hline
+Sum 32 & 32 & 31 & 1 & 3.1\% \\
+Sum 1024 & 1,024 & 1,023 & 1 & 0.1\% \\
+Compare 32 & 32 & 32 & 0 & 0.0\% \\
+Compare 16,384 & 16,384 & 16,384 & 0 & 0.0\% \\
+Hamming 32 & 160 & 145 & 15 & 9.4\% \\
+Hamming 160 & 1,120 & 1,092 & 28 & 2.5\% \\
+Hamming 512 & 4,608 & 4,563 & 45 & 1.0\% \\
+Mult 32 & 2,048 & 2,016 & 32 & 1.6\% \\
+MatrixMult3x3 32 & 25,947 & 25,668 & 279 & 1.1\% \\
+MatrixMult5x5 32 & 120,125 & 119,350 & 775 & 0.6\% \\
+MatrixMult8x8 32 & 492,032 & 490,048 & 1,984 & 0.4\% \\
+SHA3 256 & 40,032 & 38,400 & 1,632 & 4.1\% \\
+AES 128$\dagger$ & 15,807 & 6,400 & 9,407 & 59.5\%
+\end{tabular}
+}
+\\
+\footnotesize{{$\dagger$}We add the missing key expansion module to AES 128 of~\cite{songhori2015tinygarble} here.}
+\end{table}
+
+\subsection{Effect of SkipGate on Sequential GC}
+As described in \sect{sec:skipgate}, the SkipGate algorithm avoids redundant garbling/evaluation of gates in sequential circuits with public wires.
+In the sequential benchmark circuits reported in TinyGarble~\cite{songhori2015tinygarble}, the flip-flops were initialized with known values but their output wires were treated as secret.
+We applied SkipGate to the same benchmark functions to demonstrate the cost reduction even for small number of public values.
+In \tab{tab:sys_impvoment}, we compare the cost of garbling for circuits generated by TinyGarble~\cite{songhori2015tinygarble} with and without applying the SkipGate algorithm.
+The total number of non-XOR gates to be garbled is cc$\times$\#non-XORs in the sequential circuit and is shown in the second column.
+The table also reports the cost of garbling of the same circuits by employing the SkipGate algorithm (third column) and their percentage improvement (fifth column).
+As can be seen, cost reduction of SkipGate can be as high as $59.5\%$ for AES and as little as $0\%$ in Compare function.
+
+The degree of improvement depends on the structure of the circuit and whether or not the registers are connected to non-XOR gates.
+For example in AES, garbling of the controller part of the sequential circuit (including a counter keeping track of the AES round and MUXs connecting to it) is avoided by SkipGate because both parties know the AES control path in advance.
+Note that the functions in \tab{tab:sys_impvoment} do not have any public known inputs that are the main target of SkipGate.
+Nevertheless, SkipGate reduces the cost of GC by leveraging the public initial value of the small number of flip-flops in the functions.
+
+\subsection{ARM2GC vs HDL Synthesis}
+\tab{table:hw_vs_frwk} compares the cost of garbling of functions devised in Verilog HDL and constructed by the hardware synthesis technique of TinyGarble~\cite{songhori2015tinygarble} with functions developed in C and constructed by the ARM2GC framework.
+As expected, ARM2GC incurs only a small overhead (at most 6.2\% for MatrixMult8x8) compared to hardware synthesis method.
+In case of Hamming distance function, ARM2GC results in even less number of non-XOR gates (up to $78\%$ improvement).
+Note that we use an efficient binary tree-based method~\cite{huang2011faster} for Hamming distance realization in C.
+
+\begin{table}
+\centering
+\caption{The number of garbled non-XOR gates for the benchmark functions. Comparing ARM2GC to TinyGarble's hardware synthesis~\cite{songhori2015tinygarble}.}\label{table:hw_vs_frwk}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{l||r|r||r}
+Function (bit) & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble\\ (Verilog)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c||}{\begin{tabular}[c]{@{}c@{}}ARM2GC\\ (C)\end{tabular}} & \multicolumn{1}{c}{Overhead} \\ \hline \hline
+Sum 32 & 31 & 31 & 0.0\% \\
+Sum 1024 & 1,023 & 1,023 & 0.0\% \\
+Compare 32 & 32 & 32 & 0.0\% \\
+Compare 16,384 & 16,384 & 16,384 & 0.0\% \\
+Hamming 32 & 160 & 57 & -64.4\% \\
+Hamming 160 & 1,120 & 247 & -77.9\% \\
+Hamming 512 & 4,608 & 1,012 & -78.0\% \\
+Mult 32 & 1,023 & 993 & -2.9\% \\
+MatrixMult3x3 32 & 27,369 & 27,369 & 0.0\% \\
+MatrixMult5x5 32 & 120,125 & 127,225 & 5.9\% \\
+MatrixMult8x8 32 & 492,032 & 522,304 & 6.2\% \\
+SHA3 256 & 38,400 & 37,760 & -1.7\% \\
+AES 128$\dagger$ & 6,400 & 6,400 & 0.0\%
+\end{tabular}
+}
+\\
+\footnotesize{{$\dagger$}Here, we added the cost of missing key expansion in AES 128 to the reposted result in~\cite{songhori2015tinygarble}.}
+\end{table}
+
+\subsection{ARM2GC vs GC Frameworks Supporting High-level Languages}
+\begin{table*}[t]
+\centering
+\caption{Number of garbled non-XOR gates for the benchmark functions. Comparing ARM2GC to previous work.}\label{table:other_vs_frwk}
+\resizebox{0.85\textwidth}{!}{%
+\begin{tabular}{l||r|r|r|r|r|r||r}
+Function (bit) & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}ANSI-C \\ (C)~\cite{holzer2012secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble HLS \\ (C $\rightarrow$ Verilog)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble MIPS \\ (C)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}SFE MIPS \\ (C)~\cite{wang2015secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}GarbledCPU \\ (C)~\cite{songhori2016garbledcpu}\end{tabular}} & \multicolumn{1}{c||}{\begin{tabular}[c]{@{}c@{}}Frigate \\ (C)~\cite{mood2016frigate}\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}ARM2Garble\\ (C)\end{tabular}} \\ \hline \hline
+Sum 32 & 32 & 288 & - & - & - & - & 31 \\
+Sum 1024 & - & 9,216 & - & - & - & 1,025 & 1,023 \\
+Compare 32 & 65 & 102 & - &  & - & - & 32 \\
+Compare 16,384 & - & 52,224 & - & - & - & 16,386 & 16,384 \\
+Hamming 32 & 601 & 253 & 3,762,725 & 481,000 & 2,860,590 & - & 57 \\
+Hamming 160 & 3,003 & 1,264 & 18,456,485 & - & 14,302,950 & 719 & 247 \\
+Hamming 512 & 9,610 & 4,045 & 58,864,325 & 49,600,000 & 45,769,440 & - & 1,012 \\
+Mult 32 & 1,741 & - & - & - & - & 995 & 993 \\
+MatrixMult3x3 32 & 47,583 & - & - & - & - & - & 27,369 \\
+MatrixMult5x5 32 & 220,825 & - & - & - & - & 128,252 & 127,225 \\
+MatrixMult8x8 32 & 905,728 & - & - & - & - & - & 522,304 \\
+SHA3 256 & - & - & - & - & - & - & 37,760 \\
+AES 128 & - & - & - & - & 198,789,506 & 10,383 & 6,400
+\end{tabular}
+}
+\end{table*}
+
+\tab{table:other_vs_frwk} reports the cost of garbling for the benchmark functions constructed by the prior-art GC frameworks~\cite{holzer2012secure, songhori2015tinygarble, mood2016frigate} and garbled processors~\cite{wang2015secure, songhori2016garbledcpu} along with the ARM2GC framework.
+The corresponding programming language is shown between parentheses.
+Note that this is not an exhaustive list and only includes the most recent GC frameworks that report the best results on the benchmark functions.
+In all cases, ARM2GC outperforms the earlier frameworks in terms of garbling cost.
+For example, ARM2GC results $12.2\times$,  $5.1\times$, $74,000\times$, $57,000\times$, and $2.9\times$ less number of non-XOR gates for 160-bit Hamming distance compared to ANSI-C~\cite{holzer2012secure}, TinyGarble high-level synthesis (HLS)~\cite{songhori2015tinygarble}, PF-SFE MIPS~\cite{songhori2015tinygarble}, GarbledCPU~\cite{songhori2016garbledcpu}, and Frigate~\cite{mood2016frigate} respectively.
+ARM2GC also results in $38.3\%$ less non-XOR gates compared to Frigate~\cite{mood2016frigate} for AES function.
+
+\subsection{Effect of SkipGate on ARM}
+\begin{table}[h]
+\centering
+\caption{SkipGate algorithm improvement on the ARM sequential circuit.}
+\label{tab:sys_improvment_frwk}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{l||r|r||r}
+\multirow{2}{*}{Function (bit)} & \multicolumn{2}{c||}{\# of non-XOR gates} &
+\multicolumn{1}{c}{\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Improvement \\ (1000X)\end{tabular}}} \\ \cline{2-3}
+& \multicolumn{1}{c|}{Conventional GC+ARM} & \multicolumn{1}{c||}{ARM2GC} & \multicolumn{1}{c}{} \\ \hline
+Sum 32 & 3,817,680 & 31 & 123 \\
+Sum 1024 & 76,483,260 & 1,023 & 75 \\
+Compare 32 & 4,072,192 & 130 & 31 \\
+Compare 16,384 & 1,047,095,280 & 16,384 & 64 \\
+Hamming 32 & 67,063,912 & 57 & 1,177 \\
+Hamming 160 & 242,931,704 & 247 & 984 \\
+Hamming 512 & 863,559,216 & 1,012 & 853 \\
+Mult 32 & 4,199,448 & 993 & 4 \\
+MatrixMult3x3 32 & 72,790,432 & 27,369 & 3 \\
+MatrixMult5x5 32 & 286,071,488 & 127,225 & 2 \\
+MatrixMult8x8 32 & 1,079,894,416 & 522,304 & 2 \\
+SHA3 256 & 29,354,783,052 & 37,760 & 777 \\
+AES 128 & 54,621,701,856 & 6,400 & 8,535
+\end{tabular}
+}
+\end{table}
+
+\tab{tab:sys_improvment_frwk} shows the cost of garbling an ARM processor for the benchmark functions using conventional GC compared to GC with the SkipGate algorithm.
+Since the instruction memory is known to both parties in ARM, SkipGate omits a significant number of non-XOR gates in the circuits.
+The circuit of ARM has 126,755 non-XOR gates and for computing a function, for example Hamming 160, it takes 1,909 clock cycles.
+It means with the conventional GC protocol, garbling/evaluation of $1,909\times126,755=241,975,295$ non-XORs is required.
+While SkipGate reduces the circuit into a smaller circuit with only 247 non-XORs (almost 7 orders of magnitude less).
+In the case of AES, we achieve more than {\it six orders of magnitude} improvement over the conventional GC without the SkipGate algorithm.
+The algorithm transforms the impracticable cost of garbling an ARM processor into near-optimal cost of the reduced circuit.
+These dramatic improvements are due to the large number of public inputs in the ARM processor that allows SkipGate to skip garbling/evaluation most of the non-XOR gates in the ARM circuit.
+
+Comparing the result of \tab{tab:sys_impvoment} and \tab{tab:sys_improvment_frwk} shows that the extend of SkipGate's impact highly depends on the structure of the circuit, as well as the degree of presence of public values in the circuit.
+
+\subsection{Complex Functions}
+\begin{table}[h]
+\centering
+\caption{SkipGate algorithm improvement on the ARM sequential circuit for the complex functions.}
+\label{tab:complex_funct}
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{l||r|r||r}
+\multirow{2}{*}{Function (bit)} & \multicolumn{2}{c||}{\# of non-XOR gates} & \multicolumn{1}{c}{\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Improvement \\ (1000X)\end{tabular}}} \\ \cline{2-3}
+ & \multicolumn{1}{c|}{Conventional GC+ARM} & \multicolumn{1}{c||}{ARM2GC} & \multicolumn{1}{c}{} \\ \hline
+Bubble-Sort32 32 & 1,366,390,620 & 65,472 & 21 \\
+Merge-Sort32 32 & 981,712,458 & 540,645 & 2 \\
+Dijkstra64 32 & 1,493,339,886 & 59,282 & 25 \\
+CORDIC 32 & 228,847,596 & 4,601 & 50
+\end{tabular}
+}
+\end{table}
+
+As shown in \tab{tab:complex_funct}, we also develop a number of more complex functions with the ARM2GC framework.
+
+\para{Bubble-Sort32}: This function receives a list of 32 32-bit integers, sorts the list using Bubble Sort algorithm, and then writes the sorted list on the output memory.
+
+\para{Merge-Sort32}: This function receives a list of 32 32-bit integers, sorts the list using Merge Sort algorithm, and then writes the sorted list on the output memory.
+
+\para{Dijkstra}: This function receives the adjacency matrix of a directed graph with 64 weighted edges (described as 32-bit integer), finds the shortest path between a source and other nodes using Dijkstra algorithm, and then writes the corresponding distances in the output memory.
+
+\para{CORDIC (COordinate Rotation DIgital Computer)}: This function receives a degree and a 2D vector described as 32-bit fixed-point (2-bit decimal and 30-bit fraction), computes trigonometric, hyperbolic or exponential functions according to Universal CORDIC algorithm~\cite{volder1959cordic}, and then writes the final 2D vector on the output memory.
+The output vector in CORDIC algorithm converges one bit per iteration thus, it requires 32 iterations in our case.
+The only required operations are addition, shift, and non-oblivious table lookup.
+Universal CORDIC has two modes for updating vector: rotational and vectoring and three modes for lookup table: circular, linear, and hyperbolic.
+Combining these two modes allows user to compute trigonometric, hyperbolic, exponential, square-root, multiplication, or division functions in each combination.
+Among these functions square-root and division have previously been reported in~\cite{hussain2016privacy} and required $12,733$ and $12,546$ non-XOR gates respectively, almost three times more than ARM2GC.
