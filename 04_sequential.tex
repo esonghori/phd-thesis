@@ -31,7 +31,7 @@ Note that, in the combinational circuit we use three FAs and one HA whereas in t
 This asymmetry in the loop of Addition function introduces a small \emph{overhead} in GC computation and communication time as an HA circuit has fewer gates compared to a FA circuit.
 
 However, the total number of gates for representing the function is reduced approximately by a factor of 4 when using a sequential circuit (one FA for sequential compared with three FA and one HA for combinational).
-This helps to limit the memory footprint for garbling and evaluation required for storing circuit description and wire keys ($k$-bit per wire, see \sect{subsect:preli_GC}).
+This helps to limit the memory footprint for garbling and evaluation required for storing circuit description and wire labels ($k$-bit per wire, see \sect{subsect:preli_GC}).
 In a sequential circuit, the number of labels that need to be stored in memory at any moment is proportional to the number of gates in the circuit.
 The wire labels are simply over-written at each sequential cycle.
 Only labels corresponding to FFs are kept for the next cycle.

@@ -660,13 +660,17 @@ CORDIC 32 & 228,847,596 & 4,601 & 50
 
 As shown in \tab{tab:complex_funct}, we also develop a number of more complex functions with the ARM2GC framework.
 
-\para{Bubble-Sort32}: This function receives a list of 32 32-bit integers, sorts the list using Bubble Sort algorithm, and then writes the sorted list on the output memory.
+\subsubsection{Bubble-Sort32}
+This function receives a list of 32 32-bit integers, sorts the list using Bubble Sort algorithm, and then writes the sorted list on the output memory.
 
-\para{Merge-Sort32}: This function receives a list of 32 32-bit integers, sorts the list using Merge Sort algorithm, and then writes the sorted list on the output memory.
+\subsubsection{Merge-Sort32}
+This function receives a list of 32 32-bit integers, sorts the list using Merge Sort algorithm, and then writes the sorted list on the output memory.
 
-\para{Dijkstra}: This function receives the adjacency matrix of a directed graph with 64 weighted edges (described as 32-bit integer), finds the shortest path between a source and other nodes using Dijkstra algorithm, and then writes the corresponding distances in the output memory.
+\subsubsection{Dijkstra}
+This function receives the adjacency matrix of a directed graph with 64 weighted edges (described as 32-bit integer), finds the shortest path between a source and other nodes using Dijkstra algorithm, and then writes the corresponding distances in the output memory.
 
-\para{CORDIC (COordinate Rotation DIgital Computer)}: This function receives a degree and a 2D vector described as 32-bit fixed-point (2-bit decimal and 30-bit fraction), computes trigonometric, hyperbolic or exponential functions according to Universal CORDIC algorithm~\cite{volder1959cordic}, and then writes the final 2D vector on the output memory.
+\subsubsection{CORDIC (COordinate Rotation DIgital Computer)}
+This function receives a degree and a 2D vector described as 32-bit fixed-point (2-bit decimal and 30-bit fraction), computes trigonometric, hyperbolic or exponential functions according to Universal CORDIC algorithm~\cite{volder1959cordic}, and then writes the final 2D vector on the output memory.
 The output vector in CORDIC algorithm converges one bit per iteration thus, it requires 32 iterations in our case.
 The only required operations are addition, shift, and non-oblivious table lookup.
 Universal CORDIC has two modes for updating vector: rotational and vectoring and three modes for lookup table: circular, linear, and hyperbolic.
