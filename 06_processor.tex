@@ -91,7 +91,7 @@ Moreover, we choose a single-cycle MIPS architecture (i.e., one instruction per 
 Other architectures (i.e, multi-cycle and pipelined) increase the performance of the processor by parallelization.
 However, the GC protocol does not benefit from such low level parallelization.
 The only important factor for GC is the total number of non-XORs which is smaller in the single-cycle MIPS.
-We follow the Harvard Architecture which has distinct instruction memory (IM) and data memory (DM) in order to separate the parties' inputs.
+We follow the Harvard Architecture which has distinct instruction memory (IM) and \acrfull{dm} in order to separate the parties' inputs.
 IM is a Read-Only Memory (ROM) that stores Alice's instructions.
 DM is a Random Access Memory (RAM) that is initialized with Bob's input.
 The parties' inputs are connected to the initial signal inputs of FFs in the memories.

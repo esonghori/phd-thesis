@@ -17,6 +17,7 @@
 \usepackage{listings}
 \usepackage{numprint}
 \usepackage[bookmarks, hidelinks]{hyperref}
+\usepackage[acronyms,numberedsection]{glossaries}
 
 \npthousandsep{,}\npthousandthpartsep{}\npdecimalsign{.}
 \graphicspath{{figs/}}
@@ -24,6 +25,7 @@
 \definecolor{CommentColor}{RGB}{10,100,10}
 
 \input{macros}
+\input{glossaries}
 
 \title{TinyGarble: Efficient, Scalable, and Versatile Privacy-Preserving Computation Through Sequential Garbled Circuit}
 
@@ -86,6 +88,8 @@ Technische Universit{\"a}t Darmstadt, Darmstadt, Germany
 \input{A1_gc_engine}
 \input{A2_gc_library}
 
+\pagebreak
+\printglossary[type=\acronymtype,title=List of Acronyms]
 
 \bibliographystyle{ieeetr}
 \bibliography{main_bib}
