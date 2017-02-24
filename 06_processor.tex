@@ -158,7 +158,7 @@ In the standard 2-party \acrshort{pf-sfe}, Alice provides the function $f_{Alice
 Similar to \sect{sec:processor-pro-pfsfe}, the garbled processor receives a list of \emph{instructions} of compiled $f_{Alice}(\cdot)$ and applies them to the input data $x_{Bob}$ in memory and the output will be written back to the memory.
 To avoid information leakage about the private function, we use a general-purpose processor with its entire \acrshort{isa} (full \acrshort{isa}).
 
-\section{Hardware Implementation of Garbled Processor} \label{sec:processor-hardware}
+\subsection{Hardware Implementation of Garbled Processor} \label{ssec:processor-hardware}
 To the best of our knowledge, the fastest implementation of \acrshort{gc} in hardware was~\cite{jarvinen2010garbled}.
 However, their performance is much slower than software implementation such as JustGarble~\cite{bellare2013efficient}.
 This is because JustGarble utilizes a more efficient fixed-key \acrshort{aes} for garbling instead of an expensive hash function.
@@ -195,7 +195,7 @@ A gate cannot enter the evaluation pipeline if its inputs are another gate's out
 This results in pipeline stalls which degrade the overall performance.
 To mitigate this, we push XOR gates to the latest empty stage of the pipeline such that the subsequent dependent gates can enter the pipeline as soon as possible.
 
-\subsection{Extending Hardware Prototype} \label{ssec:processor-hardware-extend}
+\subsubsection{Extending Hardware Prototype} \label{ssec:processor-hardware-extend}
 In this thesis, we only use on-chip memory for as a proof-of-concept implementation.
 However, this prototype can be extended to support interfacing with off-chip memory which would store garbled tables and labels of larger garbled processor circuits and functions.
 It can also interface with another \acrshort{fpga} emulator of the garbler which generates the garbled tables and labels and streams them to our evaluator.
@@ -215,9 +215,16 @@ Finally, we discuss why we do not employ \acrshort{oram} for ARM2GC.
 \subsection{Global Flow}\label{ssec:arm-global}
 The ARM2GC framework allows users to write two-party \acrshort{sfe} program in C/C++ (or any language that can be compiled to \acrshort{arm} binary code).
 \fig{fig:frwk_overview} shows the overview of the framework.
-The \acrshort{sfe} program is compiled using an \acrshort{arm} cross-compiler, e.g., gcc-arm-linux-gnueabi.
-The SkipGate algorithm supports secure evaluation of function in the form of $f(a,b,p)$ where $a$ and $b$ are Alice's and Bob's inputs and $p$ is public input.
-In ARM2GC, the compiled binary code and the synthesized \acrshort{arm} processor circuit are fed to the SkipGate algorithm as the public input ($p$) and the Boolean circuit ($f(\cdot,\cdot,\cdot)$), respectively.
+The framework benefits from the SkipGate algorithm to reduce the cost of garbling the ARM processor.
+As described in \chap{chap:skipgate}, the SkipGate algorithm supports secure evaluation of circuits in the form of $f(a,b,p)$ where $a$ and $b$ are Alice's and Bob's inputs and $p$ is a public input.
+In the ARM2GC framework, the circuit $f(\cdot,\cdot,\cdot)$ is the circuit of ARM processor and the public input $p$ is the compiled binary code of the \acrshort{sfe} program.
+In order to avoid confusion with ARM circuit, we denote the function of the \acrshort{sfe} program with $g$.
+Similar to other two-party \acrshort{sfe} functions, $g(\cdot,\cdot)$ has two inputs, one from Aice and one from Bob.
+The high-level code of $g(\cdot,\cdot)$ is compiled using an \acrshort{arm} cross-compiler, e.g., gcc-arm-linux-gnueabi.
+The compiled binary code of $g(\cdot,\cdot)$ is then passed to the ARM circuit as the public input: $p = g(\cdot,\cdot)$.
+The parties' private inputs ($a$ and $b$) are passed directly to ARM circuit: $f(a,b,p)$.
+The SkipGate algorithm then securely evaluate $f(a,b,p)$ by reducing the circuit into the simpler circuit of $f_{p}(a,b) = f(a,b,p)$.
+The ARM circuit computes the function $g(\cdot,\cdot)$ on the inputs and returns its output: $c = f(a,b,p) = g(a,b)$.
 
 \begin{figure}[h]
 \centering
@@ -293,8 +300,8 @@ As explained above, the instruction memory of the \acrshort{arm} processor is in
 Therefore, if the program counter (the address of the next instruction) is public, the next instruction becomes public as well.
 As a result, the control path also becomes public and SkipGate can easily detect the idle components to mark them for skipping.
 Moreover, due to SkipGate, the gates of the active components that are only transporting data between memory, register file, and \acrshort{alu} act as wires and do not incur any cost.
-According to SkipGate's notation, the \acrshort{arm} Boolean circuit is a 3-input function $c = f(a,b,p)$ where $p$ is the public binary code and $a$ and $b$ are the parties' private inputs.
-SkipGate reduces the \acrshort{arm} circuit into a smaller circuit of $c = f_p(a,b)$ where $f_p$ is able to perform the exact operation required in the public binary code $p$, e.g., for example $c = a + b$.
+According to SkipGate's notation, the \acrshort{arm} Boolean circuit is a 3-input function $c = f(a,b,p)$ where $p$ is the public binary code of $g(a,b)$ and $a$ and $b$ are the parties' private inputs.
+SkipGate reduces the \acrshort{arm} circuit into a smaller circuit of $c = f_p(a,b)$ where $f_p$ is able to perform the exact operation required in the public binary code $p = g(\cdot,\cdot)$.
 Therefore, the main garbling cost is paid only for the actual computation on the secret values.
 As explained in the previous section, SkipGate performs these optimizations at the gate-level, in contrast to instruction-level of the approaches in \sect{sec:processor-mips-sfe} and \cite{wang2016secure}.
 

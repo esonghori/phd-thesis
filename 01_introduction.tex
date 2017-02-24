@@ -183,4 +183,18 @@ The \acrshort{gc} engine allows two parties (Alice and Bob) to securely compute 
 \label{fig:globalflow}
 \end{figure}
 
+\begin{figure}[h]
+\centering
+\includegraphics[width=\textwidth]{arm2gc_flow-crop.pdf}
+\caption{The global flow of ARM2GC framework.
+The framework consists of \acrshort{gc} synthesis flow of TinyGarble and its \acrshort{gc} engine with SkipGate algorithm.
+The \acrshort{gc} synthesis flow generates the circuit description of the ARM processor $f(\cdot,\cdot,\cdot)$.
+The function to be securely evaluated ($g(\cdot,\cdot)$) is compiled using an ARM cross-compiler.
+The \acrshort{gc} engine allows two parties (Alice and Bob) to securely compute the ARM circuit $f(a,b,p)$ where $p$ is the binary code of $g(\cdot,\cdot)$.
+At the end, they will receive the output of $f(a,b,p) = g(a,b)$
+}
+\label{fig:arm2gc-globalflow}
+\end{figure}
+
+
 \section{Organization}
