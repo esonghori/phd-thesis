@@ -462,7 +462,7 @@ Our work w/ pipeline & $\numprint{18500}$ & $\numprint{1.1}$
 \end{table}
 
 \section{Evaluation of ARM2GC}\label{sec:eval}
-We also compare the overall performance of our GarbledCPU with the performance of the proposed software solution in \cite{wang2015secure} on the compatible benchmarks. For computing Hamming distance on two 32-bit integer arrays, Wang et al.'s solution takes $1.24s$ to garble 481K gates (see Table 4 in \cite{wang2015secure}). GarbledCPU requires \numprint{6715} non-XOR gates and \numprint{426} cycles (see Tables \ref{tab:synres} and \ref{tab:cyc_bench}), and thus it takes only $0.0314s$ to evaluate 2.8M gates. Given that garbling time is double the evaluation time, this indicates a speedup of factor 18 for GarbledCPU but with $6\times$ more AND gates for the same functionality. In terms of throughput, GarbledCPU can evaluate 90.8M gates and Wang et al.'s solution can evaluate 776K gates which makes GarbledCPU 117 times faster owing to our hardware implementation. However, this speedup assumes on-chip memory and is likely to be much smaller when utilizing off-chip memory.
+We also compare the overall performance of our GarbledCPU with the performance of the proposed software solution in \cite{wang2016secure} on the compatible benchmarks. For computing Hamming distance on two 32-bit integer arrays, Wang et al.'s solution takes $1.24s$ to garble 481K gates (see Table 4 in \cite{wang2016secure}). GarbledCPU requires \numprint{6715} non-XOR gates and \numprint{426} cycles (see Tables \ref{tab:synres} and \ref{tab:cyc_bench}), and thus it takes only $0.0314s$ to evaluate 2.8M gates. Given that garbling time is double the evaluation time, this indicates a speedup of factor 18 for GarbledCPU but with $6\times$ more AND gates for the same functionality. In terms of throughput, GarbledCPU can evaluate 90.8M gates and Wang et al.'s solution can evaluate 776K gates which makes GarbledCPU 117 times faster owing to our hardware implementation. However, this speedup assumes on-chip memory and is likely to be much smaller when utilizing off-chip memory.
 
 \subsection{Evaluation Setup}
 We use Synopsis Design Compiler (DC) H-2013.03-SP4~\cite{tool:DesignCompiler} along with TinyGarble~\cite{songhori2015tinygarble} synthesis and technology libraries to generate the netlists for the benchmark circuits and the ARM processor.
@@ -478,7 +478,7 @@ We do not apply any optimization on the binary code.
 Thus, similar to a normal software compilation, it takes less than a few seconds to compile a function into an ARM binary code.
 
 \subsection{Benchmark Functions and Metrics}
-We use the benchmark functions that have been frequently used for evaluation in the GC literature~\cite{holzer2012secure, songhori2015tinygarble, wang2015secure}. The benchmarks are as follows:
+We use the benchmark functions that have been frequently used for evaluation in the GC literature~\cite{holzer2012secure, songhori2015tinygarble, wang2016secure}. The benchmarks are as follows:
 
 \begin{itemize}
 \vspace{-0.06in}
@@ -578,7 +578,7 @@ AES 128$\dagger$ & 6,400 & 6,400 & 0.0\%
 \caption{Number of garbled non-XOR gates for the benchmark functions. Comparing ARM2GC to previous work.}\label{table:other_vs_frwk}
 \resizebox{0.85\textwidth}{!}{%
 \begin{tabular}{l||r|r|r|r|r|r||r}
-Function (bit) & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}ANSI-C \\ (C)~\cite{holzer2012secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble HLS \\ (C $\rightarrow$ Verilog)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble MIPS \\ (C)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}SFE MIPS \\ (C)~\cite{wang2015secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}GarbledCPU \\ (C)~\cite{songhori2016garbledcpu}\end{tabular}} & \multicolumn{1}{c||}{\begin{tabular}[c]{@{}c@{}}Frigate \\ (C)~\cite{mood2016frigate}\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}ARM2Garble\\ (C)\end{tabular}} \\ \hline \hline
+Function (bit) & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}ANSI-C \\ (C)~\cite{holzer2012secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble HLS \\ (C $\rightarrow$ Verilog)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble MIPS \\ (C)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}SFE MIPS \\ (C)~\cite{wang2016secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}GarbledCPU \\ (C)~\cite{songhori2016garbledcpu}\end{tabular}} & \multicolumn{1}{c||}{\begin{tabular}[c]{@{}c@{}}Frigate \\ (C)~\cite{mood2016frigate}\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}ARM2Garble\\ (C)\end{tabular}} \\ \hline \hline
 Sum 32 & 32 & 288 & - & - & - & - & 31 \\
 Sum 1024 & - & 9,216 & - & - & - & 1,025 & 1,023 \\
 Compare 32 & 65 & 102 & - &  & - & - & 32 \\
@@ -596,7 +596,7 @@ AES 128 & - & - & - & - & 198,789,506 & 10,383 & 6,400
 }
 \end{table*}
 
-\tab{table:other_vs_frwk} reports the cost of garbling for the benchmark functions constructed by the prior-art GC frameworks~\cite{holzer2012secure, songhori2015tinygarble, mood2016frigate} and garbled processors~\cite{wang2015secure, songhori2016garbledcpu} along with the ARM2GC framework.
+\tab{table:other_vs_frwk} reports the cost of garbling for the benchmark functions constructed by the prior-art GC frameworks~\cite{holzer2012secure, songhori2015tinygarble, mood2016frigate} and garbled processors~\cite{wang2016secure, songhori2016garbledcpu} along with the ARM2GC framework.
 The corresponding programming language is shown between parentheses.
 Note that this is not an exhaustive list and only includes the most recent GC frameworks that report the best results on the benchmark functions.
 In all cases, ARM2GC outperforms the earlier frameworks in terms of garbling cost.

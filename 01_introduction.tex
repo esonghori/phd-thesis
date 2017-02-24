@@ -85,7 +85,7 @@ The authors in \cite{songhori2015tinygarble} leverage the capability of synthesi
 We propose GarbledCPU, the first configurable hardware-based general purpose sequential CPU for SFE. The FPGA realization of GarbledCPU is based on the MIPS instruction set. GarbledCPU provides a generalized support for SFE of varying flavors of privacy, beyond PF-SFE, to allow for more relaxed privacy demands and hence an improved performance. More explicitly, with GarbledCPU the parties can evaluate a private, semi-private or public function by revealing none, partial or all information about the function respectively while still benefiting from the simplicity of programming a processor.
 Both parties decide first which subset of IS they are willing to use which determines the level of privacy ensured. The function is compiled from a high-level language, e.g., C/C++ into assembly code of the agreed upon IS. Next, the garbled processor is securely evaluated given users' garbled input and the compiled function instructions (also garbled) to compute the output.
 
-A recent technical report \cite{wang2015secure} also suggests a secure computation framework using MIPS code. The approach relies on garbled universal circuits to emulate the execution of each instruction of the MIPS program and on Oblivious RAM (ORAM) for memory access. They propose using static analysis of functions to reduce the set of instructions to be garbled. However, \cite{wang2015secure} only presents a software SFE implementation, while we present the first practical hardware sequential processor for both SFE and PF-SFE. An earlier hardware implementation of GC was reported in \cite{jarvinen2010garbled} but the approach only addresses SFE with no support for function hiding and is limited to combinational Boolean circuit as it predated \cite{songhori2015tinygarble}. A combinational description limits usability and scalability and is impractical for control-intensive functions such as CPUs that need to be expressed sequentially.
+A recent technical report \cite{wang2016secure} also suggests a secure computation framework using MIPS code. The approach relies on garbled universal circuits to emulate the execution of each instruction of the MIPS program and on Oblivious RAM (ORAM) for memory access. They propose using static analysis of functions to reduce the set of instructions to be garbled. However, \cite{wang2016secure} only presents a software SFE implementation, while we present the first practical hardware sequential processor for both SFE and PF-SFE. An earlier hardware implementation of GC was reported in \cite{jarvinen2010garbled} but the approach only addresses SFE with no support for function hiding and is limited to combinational Boolean circuit as it predated \cite{songhori2015tinygarble}. A combinational description limits usability and scalability and is impractical for control-intensive functions such as CPUs that need to be expressed sequentially.
 
 %%%%%
 
@@ -101,7 +101,7 @@ A major disadvantage of TinyGarble, however, is that the efficiency can only be 
 Even when they used the best high-level synthesis compiler, i.e., Vivado HLS ~\cite{tool:Vivado}, they lost the HDL efficiency.
 In this paper, our goal is to combine the efficiency of hardware synthesis with the versatility of high-level languages.
 
-Recently, a number of researchers proposed the idea of \textit{garbled processor} where the underlying Boolean circuit in GC is that of a general-purpose processor~\cite{wang2015secure, songhori2016garbledcpu}.
+Recently, a number of researchers proposed the idea of \textit{garbled processor} where the underlying Boolean circuit in GC is that of a general-purpose processor~\cite{wang2016secure, songhori2016garbledcpu}.
 This way, users can develop the secure function in a high-level language and feed the compiled binary code to the processor along with their private inputs.
 However, the large overheads of such approaches compared with the classic HDL synthesis raises questions about their practicality.
 We believe that the primary reason behind the overhead is that they perform coarse-grain (instruction-level) optimization.
@@ -119,7 +119,7 @@ Users can develop the secure function in high-level languages, e.g., C/C++ and c
 In contrast to the earlier custom high-level compilers which called for new ad-hoc verification techniques~\cite{rastogi2014wysteria,demmler2015aby,liu2015oblivm,mood2016frigate}, ARM2GC inherits the ARM's available fully verified compilers.
 Thanks to SkipGate, ARM2GC incurs a garbling cost comparable to the HDL synthesis approach of TinyGarble while allowing users to develop SFE applications in a high-level language.
 
-Our work leverages ARM as the general purpose processor, in contrast to the earlier MIPS-based garble processors~\cite{songhori2015tinygarble, wang2015secure, songhori2016garbledcpu} because of ARM's pervasiveness and, most importantly, conditional execution.
+Our work leverages ARM as the general purpose processor, in contrast to the earlier MIPS-based garble processors~\cite{songhori2015tinygarble, wang2016secure, songhori2016garbledcpu} because of ARM's pervasiveness and, most importantly, conditional execution.
 The latter simplifies the framework by reducing conditional branches and making the program flow predictable for both parties to take the full advantage of the SkipGate algorithm.
 We modify the standard ARM architecture (without affecting the instruction set) such that SkipGate is more effective on the circuit.
 
@@ -155,7 +155,7 @@ In brief, our contributions are as follows:
 \item We perform extensive experiments to evaluate the SkipGate algorithm and the ARM2GC framework.
     The ARM2GC framework demonstrates comparable performance to HDL synthesis approach of TinyGarble~\cite{songhori2015tinygarble}.
     Its overhead is negligible for most of the benchmark functions and has the maximum value of 6\%.
-    As expected, it outperforms the state-of-the-art garbled processors~\cite{wang2015secure, songhori2016garbledcpu} and high-level GC compilers~\cite{holzer2012secure, mood2016frigate}.
+    As expected, it outperforms the state-of-the-art garbled processors~\cite{wang2016secure, songhori2016garbledcpu} and high-level GC compilers~\cite{holzer2012secure, mood2016frigate}.
 \end{itemize}
 
 what we explained in hardware synthesis can be expand to other methods such GMW as shown in ~\cite{demmler2015automated} however in this thesis we focus on the GC protocol.
