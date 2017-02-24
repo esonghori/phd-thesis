@@ -1,5 +1,5 @@
 \chapter{Garbled Circuit Library}\label{sec:library}
-In this section, we introduce TinyGarble library that consists of GC optimized circuits for complex mathematical/logical operations that can be used as a building blocks practical applications.
+In this section, we introduce TinyGarble library that consists of \acrshort{gc} optimized circuits for complex mathematical/logical operations that can be used as a building blocks practical applications.
 The SSCD and netlist files of the circuits in the library can be found in TinyGarble repository\footnote{\url{https://github.com/esonghori/TinyGarble/blob/master/scd/netlists/v.tar.gz}}.
 
 
@@ -108,7 +108,7 @@ It means 2 to 3.7 times improvement compared to the previous custom compilers.
 \tab{table:float} illustrates the number of non-XOR and total gates for the floating point operations.
 The results of both single precision (float) and double precision (double) are reported in the table.
 Pullonen et al, is the only previous work that reported the result for the similar floating-point operations \cite{pullonen2015combining}.
-They used the custom compiler of CBMC-GC \cite{franz2014cbmc} to compile software implementations of these floating-point operations.
+They used the custom compiler of CBMC-\acrshort{gc} \cite{franz2014cbmc} to compile software implementations of these floating-point operations.
 As can be seen in the table, the circuits in TinyGarble library outperforms the implementation in \cite{pullonen2015combining}.
 
 \begin{table}[]

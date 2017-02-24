@@ -1,13 +1,13 @@
 % !TEX root = 0_main.tex
 \chapter{Conclusion}
-We present TinyGarble, an automated tool that can generate highly compact and scalable circuits for Yao's garbled circuit (GC) protocol.
-We are the first to define the circuit generation for GC as a sequential synthesis problem, and to leverage the powerful and established HDL synthesis techniques with our custom-libraries and objectives.
-We improve the results of one of the best automatic tools for GC generation, PCF \cite{kreuter2013pcf}, by several orders of magnitude: for instance TinyGarble compacts the $\numprint{1024}$-bit multiplication by $\numprint{2504}$ times, while decreasing the number of non-XOR gates by 80\%; we compress the $\numprint{16000}$-bit Hamming distance by a factor of $\numprint{7345}$ times and with 47\% less non-XOR gates.
+We present TinyGarble, an automated tool that can generate highly compact and scalable circuits for Yao's garbled circuit (\acrshort{gc}) protocol.
+We are the first to define the circuit generation for \acrshort{gc} as a sequential synthesis problem, and to leverage the powerful and established \acrshort{hdl} synthesis techniques with our custom-libraries and objectives.
+We improve the results of one of the best automatic tools for \acrshort{gc} generation, PCF \cite{kreuter2013pcf}, by several orders of magnitude: for instance TinyGarble compacts the $\numprint{1024}$-bit multiplication by $\numprint{2504}$ times, while decreasing the number of non-XOR gates by 80\%; we compress the $\numprint{16000}$-bit Hamming distance by a factor of $\numprint{7345}$ times and with 47\% less non-XOR gates.
 Further, TinyGarble is able to implement functions that have never been reported before, such as SHA-3.
 We perform extensive benchmarking with both commercial and open source hardware synthesis tools and compare the results.
 Our approach strongly improves the existing results towards practical secure computation with many exciting applications.
-For instance, TinyGarble is an enabling technology for performing GC operations on mobile platforms, which is prohibitively expensive using the prior techniques.
+For instance, TinyGarble is an enabling technology for performing \acrshort{gc} operations on mobile platforms, which is prohibitively expensive using the prior techniques.
 Moreover, we introduce a scalable secure processor for private function evaluation (\acrshort{pf-sfe}).
-The processor is based on the MIPS architecture and the private function can be compiled using ubiquitous tool, e.g., gcc.
-In future work we will investigate the possibility of connecting Oblivious RAM (ORAM) to our secure processor to benefit from its lower amortized complexity for memory access.
-We are also working on interfacing TinyGarble with other GC schemes, e.g., the recently proposed Half Gates method \cite{zahur2015two}.
+The processor is based on the \acrshort{mips} architecture and the private function can be compiled using ubiquitous tool, e.g., gcc.
+In future work we will investigate the possibility of connecting Oblivious RAM (\acrshort{oram}) to our secure processor to benefit from its lower amortized complexity for memory access.
+We are also working on interfacing TinyGarble with other \acrshort{gc} schemes, e.g., the recently proposed Half Gates method \cite{zahur2015two}.

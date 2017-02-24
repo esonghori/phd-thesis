@@ -2,11 +2,11 @@
 \chapter{Sequential Garbled Circuits}\label{chap:seq}
 Sequential circuits can be used as a very compact Boolean circuit description. We use sequential description to overcome the scalability limitation of the synthesis approach for combinational circuits.
 In the following chapter, we first describe the concept of sequential circuits using an example.
-Next, we discuss synthesizing sequential circuit for the GC protocol.
+Next, we discuss synthesizing sequential circuit for the \acrshort{gc} protocol.
 Then, we explain the modifications required to garble/evaluate sequential circuits.
 
 \section{Sequential Circuits}\label{sec:seq-seq}
-In the context of the GC protocol, we can defined sequential circuit as a folded version of combinational circuit that needs to be evaluated multiple cycle.
+In the context of the \acrshort{gc} protocol, we can defined sequential circuit as a folded version of combinational circuit that needs to be evaluated multiple cycle.
 Unlike combinational circuits where the output depends only on the inputs, the output of sequential circuit depends on both input and the state of the circuit stored in its memory.
 Usually, intermediate values during computation is stored as a state of the circuit and is used in later cycles to complete computation of the function.
 In following, we illustrate the difference between combination and sequential circuit using a simple 4-bit adder as a function.
@@ -24,11 +24,11 @@ In following, we illustrate the difference between combination and sequential ci
 \fig{fig:combSeq} demonstrates an example of a combinational and a sequential implementation for a 4-bit Adder function with inputs $x = \overline{x_3x_2x_1x_0}$ and $y = \overline{y_3y_2y_1y_0}$, producing sum $s = \overline{s_3s_2s_1s_0} = f(x, y) = x + y$.
 \fig{fig:combSeq}a and \ref{fig:combSeq}b show the internal combinational circuit of a half Adder (HA) and a full Adder (FA) respectively.
 In \fig{fig:combSeq}c a combinational Adder is built by cascading 3 FAs and one HA.
-\fig{fig:combSeq}d represents a sequential implementation of a 4-bit Adder which uses one FA and a one bit FF to save the carry bit from the previous cycle.
+\fig{fig:combSeq}d represents a sequential implementation of a 4-bit Adder which uses one FA and a one bit \acrshort{ff} to save the carry bit from the previous cycle.
 The circuit should be evaluated for 4 cycles.
 At the first cycle the carry bit is $z_0=0$.
 Note that, in the combinational circuit we use three FAs and one HA whereas in the sequential circuit, we have to use one FA for 4 sequential cycles.
-This asymmetry in the loop of Addition function introduces a small \emph{overhead} in GC computation and communication time as an HA circuit has fewer gates compared to a FA circuit.
+This asymmetry in the loop of Addition function introduces a small \emph{overhead} in \acrshort{gc} computation and communication time as an HA circuit has fewer gates compared to a FA circuit.
 We will discuss the overhead of garbling sequential circuits and its sources in more detail in \sect{sec:seq-overhead}.
 
 However, the total number of gates for representing the function is reduced approximately by a factor of 4 when using a sequential circuit (one FA for sequential compared with three FA and one HA for combinational).
@@ -39,7 +39,7 @@ Only labels corresponding to FFs are kept for the next cycle.
 
 Nearly all commercial circuits used in digital hardware are designed in sequential format.
 There are multiple reasons for preferring sequential circuit description over combinational including the reduction in complexity, area, power, and cost, as well as natural mapping of finite state machine control functions into a sequential format.
-Some of these reasons also provide a rationale for sequential description of a function in GC, including: (i) reduction in size and memory footprint that is achieved by introducing the state elements and feedback loop from output to input; (ii) removing the need to perform costly compile-time/runtime loop unrolling by embracing loops within the sequential feedback loop; (iii) providing a new degree of freedom for folding by the placement of memory elements in the long combinational paths--the placement can be done in accordance with the user's objective; (iv) solving the limitation of synthesis techniques and tools for large function (see /sec{sect:syn-limit}) by describing circuits in compact sequential format.
+Some of these reasons also provide a rationale for sequential description of a function in \acrshort{gc}, including: (i) reduction in size and memory footprint that is achieved by introducing the state elements and feedback loop from output to input; (ii) removing the need to perform costly compile-time/runtime loop unrolling by embracing loops within the sequential feedback loop; (iii) providing a new degree of freedom for folding by the placement of memory elements in the long combinational paths--the placement can be done in accordance with the user's objective; (iv) solving the limitation of synthesis techniques and tools for large function (see /sec{sect:syn-limit}) by describing circuits in compact sequential format.
 
 \begin{figure}[ht]
   \centering
@@ -55,26 +55,26 @@ The inputs/outputs of the unrolled circuit are the inputs/outputs of the combina
 The present states at each cycle $\textrm{cid}$, where $0 \le \textrm{cid} < c$, are equal to the next states at the previous cycle ($\textrm{cid}-1$).
 The present states at $\textrm{cid}=0$ are equal to the input initial value.
 
-In digital hardware, at edge of a cycle, the value of D of an FF is latched and then transfered to the Q in the next clock cycle.
-In garbling/evaluating of a sequential circuit, an FF operates as a simple wire connection between the the unrolled combinational circuit in two consecutive cycles.
+In digital hardware, at edge of a cycle, the value of D of an \acrshort{ff} is latched and then transfered to the Q in the next clock cycle.
+In garbling/evaluating of a sequential circuit, an \acrshort{ff} operates as a simple wire connection between the the unrolled combinational circuit in two consecutive cycles.
 Thus, it can be dealt with latching the labels from the flip-Flop input D in $\textrm{cid}$ to output Q in $\textrm{cid}+1$.
-Signal clk and rst of FF can be ignored in sequential GC.
+Signal clk and rst of \acrshort{ff} can be ignored in sequential \acrshort{gc}.
 
 Garbling/evaluation of the sequential circuit is equivalent of garbling its gates for $c$ times.
-To make sure that the security and correctness of the GC protocol still holds for the sequential circuits, we use combination of cycle index and gate identifier for the the encryption tweak $T$ (see \sect{sssec:prelim-aes}).
+To make sure that the security and correctness of the \acrshort{gc} protocol still holds for the sequential circuits, we use combination of cycle index and gate identifier for the the encryption tweak $T$ (see \sect{sssec:prelim-aes}).
 This way a unique tweak is assigned for the same gates in different cycles makes it same as garbling a unrolled combinational circuit.
 
-In \appx{chap:engine}, we discuss our implementation of the GC protocol for sequential circuits in TinyGarble GC engine.
-We also explain in more detail about how the encryption tweak is set and how it affects the security and correctness of the GC protocol.
+In \appx{chap:engine}, we discuss our implementation of the \acrshort{gc} protocol for sequential circuits in TinyGarble \acrshort{gc} engine.
+We also explain in more detail about how the encryption tweak is set and how it affects the security and correctness of the \acrshort{gc} protocol.
 
 \section{Synthesis Sequential Circuit}\label{sec:seq-syn}
-Fortunately, extending TinyGarble GC synthesis to support sequential circuits is straightforward since the synthesis tools are designed to work them in the first place.
+Fortunately, extending TinyGarble \acrshort{gc} synthesis to support sequential circuits is straightforward since the synthesis tools are designed to work them in the first place.
 We add memory element of sequential circuits into the technology library of TinyGarble (see \sect{sec:syn-techlib}).
 These elements can be implemented as FFs which are connected to a clock signal.
-Although in conventional ASIC design FFs are typically as costly as four NAND gates, as seen above in our GC application, FFs do not have any impact on the garbling/evaluation process as they require no cryptographic operations.
+Although in conventional ASIC design FFs are typically as costly as four NAND gates, as seen above in our \acrshort{gc} application, FFs do not have any impact on the garbling/evaluation process as they require no cryptographic operations.
 Therefore, we set the area of FFs to 0 to show its lack of impact on computation and communication time of garbling/evaluation.
 Moreover, we modify our FFs such that they can accept an initial value.
-This helps us remove extra MUXs in standard FF design for initialization.
+This helps us remove extra MUXs in standard \acrshort{ff} design for initialization.
 
 Describing functions using sequential circuits helps to overcome the scalability limitations of synthesis tool.
 Sequential circuits are radically smaller than combinational ones with the same functionality.
@@ -93,11 +93,11 @@ The computation in the function can be divided into 6 non-identical steps.
 The computation in the first and last steps are different from the rest.
 U1 sub-circuit represents the computation in the first step, U2 the middle four steps, and U3 the last step.
 \fig{fig:seq-overhead-seq} illustrates the sequential circuit representation of the example function.
-A MUX selects the output of the sub-circuits according to the cycle id (cid).
-In the digital circuit design, MUX and similar components that control the flow of data is called control path.
+A \acrshort{mux} selects the output of the sub-circuits according to the cycle id (cid).
+In the digital circuit design, \acrshort{mux} and similar components that control the flow of data is called control path.
 If cid is 0, U1 is selected, if it is 5, U3 is selected, otherwise U2 is selected.
 The unselected sub-circuits remain idle in that cycle, since its output is not used.
-At each cycle, the output of the selected sub-circuit is stored in the FF to be used in the next cycles.
+At each cycle, the output of the selected sub-circuit is stored in the \acrshort{ff} to be used in the next cycles.
 
 \begin{figure}[ht]
     \centering
@@ -114,10 +114,10 @@ At each cycle, the output of the selected sub-circuit is stored in the FF to be 
 \end{figure}
 
 The number of gates that has to garbled/evaluated in the combinational circuit is $C_{U1}+4*C_{U2}+C_{U3}$, where $C_{Ui}$ is the number of gates in $Ui$ sub-circuit.
-Since the sequential circuit has to be garbled/evaluated for 6 times, the total gates for sequential circuit is $6*(C_{U1}+C_{U2}+C_{U3}+C_{MUX})$, where $C_{MUX}$ is number of non-XOR in the MUX.
-The difference between the cost of the combinational and the sequential circuits is $5*C_{U1}+2*C_{U1}+5*C_{U3}+6*C_{MUX})$.
+Since the sequential circuit has to be garbled/evaluated for 6 times, the total gates for sequential circuit is $6*(C_{U1}+C_{U2}+C_{U3}+C_{\acrshort{mux}})$, where $C_{\acrshort{mux}}$ is number of non-XOR in the \acrshort{mux}.
+The difference between the cost of the combinational and the sequential circuits is $5*C_{U1}+2*C_{U1}+5*C_{U3}+6*C_{\acrshort{mux}})$.
 We call this difference the sequential \textit{overhead} for garbling an asymmetrical function.
 
-The overhead is caused by treating cid as a secret value in the GC protocol while both parties known its value at all cycles.
-In the next chapter, we will discuss how to reduce this overhead using a novel algorithm on top of sequential GC protocol.
+The overhead is caused by treating cid as a secret value in the \acrshort{gc} protocol while both parties known its value at all cycles.
+In the next chapter, we will discuss how to reduce this overhead using a novel algorithm on top of sequential \acrshort{gc} protocol.
 The algorithm skips unnecessary garbling/evaluation of idle sub-circuits and allows local computation of the gates in the control path.

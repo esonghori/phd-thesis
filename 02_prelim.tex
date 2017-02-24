@@ -2,7 +2,7 @@
 \chapter{Preliminaries and Background}\label{ch:prelim}
 In this chapter, we provide a short background about secure multi-party computation and the generalized problem of secure function evaluation (\acrshort{sfe}).
 Next, we introduce an important special case of two-party \acrshort{sfe} problem and how Yao's Garbled Circuit protocol can solve it.
-Then, we explain basics about combinational and sequential Boolean circuits that are used in the GC protocol to describe functions.
+Then, we explain basics about combinational and sequential Boolean circuits that are used in the \acrshort{gc} protocol to describe functions.
 
 \section{Secure Multi-party Computation}\label{sec:prelim-smc}
 In a secure multi-party computation problem, mutually suspicious parties with private attributes wish to compute a joint function on their attributes.
@@ -53,10 +53,10 @@ In this problem, there are two parties: Alice and Bob; each has an attribute (in
 \label{fig:two-party-sfe}
 \end{figure}
 
-In the following, we explain how the problem of two-party \acrshort{sfe} can be solved using Yao's Garbled Circuit (GC) protocol.
-First, we introduce the adversary model supposed for the GC protocol.
-Next, we describe an important cryptographic primitive called Oblivious Transfer used in the GC protocol.
-Then, we explain Yao's GC protocol and its recent improvements.
+In the following, we explain how the problem of two-party \acrshort{sfe} can be solved using Yao's Garbled Circuit (\acrshort{gc}) protocol.
+First, we introduce the adversary model supposed for the \acrshort{gc} protocol.
+Next, we describe an important cryptographic primitive called Oblivious Transfer used in the \acrshort{gc} protocol.
+Then, we explain Yao's \acrshort{gc} protocol and its recent improvements.
 
 \subsection{Adversary Model}\label{ssec:prelim-adv}
 We assume that all the parties are semi-honest which means that they follow the protocol exactly as specified without deviation or malicious behavior but they try to learn as much as possible about the other party's input from the information they receive during the protocol.
@@ -87,12 +87,12 @@ The steps of Yao's protocol are described below.
       Alice sends the mapping for $o_{Bob}$ to Bob and Bob sends the labels for $o_{Alice}$ to her, so they can determine the actual value of outputs.
 \end{enumerate}
 
-\subsection{Recent Improvements on the GC Protocol}\label{ssec:prelim-imp}
-Throughout the last decade, the GC protocol has gone through a number of theoretical improvements that reduce its computation and communication.
+\subsection{Recent Improvements on the \acrshort{gc} Protocol}\label{ssec:prelim-imp}
+Throughout the last decade, the \acrshort{gc} protocol has gone through a number of theoretical improvements that reduce its computation and communication.
 We describe the most important of these improvements here.
 
 \subsubsection{Free XOR}\label{sssec:prelim-freexor}
-The most significant optimization to GC so far is Free XOR proposed in~\cite{kolesnikov2008improved}.
+The most significant optimization to \acrshort{gc} so far is Free XOR proposed in~\cite{kolesnikov2008improved}.
 In this optimization, for any wire $w$, Alice only generates the label $X_w^{0}$ and computes the label corresponding to 1 as $X_w^{0}\oplus (R \parallel 1)$ where $\parallel$ represents bit concatenation and
 $R$ is a global random ($k-1$)-bit value known only to Alice.
 With this convention, the label for the output of an XOR gate with inputs $a$, $b$ and output $o$ can simply be computed as $X_{o} = X_{a} \oplus X_{b}$.
@@ -104,8 +104,8 @@ Here, instead of generating a label for the output wire of a gate randomly, the 
 Alice generates the output label such that the first entry of the garbled table becomes all $0$ and no longer needs to be sent.
 
 \subsubsection{Garbling With a Fixed-key Block Cipher}\label{sssec:prelim-aes}
-This method allows to efficiently garble and evaluate non-XOR gates using fixed-key AES~\cite{bellare2013efficient}.
-In this garbling scheme which is compatible with the Free XOR and Row Reduction techniques, the output label $X_{o}$ is encrypted with the input label $X_{a}$ and $X_{b}$ using the encryption function $E(X_a,X_b,T,X_o) = \pi(K) \oplus K \oplus X_o$, where $K=2X_a\oplus4X_b\oplus T$, $\pi$ is a fixed-key block cipher (e.g., instantiated with AES), and $T$ is a unique-per-gate number (e.g., gate identifier) called \emph{tweak}.
+This method allows to efficiently garble and evaluate non-XOR gates using fixed-key \acrshort{aes}~\cite{bellare2013efficient}.
+In this garbling scheme which is compatible with the Free XOR and Row Reduction techniques, the output label $X_{o}$ is encrypted with the input label $X_{a}$ and $X_{b}$ using the encryption function $E(X_a,X_b,T,X_o) = \pi(K) \oplus K \oplus X_o$, where $K=2X_a\oplus4X_b\oplus T$, $\pi$ is a fixed-key block cipher (e.g., instantiated with \acrshort{aes}), and $T$ is a unique-per-gate number (e.g., gate identifier) called \emph{tweak}.
 A comprehensive proof of security for this method is provided in~\cite{bellare2013efficient}.
 
 \subsubsection{Half Gate}\label{sssec:prelim-half}
@@ -114,11 +114,11 @@ Thus, XOR gates remain free and only two rows of a garbled table are required to
 
 \section{Boolean Circuits}\label{sec:prelim-circuit}
 In \acrshort{sfe}, the parties are able to evaluate an arbitrary function on their private attributes.
-In a number of \acrshort{sfe} protocols including Yao's GC, Goldreich-Micali-Wigderson (GMW)~\cite{goldreich1987play}, and Beaver-Micali-Rogoway (BMR)~\cite{beaver1990round}, the function has to be represented as a Boolean circuit.
+In a number of \acrshort{sfe} protocols including Yao's \acrshort{gc}, Goldreich-Micali-Wigderson (GMW)~\cite{goldreich1987play}, and Beaver-Micali-Rogoway (BMR)~\cite{beaver1990round}, the function has to be represented as a Boolean circuit.
 In this context, a Boolean circuit can be defined as a directed graph where nodes are 2-input Boolean gates (e.g., AND, OR, NOT, XOR, etc.), edges are wires connecting the gates, and their direction is from the output of a gate to the input of another gate.
 
 \subsection{Combinational Boolean Circuits}\label{ssec:prelim-comb}
-The circuits that are used in GC and other circuit-based \acrshort{sfe} protocols are acrylic Boolean circuits.
+The circuits that are used in \acrshort{gc} and other circuit-based \acrshort{sfe} protocols are acrylic Boolean circuits.
 In digital circuit theory, such a circuit is called \emph{combinational circuit} and defined as a memory-less circuit in which outputs are functions only of inputs, see \fig{fig:combinational}.
 
 \begin{figure}[ht]
@@ -138,15 +138,15 @@ In digital circuit theory, such a circuit is called \emph{combinational circuit}
 
 \subsection{Sequential Boolean Circuits}\label{ssec:prelim-seq}
 Another class of circuits in digital circuit theory are \emph{sequential circuits} in which unlike in combinational, the circuit outputs are functions of both inputs and circuit \emph{states}.
-The circuit states are kept in memory elements such as Flip Flops (FF).
+The circuit states are kept in memory elements such as Flip Flops (\acrshort{ff}).
 The states can change at the end of each \emph{clock cycle}\footnote{The clock signal oscillates between a low and a high state and its (rising) edge is typically utilized to coordinate the memory updates.}.
-In this thesis, we use only D-type FF shown in \fig{fig:ff}.
-This type of FF has four inputs: D (data), I (initial), clk (clock), and rst (reset) and one output: Q (latched data).
+In this thesis, we use only D-type \acrshort{ff} shown in \fig{fig:ff}.
+This type of \acrshort{ff} has four inputs: D (data), I (initial), clk (clock), and rst (reset) and one output: Q (latched data).
 
 \begin{figure}[ht]
     \centering
 	\includegraphics[width=0.35\textwidth]{ff-crop.pdf}
-	\caption{Schematic of a D-FF with initial value.}
+	\caption{Schematic of a D-\acrshort{ff} with initial value.}
 	\label{fig:ff}
 \end{figure}
 
@@ -154,5 +154,5 @@ As seen in \fig{fig:sequential}, a sequential circuit can be represented as an e
 At each clock cycle, circuit inputs as well as the present states are fed to the combinational part.
 Then, it generates the outputs and next states which will be stored in the memory elements for the next cycle.
 The initial value of the memory elements are either a known constant value ($0$ or $1$) or determined by an initial input value (I).
-In a digital hardware, FF initialization is usually done by \emph{reset} or \emph{set} signals.
-In TinyGarble, signal I of an FF can be connected to a constant value or input wire (in this cased called \emph{init} wire).
+In a digital hardware, \acrshort{ff} initialization is usually done by \emph{reset} or \emph{set} signals.
+In TinyGarble, signal I of an \acrshort{ff} can be connected to a constant value or input wire (in this cased called \emph{init} wire).
