@@ -1,7 +1,7 @@
 % !TEX root = 0_main.tex
 \chapter{Preliminaries and Background}\label{ch:prelim}
-In this chapter, we provide a short background about secure multi-party computation and the generalized problem of secure function evaluation (SFE).
-Next, we introduce an important special case of two-party SFE problem and how Yao's Garbled Circuit protocol can solve it.
+In this chapter, we provide a short background about secure multi-party computation and the generalized problem of secure function evaluation (\acrshort{sfe}).
+Next, we introduce an important special case of two-party \acrshort{sfe} problem and how Yao's Garbled Circuit protocol can solve it.
 Then, we explain basics about combinational and sequential Boolean circuits that are used in the GC protocol to describe functions.
 
 \section{Secure Multi-party Computation}\label{sec:prelim-smc}
@@ -31,8 +31,8 @@ Thus at best, the trusted third party can be emulated using a cryptographic prot
 \end{figure}
 
 \subsection{Secure Function Evaluation}\label{ssec:prelim-sfe}
-Secure Function Evaluation (SFE) is more general case of secure multi-party computation in which parties are able to evaluate any arbitrary function on their attributes.
-Formally in SFE, there are $p$ parties that are able to securely communicate to each other.
+Secure Function Evaluation (\acrshort{sfe}) is more general case of secure multi-party computation in which parties are able to evaluate any arbitrary function on their attributes.
+Formally in \acrshort{sfe}, there are $p$ parties that are able to securely communicate to each other.
 Each party has an attribute denoted by $i_k$ where $k$ is party identifier.
 The parties are interested to collectively compute function $o = f(i_1, i_2, ..., i_p)$ where $f$ is an arbitrary function and $o$ is a tuple $(o_1, o_2, ..., o_p)$ such that $o_k$ belongs to the $k^{\text{th}}$ party.
 After the computation of $f$, the parties should gain no information about other parties' attribute, other than the one they can deduce from the output.
@@ -42,18 +42,18 @@ A common special case is where $f = f_1 = f_2 = ... = f_p$, meaning all parties 
 For example in case of the average of salaries, the result of the average function is evaluated and shared with all the participating parties.
 
 \section{Two-Party Secure Function Evaluation}\label{sec:prelim-2sfe}
-Two-party SFE is an important special case of general secure multi-party computation that was introduced and solved by Andrew Yao in his seminal work \cite{yao1986generate}.
+Two-party \acrshort{sfe} is an important special case of general secure multi-party computation that was introduced and solved by Andrew Yao in his seminal work \cite{yao1986generate}.
 In this problem, there are two parties: Alice and Bob; each has an attribute (input) $a$ and $b$ and they want to compute $(o_1, o_2) = (f_1(a, b), f_2(a, b))$ where $o_1$ belong to Alice and $o_2$ belongs to Bob and $f_1$ and $f_2$ are arbitrary polynomial-time computable functions.
-\fig{fig:two-party-sfe} illustrates the real model for two-party SFE.
+\fig{fig:two-party-sfe} illustrates the real model for two-party \acrshort{sfe}.
 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.70\textwidth]{two_party_SFE-crop.pdf}
-\caption{The real model for two-party Secure Function Evaluation (SFE).}
+\caption{The real model for two-party Secure Function Evaluation (\acrshort{sfe}).}
 \label{fig:two-party-sfe}
 \end{figure}
 
-In the following, we explain how the problem of two-party SFE can be solved using Yao's Garbled Circuit (GC) protocol.
+In the following, we explain how the problem of two-party \acrshort{sfe} can be solved using Yao's Garbled Circuit (GC) protocol.
 First, we introduce the adversary model supposed for the GC protocol.
 Next, we describe an important cryptographic primitive called Oblivious Transfer used in the GC protocol.
 Then, we explain Yao's GC protocol and its recent improvements.
@@ -113,12 +113,12 @@ The Half Gate method utilizes both free-XOR and row reduction and reduces the co
 Thus, XOR gates remain free and only two rows of a garbled table are required to be communicated between parties for non-XOR gates.
 
 \section{Boolean Circuits}\label{sec:prelim-circuit}
-In SFE, the parties are able to evaluate an arbitrary function on their private attributes.
-In a number of SFE protocols including Yao's GC, Goldreich-Micali-Wigderson (GMW)~\cite{goldreich1987play}, and Beaver-Micali-Rogoway (BMR)~\cite{beaver1990round}, the function has to be represented as a Boolean circuit.
+In \acrshort{sfe}, the parties are able to evaluate an arbitrary function on their private attributes.
+In a number of \acrshort{sfe} protocols including Yao's GC, Goldreich-Micali-Wigderson (GMW)~\cite{goldreich1987play}, and Beaver-Micali-Rogoway (BMR)~\cite{beaver1990round}, the function has to be represented as a Boolean circuit.
 In this context, a Boolean circuit can be defined as a directed graph where nodes are 2-input Boolean gates (e.g., AND, OR, NOT, XOR, etc.), edges are wires connecting the gates, and their direction is from the output of a gate to the input of another gate.
 
 \subsection{Combinational Boolean Circuits}\label{ssec:prelim-comb}
-The circuits that are used in GC and other circuit-based SFE protocols are acrylic Boolean circuits.
+The circuits that are used in GC and other circuit-based \acrshort{sfe} protocols are acrylic Boolean circuits.
 In digital circuit theory, such a circuit is called \emph{combinational circuit} and defined as a memory-less circuit in which outputs are functions only of inputs, see \fig{fig:combinational}.
 
 \begin{figure}[ht]

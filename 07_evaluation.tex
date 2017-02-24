@@ -196,7 +196,7 @@ As can be seen from the table, the resulting memory footprint could increase by 
 It is well known that writing the HDL level code which contains the time information and more detailed structural/behavioral description would yield much more efficient circuits than the code written in a higher level language.
 
 \section{Evaluation of MIPS}
-We implement general purpose processor for PF-SFE using MIPS~I where one user provide function description in assembly and the other provides the data.
+We implement general purpose processor for \acrshort{pf-sfe} using MIPS~I where one user provide function description in assembly and the other provides the data.
 Support of sequential circuits in TinyGarble enables us to use the MIPS circuit description in Plasma project \cite{rhoads2006plasma} without major modifications.
 In the following, we provide the result of MIPS implementation and its memory footprint and communication load.
 Lastly, we present implementation of Hamming distance with variable input length as a benchmark of private function application on MIPS.
@@ -578,7 +578,7 @@ AES 128$\dagger$ & 6,400 & 6,400 & 0.0\%
 \caption{Number of garbled non-XOR gates for the benchmark functions. Comparing ARM2GC to previous work.}\label{table:other_vs_frwk}
 \resizebox{0.85\textwidth}{!}{%
 \begin{tabular}{l||r|r|r|r|r|r||r}
-Function (bit) & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}ANSI-C \\ (C)~\cite{holzer2012secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble HLS \\ (C $\rightarrow$ Verilog)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble MIPS \\ (C)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}SFE MIPS \\ (C)~\cite{wang2016secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}GarbledCPU \\ (C)~\cite{songhori2016garbledcpu}\end{tabular}} & \multicolumn{1}{c||}{\begin{tabular}[c]{@{}c@{}}Frigate \\ (C)~\cite{mood2016frigate}\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}ARM2Garble\\ (C)\end{tabular}} \\ \hline \hline
+Function (bit) & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}ANSI-C \\ (C)~\cite{holzer2012secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble HLS \\ (C $\rightarrow$ Verilog)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}TinyGarble MIPS \\ (C)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}\acrshort{sfe} MIPS \\ (C)~\cite{wang2016secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}GarbledCPU \\ (C)~\cite{songhori2016garbledcpu}\end{tabular}} & \multicolumn{1}{c||}{\begin{tabular}[c]{@{}c@{}}Frigate \\ (C)~\cite{mood2016frigate}\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}ARM2Garble\\ (C)\end{tabular}} \\ \hline \hline
 Sum 32 & 32 & 288 & - & - & - & - & 31 \\
 Sum 1024 & - & 9,216 & - & - & - & 1,025 & 1,023 \\
 Compare 32 & 65 & 102 & - &  & - & - & 32 \\
@@ -600,7 +600,7 @@ AES 128 & - & - & - & - & 198,789,506 & 10,383 & 6,400
 The corresponding programming language is shown between parentheses.
 Note that this is not an exhaustive list and only includes the most recent GC frameworks that report the best results on the benchmark functions.
 In all cases, ARM2GC outperforms the earlier frameworks in terms of garbling cost.
-For example, ARM2GC results $12.2\times$,  $5.1\times$, $74,000\times$, $57,000\times$, and $2.9\times$ less number of non-XOR gates for 160-bit Hamming distance compared to ANSI-C~\cite{holzer2012secure}, TinyGarble high-level synthesis (HLS)~\cite{songhori2015tinygarble}, PF-SFE MIPS~\cite{songhori2015tinygarble}, GarbledCPU~\cite{songhori2016garbledcpu}, and Frigate~\cite{mood2016frigate} respectively.
+For example, ARM2GC results $12.2\times$,  $5.1\times$, $74,000\times$, $57,000\times$, and $2.9\times$ less number of non-XOR gates for 160-bit Hamming distance compared to ANSI-C~\cite{holzer2012secure}, TinyGarble high-level synthesis (HLS)~\cite{songhori2015tinygarble}, \acrshort{pf-sfe} MIPS~\cite{songhori2015tinygarble}, GarbledCPU~\cite{songhori2016garbledcpu}, and Frigate~\cite{mood2016frigate} respectively.
 ARM2GC also results in $38.3\%$ less non-XOR gates compared to Frigate~\cite{mood2016frigate} for AES function.
 
 \subsection{Effect of SkipGate on ARM}

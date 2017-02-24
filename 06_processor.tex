@@ -1,22 +1,22 @@
 % !TEX root = 0_main.tex
 \chapter{Garbled Processor}\label{chap:processor}
-Supporting sequential circuits in the GC protocol enables us to securely evaluate a general processor as function in two-party SFE.
+Supporting sequential circuits in the GC protocol enables us to securely evaluate a general processor as function in two-party \acrshort{sfe}.
 A processor itself receives a function (more pressingly the compiled binary code of a function) and data in its memory, then computes the function and writes the result back in the memory.
-In this chapter first, we explain the problem of Private Function SFE (PF-SFE) and how a processor can solve it with limited resources.
-Next, we explain how we used MIPS processor, a simple text-book processor, to solve PF-SFE problem.
-Next, we study how a garbled processor can be modified to used for SFE problem as a mean to make it easy for user to develop SFE application.
-Then, we explain how ARM, a more sophisticated processor, can be well suited for solving SFE development if SkipGate algorithm is applied during garbling/evaluating its circuit.
+In this chapter first, we explain the problem of \acrfull{pf-sfe} and how a processor can solve it with limited resources.
+Next, we explain how we used MIPS processor, a simple text-book processor, to solve \acrshort{pf-sfe} problem.
+Next, we study how a garbled processor can be modified to used for \acrshort{sfe} problem as a mean to make it easy for user to develop \acrshort{sfe} application.
+Then, we explain how ARM, a more sophisticated processor, can be well suited for solving \acrshort{sfe} development if SkipGate algorithm is applied during garbling/evaluating its circuit.
 
 \section{Private Function Evaluation}\label{sec:processor-pfsfe}
-Two-party Private Function SFE (PF-SFE) allows secure computation of a function $f_{Alice}(\cdot)$ held by one party (Alice) operating on another party's data $x_{Bob}$ (Bob) while both the data and the function are kept private.
-This is in contrast to the usual setting of SFE where the function is known by both parties.
-PF-SFE is especially useful when the function is proprietary or classified.
+Two-party \acrfull{pf-sfe} allows secure computation of a function $f_{Alice}(\cdot)$ held by one party (Alice) operating on another party's data $x_{Bob}$ (Bob) while both the data and the function are kept private.
+This is in contrast to the usual setting of \acrshort{sfe} where the function is known by both parties.
+\acrshort{pf-sfe} is especially useful when the function is proprietary or classified.
 
-It is well known that PF-SFE can be reduced to regular SFE by securely evaluating a Universal Circuit (UC) \cite{sander1999non}.
+It is well known that \acrshort{pf-sfe} can be reduced to regular \acrshort{sfe} by securely evaluating a Universal Circuit (UC) \cite{sander1999non}.
 UC is a Boolean circuit capable of simulating any Boolean circuit (function) $f(\cdot)$ given the description of $f(\cdot)$ as input \cite{valiant1976universal,kolesnikov2008practical}:
 $$UC(f_{Alice}(\cdot),x_{Bob}) = f_{Alice}(x_{Bob}).$$
 Secure evaluation of UC completely hides the functionality of Boolean circuit of $f(\cdot)$, including its topology.
-Subsequent works have shown how to allow PF-SFE while avoiding the overhead of UCs \cite{katz2011constant, mohassel2013hide}.
+Subsequent works have shown how to allow \acrshort{pf-sfe} while avoiding the overhead of UCs \cite{katz2011constant, mohassel2013hide}.
 
 A UC is similar to a Universal Turing Machine (UTM) \cite{turing1936computable,herken1995universal} that receives a Turing machine description $f_{Alice}(\cdot)$ and applies it to the input data ($x_{Bob}$) on its tape \cite{davis2001engines}.
 One party provides the machine description and the other one provides the initial data.
@@ -36,10 +36,10 @@ Unfortunately, this approach is not practical as the complexity of the circuit g
 On the other hand, in conventional processors, ALUs are combined with arrays of FFs, a.k.a., \emph{registers}, in order to store the intermediate values for supporting functions with arbitrarily large number of operations.
 Since none of the earlier implementations of GC explicitly supported memory elements such as FFs, the ways to connect the feedback loop around the ALU were rather limited.
 However, an explicit sequential description supported by TinyGarble allows us to leverage conventional processor architectures.
-Therefore, the TinyGarble methodology not only provides a powerful method for generating compact circuits with a low overhead for SFE, but also paves the way for systematically building scalable sequential circuits that can be used for PF-SFE.
+Therefore, the TinyGarble methodology not only provides a powerful method for generating compact circuits with a low overhead for \acrshort{sfe}, but also paves the way for systematically building scalable sequential circuits that can be used for \acrshort{pf-sfe}.
 
 The idea of using an ALU or a \emph{universal next-instruction circuit} in the GC protocol can also be found in \cite{liu2014automating}.
-The objective of that work was improving efficiency of SFE where the function is known by both parties, unlike PF-SFE where the function is private.
+The objective of that work was improving efficiency of \acrshort{sfe} where the function is known by both parties, unlike \acrshort{pf-sfe} where the function is private.
 Nonetheless, instead of ALU they eventually decided to use an \emph{instruction-specific circuit} which leaks information about the function but results in less effort for non-private function evaluation.
 
 \subsection{Memory}\label{ssec:processor-mem}
@@ -53,10 +53,10 @@ However, inclusion of MUXs and FFs increases the operation time and communicatio
 
 One alternative approach for hiding memory access patterns is the use of Oblivious Random-Access Machine (ORAM) protocols \cite{goldreich1996software} which allows oblivious load/store operations with amortized poly-logarithmic overhead at the expense of increasing the round complexity of the GC protocol \cite{gordon2012secure,liu2014automating,lu2013garble,gentry2014garbled}.
 For the sake of simplicity, we do not use ORAM in this work.
-However, one can simply connect our implementation of PF-SFE to an ORAM to benefit from its lower amortized complexity.
+However, one can simply connect our implementation of \acrshort{pf-sfe} to an ORAM to benefit from its lower amortized complexity.
 As another alternate, \cite{zahur2013circuit} showed that algorithms can sometimes be rewritten to use data structures such as stacks, queues, or associative maps for which they give compact circuit constructions of poly-logarithmic size.
 
-\section{Garbled Processor for PF-SFE}\label{sec:processor-pro-pfsfe}
+\section{Garbled Processor for \acrshort{pf-sfe}}\label{sec:processor-pro-pfsfe}
 \subsection{Global flow}\label{ssec:processor-mips-flow}
 We assume Alice provides the private function $f_{Alice}(\cdot)$ and Bob provides private data~$x_{Bob}$.
 At the end of the operation, only Bob learns the output $f_{Alice}(x_{Bob})$.
@@ -123,21 +123,21 @@ The output of ALU will be either written back to the register file or fed to DM 
 The loaded data from DM is written back to the register file.
 In each cycle, PC is incremented by 4 to point to the next instruction in IM or is changed according to a branch or jump instruction.
 
-\section{Garbled Processor for SFE}\label{sec:processor-mips-sfe}
-In the previous section we discuss the idea of garbling a processor as a solution for hiding the function in PF-SFE.
-Besides enabling PF-SFE, another advantage of a garbled processor is usability for non-expert users since it can be programmed using high-level languages, whereas other frameworks for the GC protocol require tedious Boolean circuit construction.
-However, garbling and evaluating the entire processor incurs a tremendous cost compared to SFE solutions due to stronger privacy requirements in PF-SFE.
+\section{Garbled Processor for \acrshort{sfe}}\label{sec:processor-mips-sfe}
+In the previous section we discuss the idea of garbling a processor as a solution for hiding the function in \acrshort{pf-sfe}.
+Besides enabling \acrshort{pf-sfe}, another advantage of a garbled processor is usability for non-expert users since it can be programmed using high-level languages, whereas other frameworks for the GC protocol require tedious Boolean circuit construction.
+However, garbling and evaluating the entire processor incurs a tremendous cost compared to \acrshort{sfe} solutions due to stronger privacy requirements in \acrshort{pf-sfe}.
 
-In this section, we expand the garbled processor introduced in \section{sec:processor-pro-pfsfe} and introduce a framework for secure computation that provides scalable support for generalized SFE.
-The framework provides theres options: a high performance with a relaxed privacy setting, the more security-demanding PF-SFE with higher cost (similar to the one in \sect{sec:processor-pro-pfsfe}), and a flavor in-between.
+In this section, we expand the garbled processor introduced in \section{sec:processor-pro-pfsfe} and introduce a framework for secure computation that provides scalable support for generalized \acrshort{sfe}.
+The framework provides theres options: a high performance with a relaxed privacy setting, the more security-demanding \acrshort{pf-sfe} with higher cost (similar to the one in \sect{sec:processor-pro-pfsfe}), and a flavor in-between.
 
-To avoid information leakage about the function (i.e., PF-SFE), we employ the MIPS circuit with its full Instruction Set (IS), which incurs a large overhead due to garbling and evaluating of the entire IS.
+To avoid information leakage about the function (i.e., \acrshort{pf-sfe}), we employ the MIPS circuit with its full Instruction Set (IS), which incurs a large overhead due to garbling and evaluating of the entire IS.
 We can also compile the function using only a subset of the IS: restricted IS (i.e., semi-private function).
 A third alternative is public function mode in which the function is compiled using only an application-specific subset of the IS that is required for executing the function.
 In the following, we discuss these modes of function evaluation and the trade-off between privacy and performance further.
 
 \subsection{Garbled Processor for Public Functions}\label{ssec:processor-mips-sfe-public}
-Using a general-purpose processor with its entire IS in SFE results in garbling a large processor which is very costly and unnecessary since both parties know the function instructions being executed but not their results.
+Using a general-purpose processor with its entire IS in \acrshort{sfe} results in garbling a large processor which is very costly and unnecessary since both parties know the function instructions being executed but not their results.
 Hence, garbling a limited application-specific IS for executing each instruction is sufficient to achieve privacy.
 To further reduce the IS, assuming for example, a function that consists of \numprint{10} instructions, we could theoretically generate $2^{10} -1$ netlists (netlists of IS with different combinations of the 10 instructions, excluding the netlist with zero instructions).
 At run-time, one of these netlists is plugged in (garbled and evaluated) at each instruction step depending on the expected instructions.
@@ -154,7 +154,7 @@ For example, multiplying two 32-bit numbers with the MULT instruction in MIPS re
 We call this mode ``semi-private'' since it only reveals partial information about instructions used in the program (that the program does not use division/multiplication) and increases the probability of guessing an instruction by reducing the subset of possible instructions (restricted IS).
 
 \subsection{Garbled Processor for Private Functions}\label{ssec:processor-mips-sfe-private}
-In the standard 2-party PF-SFE, Alice provides the function $f_{Alice}(\cdot)$ and Bob provides the input data $x_{Bob}$ and the output is $f_{Alice}(x_{Bob})$.
+In the standard 2-party \acrshort{pf-sfe}, Alice provides the function $f_{Alice}(\cdot)$ and Bob provides the input data $x_{Bob}$ and the output is $f_{Alice}(x_{Bob})$.
 Similar to \sect{sec:processor-pro-pfsfe}, the garbled processor receives a list of \emph{instructions} of compiled $f_{Alice}(\cdot)$ and applies them to the input data $x_{Bob}$ in memory and the output will be written back to the memory.
 To avoid information leakage about the private function, we use a general-purpose processor with its entire IS (full IS).
 
@@ -193,7 +193,7 @@ We only use on-chip memory for our proof-of-concept in this work. However, this 
 %
 Such extensions would incur additional area and performance overheads, but would allow upscaling of our implementation to support garbled processor circuits and benchmarks in the Gigabytes range. We emphasize that we provide in this work a proof-of-concept prototype to motivate further research in this direction to bring garbled processors some steps closer to the realm of feasible practical implementations.
 
-\section{ARM2GC: Garbled ARM for SFE}
+\section{ARM2GC: Garbled ARM for \acrshort{sfe}}
 In this section, we present ARM2GC, a GC framework based on a garbled ARM processor and the SkipGate algorithm.
 The framework aims to simplify the development of privacy-preserving applications while keeping the garbling cost as low as the best optimized garbled circuits.
 We first describe the overview of ARM2GC and its API for GC development.
@@ -202,9 +202,9 @@ Next, the effect of SkipGate in reducing the garbling cost is discussed.
 Finally, we discuss why we do not employ Oblivious RAM for ARM2GC.
 
 \subsection{Global Flow}\label{ssec:arm-global}
-The ARM2GC framework allows users to write two-party SFE program in C/C++ (or any language that can be compiled to ARM binary code).
+The ARM2GC framework allows users to write two-party \acrshort{sfe} program in C/C++ (or any language that can be compiled to ARM binary code).
 \fig{fig:frwk_overview} shows the overview of the framework.
-The SFE program is compiled using an ARM cross-compiler, e.g., gcc-arm-linux-gnueabi.
+The \acrshort{sfe} program is compiled using an ARM cross-compiler, e.g., gcc-arm-linux-gnueabi.
 The compiled binary code and the synthesized ARM processor circuit are fed to the SkipGate algorithm as the public input $p$ and the Boolean circuit, respectively.
 
 \begin{figure}[ht]
