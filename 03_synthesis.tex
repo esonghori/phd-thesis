@@ -7,7 +7,7 @@ Then, we discuss the limitation of \acrshort{hdl} synthesis techniques and tools
 \section{Background on \acrshort{hdl} Synthesis}\label{sec:syn-back}
 \acrshort{hdl} synthesis refers to the process of translating an abstract form of  function (circuit) presentation to the gate-level logic implementation using a series of sophisticated optimizations, transformations, and mapping \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
 An \acrshort{hdl} synthesis tool is a computer program which typically accepts the input circuit in some algorithmic form, logic equation, or even a table, and outputs an implementation suitable for the target hardware platform.
-Classic commercial/open-source \acrshort{hdl} synthesis tools accept the input functions in the \acrshort{hdl} format, e.g., Verilog or VHDL \cite{tool:DesignCompiler,tool:ABC,tool:Encounter,tool:HDLdesigner,tool:PandA,decaluwe2004myhdl} but newer ones also accept high level format, e.g., C/C++ \cite{Gupta2004, tool:Vivado}.
+Classic commercial/open-source \acrshort{hdl} synthesis tools accept the input functions in the \acrshort{hdl} format, e.g., Verilog or \acrshort{vhdl} \cite{tool:DesignCompiler,tool:ABC,tool:Encounter,tool:HDLdesigner,tool:PandA,decaluwe2004myhdl} but newer ones also accept high level format, e.g., C/C++ \cite{Gupta2004, tool:Vivado}.
 The common target hardware platforms for the synthesized logic include \acrfull{fpga}, \acrfull{pal}, and \acrfull{asic}.
 
 Typical practical implementations of a logic function utilize a multi-level network of logic elements.
@@ -20,7 +20,7 @@ Logic optimization takes this minimized format, further processes it, and eventu
 
 Mapping is limited by factors such as the available gates (logic functions or standard cells) in the technology library, as well as the drive sizes, delay, power, and area characteristics of each gate.
 
-Newer generations of synthesis programs, referred to as high level synthesis (\acrshort{hls}) tools, accept other forms of input in a higher level programming language \cite{Chapter:Zhang2008,chu1989hyper,corazao1996performance}, e.g., ANSI C, C++, SystemC, or Python.
+Newer generations of synthesis programs, referred to as high level synthesis (\acrshort{hls}) tools, accept other forms of input in a higher level programming language \cite{Chapter:Zhang2008,chu1989hyper,corazao1996performance}, e.g., \acrshort{ansi} C, C++, SystemC, or Python.
 \acrshort{hls} tools are also available in both open-source and commercial forms, for example see \cite{tool:Vivado,decaluwe2004myhdl,tool:PandA}.
 The limitation of the higher level languages is that the behavior of the function is typically decoupled from the timing.
 The \acrshort{hls} tools handle the micro-architecture and transform the untimed or partially timed functional code into a fully timed \acrshort{hdl} implementation, which in turn can be compiled by a classic synthesis tool.
@@ -30,7 +30,7 @@ Therefore, the main driver for the development of \acrshort{hls} tools is user-f
 \section{TinyGarble \acrshort{hdl} Synthesis}\label{sec:syn-tiny}
 As explained in \sect{ssec:prelim-gc}, Yao's \acrshort{gc} protocol requires the underlying function to be represented as a Boolean circuit.
 Previous work like FairPlay \cite{malkhi2004fairplay} and WYSTERIA \cite{rastogi2014wysteria} used custom-made languages to describe a function and generate the circuit for \acrshort{gc} computation.
-In TinyGarble framework, the user may describe a function in a standard \acrshort{hdl} like Verilog or VHDL.
+In TinyGarble framework, the user may describe a function in a standard \acrshort{hdl} like Verilog or \acrshort{vhdl}.
 (She may also write the function in a high level language like C/C++ and convert it to \acrshort{hdl} using a \acrshort{hls} tool.)
 TinyGarble uses existing \acrshort{hdl} synthesis tools to map an \acrshort{hdl} to a list of basic binary gates.
 In digital circuit theory, this list is called a \emph{netlist}.
@@ -51,7 +51,7 @@ It consists of the following four steps:
 \end{figure}
 
 \begin{enumerate}
-\item The input to TinyGarble \acrshort{gc} synthesis is a file that describes a function written in an \acrshort{hdl} like Verilog or VHDL.
+\item The input to TinyGarble \acrshort{gc} synthesis is a file that describes a function written in an \acrshort{hdl} like Verilog or \acrshort{vhdl}.
       The function can also be written in a high level language like C/C++ and automatically translated to \acrshort{hdl} using an \acrshort{hls} tool.
 
 \item A standard \acrshort{hdl} synthesis tool compiles the \acrshort{hdl} to generate the netlist file.
@@ -90,11 +90,11 @@ In this library, we build the arithmetic operations based on a full adder with o
 \section{Technology library}\label{sec:syn-techlib}
 The next step is to map the structural representation onto a \emph{technology library} to generate the netlist.
 A technology library contains basic units available in the target platform.
-For example, tools targeting Field Programmable Gate Arrays (FPGAs) like Xilinx ISE or Quartus contain Look-Up Tables and Flip Flops in their technology libraries, which form the architecture of an \acrshort{fpga}.
-On the other hand, tools targeting Application Specific Integrated Circuits (ASICs) like Synopsys DC, Cadence, and ABC, may contain a more diverse collection of elements starting from basic gates like AND, OR, etc., to more complex units like FFs.
+For example, tools targeting \acrfull{fpga} like Xilinx \acrshort{ise} or Quartus contain Look-Up Tables and Flip Flops in their technology libraries, which form the architecture of an \acrshort{fpga}.
+On the other hand, tools targeting \acrfull{asic} like Synopsys \acrshort{dc}, Cadence, and ABC, may contain a more diverse collection of elements starting from basic gates like AND, OR, etc., to more complex units like \acrshort{ff}s.
 The technology library contains logical descriptions of these units along with performance parameters like their delay and area.
 The goal of the synthesis tool in this step is to generate a netlist of library components that best fit the given constraints.
-For \acrshort{hdl} synthesis, we use tools targeting ASICs as they allow more flexibility in their input technology library.
+For \acrshort{hdl} synthesis, we use tools targeting \acrshort{asic}s as they allow more flexibility in their input technology library.
 We design a custom technology library that contains 2-input gates as they incur minimum garbled tables in the \acrshort{gc} protocol compared to gates with more inputs.
 We set the area of XOR gates to 0 and the area of non-XOR gates to a non-0 value, e.g., 1.
 By choosing area minimization as the only optimization goal, the synthesis tool produces a netlist with the minimum possible number of non-XOR gates.

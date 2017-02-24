@@ -74,7 +74,7 @@ The SkipGate algorithm classifies the gates into four categories in terms of the
 \STATE{\bf{SkipGate\_alice\ (circuit, a, p, cc)}:}
 \STATE{($X^0_a,X^1_a,X^0_b,X^1_a$) = generate\_random\_labels()}
 \STATE{send\_alice\_labels($a, X^0_a, X^1_a$)}
-\STATE{send\_bob\_labels($X^0_b, X^1_b$) \textit{ // through OT}}
+\STATE{send\_bob\_labels($X^0_b, X^1_b$) \textit{ // through \acrshort{ot}}}
 \STATE{circuit.set\_private\_input($X^0_a,X^1_a,X^0_b,X^1_a$)}
 \STATE{circuit.set\_public\_input($p$)}
 \FOR{cid in [$0 ... cc-1$]}
@@ -97,7 +97,7 @@ The SkipGate algorithm classifies the gates into four categories in terms of the
 \begin{algorithmic}[1]
 \STATE{\bf{SkipGate\_bob(circuit, b, p, cc)}:}
 \STATE{$X_a$ = receive\_alice\_labels()}
-\STATE{$X_b$ = receive\_bob\_labels($b$) \textit{//through OT}}
+\STATE{$X_b$ = receive\_bob\_labels($b$) \textit{//through \acrshort{ot}}}
 \STATE{circuit.set\_private\_input($X_a,X_b$)}
 \STATE{circuit.set\_public\_input($p$)}
 \FOR{cid in [$0 ... cc-1$]}
@@ -119,7 +119,7 @@ In Phase 1, the outputs of the gates with public input (Categories i-ii) are com
 In Phase 2, the gates with private inputs (Categories iii-iv) are  garbled/evaluated.
 For each round of sequential cycle, Alice executes Phase 1 and 2 of SkipGate and sends the generated garbled tables to Bob.
 Bob receives the tables and executes two phases in order to evaluate the gates.
-In Line 12 of \alg{alg:alice} and Line 11 of \alg{alg:bob}, the labels associated to the input of flip-flops are transfered to their output for the next cycles as required by sequential GC protocol (see \sect{sec:seq-seq}).
+In Line 12 of \alg{alg:alice} and Line 11 of \alg{alg:bob}, the labels associated to the input of flip-flops are transfered to their output for the next cycles as required by sequential \acrshort{gc} protocol (see \sect{sec:seq-seq}).
 Similar to conventional \acrshort{gc}, at the end, Alice learns pairs of labels for each output wire and Bob has one of the pairs; they share this information to learn the output $c$.
 For example, in the case where Alice intends to learn the final output, she receives the Bob's output label and together with her input labels finds the real output value (Line 15-16 of \alg{alg:alice} and Line 14 of \alg{alg:bob}).
 
