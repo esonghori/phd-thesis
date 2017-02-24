@@ -16,14 +16,14 @@ Of course such a trusted party cannot be found in real scenarios of distributed 
 Thus at best, the trusted third party can be emulated using a cryptographic protocol (the real model)~\cite{goldreich2013general}.
 \fig{fig:multi-party-model} illustrates the idea model with a trusted third party and its emulation in the real model using a secure multi-party computation protocol.
 
-\begin{figure}[ht]
+\begin{figure}[h]
     \centering
-    \begin{subfigure}[tl]{0.35\textwidth}
+    \begin{subfigure}[tl]{0.3\textwidth}
         \includegraphics[width=\textwidth]{emulate_ideal-crop.pdf}
         \caption{Ideal Model}\label{fig:ideal-model}
     \end{subfigure}
 		~~~~
-    \begin{subfigure}[tr]{0.35\textwidth}
+    \begin{subfigure}[tr]{0.3\textwidth}
         \includegraphics[width=\textwidth]{emulate_real-crop.pdf}
         \caption{Real Model}\label{fig:real-model}
     \end{subfigure}\\
@@ -121,13 +121,13 @@ In this context, a Boolean circuit can be defined as a directed graph where node
 The circuits that are used in \acrshort{gc} and other circuit-based \acrshort{sfe} protocols are acrylic Boolean circuits.
 In digital circuit theory, such a circuit is called \emph{combinational circuit} and defined as a memory-less circuit in which outputs are functions only of inputs, see \fig{fig:combinational}.
 
-\begin{figure}[ht]
+\begin{figure}[h]
     \centering
-    \begin{minipage}[t]{0.35\textwidth}
+    \begin{minipage}[t]{0.4\textwidth}
         \includegraphics[width=\textwidth]{combinational-crop.pdf}
         \subcaption{Combinational circuit}\label{fig:combinational}
     \end{minipage}
-    \begin{minipage}[t]{0.30\textwidth}
+    \begin{minipage}[t]{0.45\textwidth}
         \includegraphics[width=\textwidth]{sequential-crop.pdf}
         \subcaption{Sequential circuit}\label{fig:sequential}
     \end{minipage}\\
@@ -143,10 +143,10 @@ The states can change at the end of each \emph{clock cycle}\footnote{The clock s
 In this thesis, we use only D-type \acrshort{ff} shown in \fig{fig:ff}.
 This type of \acrshort{ff} has four inputs: D (data), I (initial), clk (clock), and rst (reset) and one output: Q (latched data).
 
-\begin{figure}[ht]
+\begin{figure}[h]
     \centering
-	\includegraphics[width=0.35\textwidth]{ff-crop.pdf}
-	\caption{Schematic of a D-\acrshort{ff} with initial value.}
+	\includegraphics[width=0.4\textwidth]{ff-crop.pdf}
+	\caption{Schematic of a \acrshort{d-ff} with initial value.}
 	\label{fig:ff}
 \end{figure}
 

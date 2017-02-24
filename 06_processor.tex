@@ -98,7 +98,7 @@ The parties' inputs are connected to the initial signal inputs of \acrshort{ff}s
 Bob's outputs are connected to the outputs of \acrshort{ff}s in the specified address of DM.
 The output address in DM is part of the agreed memory configuration.
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \centering
 \includegraphics[width=0.95\textwidth]{mips-complex-crop.pdf}
 \caption{Lite \acrshort{mips} architecture.
@@ -176,10 +176,10 @@ Its architecture is shown in \fig{fig:evaluator} and consists of:
 As shown in \fig{fig:evaluator}, Bob's input labels in the Label memory are initialized by the OT protocol with Alice.
 The rest of the labels in the Labels memory and the Garbled Tables memory are received in clear-text from Alice.
 
-\begin{figure}
+\begin{figure}[h]
 \centering
-\includegraphics[width=\textwidth]{Evaluator-crop.pdf}
-\caption{Our \acrshort{gc} Evaluator Architecture.}
+\includegraphics[width=0.8\textwidth]{Evaluator-crop.pdf}
+\caption{Architecture of our hardware \acrshort{gc} Evaluator.}
 \label{fig:evaluator}
 \end{figure}
 
@@ -219,9 +219,9 @@ The \acrshort{sfe} program is compiled using an \acrshort{arm} cross-compiler, e
 The SkipGate algorithm supports secure evaluation of function in the form of $f(a,b,p)$ where $a$ and $b$ are Alice's and Bob's inputs and $p$ is public input.
 In ARM2GC, the compiled binary code and the synthesized \acrshort{arm} processor circuit are fed to the SkipGate algorithm as the public input ($p$) and the Boolean circuit ($f(\cdot,\cdot,\cdot)$), respectively.
 
-\begin{figure}[ht]
+\begin{figure}[h]
 \centering
-\includegraphics[width=0.45\textwidth]{frwk_overview-crop.pdf}
+\includegraphics[width=0.7\textwidth]{frwk_overview-crop.pdf}
 \caption{Overview of the ARM2GC framework.}\label{fig:frwk_overview}
 \end{figure}
 
@@ -262,7 +262,7 @@ Replacing conditional branches with conditional instructions in garbled \acrshor
 Moreover, we modify the \acrshort{arm} controller such that conditional instructions always take the same number of cycles regardless of their condition (taken or not taken).
 Otherwise, the program flow will be dependent on the secret condition and as a result, program flow itself will become secret which in turn reduces the efficiency of the execution.
 
-\begin{figure}[t]
+\begin{figure}[h]
     \centering
     \begin{subfigure}{0.40\columnwidth}
         \centering
@@ -315,11 +315,10 @@ Since the cost of fetching instructions remains smaller than that of break-even 
 
 \begin{figure}[h]
 \centering
-\includegraphics[width=0.60\columnwidth]{branch-crop.pdf}
+\includegraphics[width=0.5\textwidth]{branch-crop.pdf}
 \caption{In case of compiler failure to replace a secret branch with conditional instructions, the parties do not know which instruction is executed after the branch.
 Thus, the instruction becomes secret.}
 \label{fig:branch}
-\vspace{-5pt}
 \end{figure}
 
 \fig{fig:branch} shows an example where after execution of a branch on a secret value, the next instruction becomes secret and unknown to parties.
@@ -330,12 +329,12 @@ This means that, instead of having a complete oblivious access to the register f
 This costs far less than 1-out-of-16 oblivious access.
 The cost of oblivious access using \acrshort{mux}s and SkipGate to a {\it subset} of a memory is equal to an oblivious access to a memory with size of the subset.
 
-\begin{figure*}[ht]
+\begin{figure}[h]
 \centering
-\includegraphics[width=0.65\textwidth]{registers-crop.pdf}
+\includegraphics[width=0.9\textwidth]{registers-crop.pdf}
 \caption{Bit-precise details of how source register is fetched while executing two instructions \texttt{add \$1, \$2, \$3} and \texttt{sub \$5, \$6, \$7} at the same time after a branch on a secret condition value \texttt{S}.}
 \label{fig:registers}
-\end{figure*}
+\end{figure}
 
 \fig{fig:registers} illustrates the details of the above example where bit \texttt{S} is the secret bit that separates the branches of computation that each leading into a different instruction.
 The address of the source register is computed by a \acrshort{mux} over the two options in the two instructions: \acrshort{mux}(\texttt{\$2, \$6, S}) = \acrshort{mux}(\texttt{0010b, 0110b, S}) = \texttt{0S10b}.
