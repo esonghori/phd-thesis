@@ -1,4 +1,4 @@
-\chapter{TinyGarble GC Engine}\label{sec:engine}
+\chapter{TinyGarble GC Engine}\label{chap:engine}
 In this section, we explain TinyGarble GC Engine, an implementation of the Yao's GC protocol for sequential circuits.
 First, we explain JustGarble \cite{bellare2013efficient}, and earlier GC engine which TinyGarble is built on. \TODO{Do we need this here?}
 Next, we describe Simple Sequential Circuit Description (SSCD), a format for storing and processing sequential Boolean circuits in our GC Engine and how Verilog netlist is translated into SSCD.
@@ -6,7 +6,7 @@ The communication steps and pipelining of the GC protocol for sequential circuit
 We then introduce the terminate signal that helps user to identify when the circuit output is ready in oder to reduce the garbling cost.
 We implemented the GC engine in C++ and its source code is available in TinyGarble repository\footnote{\url{https://github.com/esonghori/TinyGarble}}.
 
-\section{Yao's GC Protocol Implementation for Sequential Circuits} \label{ssec:engine-gc}
+\section{Yao's GC Protocol Implementation for Sequential Circuits} \label{sec:engine-gc}
 TinyGarble GC engine is an implementation of Yao's protocol for garbling and evaluation of sequential circuits.
 It is built on JustGarble's implementation of the GC protocol \cite{bellare2013efficient}.
 We choses JustGarble because it has a number of advantages over other available implementations: simplicity and efficiency (use of AES block cipher and AES-NI hardware accelerator).
@@ -16,7 +16,7 @@ Most importantly, it does not include implementation of OT that is a crucial par
 (ii) It does not include Half Gate, a recent optimization on the GC protocol \cite{zahur2015two}.
 Half Gate shrinks the GC protocol cost by 33\% by reducing the communication required for an non-XOR gate from 3 labels to 2 labels.
 
-Our GC engine supports both garbling/evaluation and communication between the two parties including OT (see \sect{ssec:engine-comm}).
+Our GC engine supports both garbling/evaluation and communication between the two parties including OT (see \sect{sec:engine-comm}).
 Our implementation of OT also includes its extended version \cite{husted2013gpu} that reduced the computation cost by transferring bulk of messages together.
 We uses OpenSSL library to handle big integer and modular exponentiation in OT.
 Half Gate method is also added to our implementation on top of other optimizations including free-XOR and fixed-key block-cipher.
@@ -31,7 +31,7 @@ An alternative method could be to use a monotonic counter in the circuit generat
 As in previous work, security and correctness of the GC garbling/evaluation follow from the uniqueness of the tweak $T$ and the existing proofs of security and correctness are still valid for TinyGarble (see \cite{lindell2009proof, bellare2013efficient, zahur2015two}).
 
 
-\section{Simple Sequential Circuit Description}\label{ssec:engine-sscd}
+\section{Simple Sequential Circuit Description}\label{sec:engine-sscd}
 JustGarble \cite{bellare2013efficient} developed the Simple Circuit Deception (SCD) format to represent combinational Boolean circuits.
 We develop a similar format called Simple Sequential Circuit Deception (SSCD) that additionally include information about the flip-flops and the newly introduced terminate signal in sequential circuits.
 
@@ -51,7 +51,7 @@ In TinyGarble's SCD format, we index wires according the following order: (1) g\
 TinyGarble's SCD is stored in a human-readable ASCII format.
 A SCD file consists of seven lines: (1) g\_init\_size, e\_init\_size, g\_input\_size, e\_input\_size, dff\_size, output\_size, terminate (an optional 1-bit output indicating that the circuit is done, see \sect{ssec:engine-term}), and number of gates. (2) gates' first input index. (3) gates' second input index. (4) gates' type. (5) outputs index. (6) Flip-Flops' D index. (7) Flip-Flops' I index (chosen from g\_init or e\_init).
 
-\section{Translating Verilog Netlist to SCD}
+\section{Translating Verilog Netlist to SCD}\label{sec:engine-v2sscd}
 The output of TinyGarble synthesis flow is an optimized gate level Verilog code called netlist.
 The netlist format needs to be translated into SCD format to be readable by TinyGarble GC engine.
 We developed a tool called V2SCD that translates a Verilog netlist into a SCD file.
@@ -62,7 +62,7 @@ Finally it writes an ASCII file in TinyGarble's SCD format.
 % TinyGarble's V2SCD accepts a Verilog netlist with a format that is suitable for Garbling/Evaluation.
 % The ports of the netlist should include the following signals: clk, rst, g\_init, e\_init, g\_input, e\_input, o, terminate where clk is clock cycle, rst is an active high reset, g\_init is Alice's initial values, e\_init is Bob's initial values, g\_input is Alice's inputs, e\_input is Bob's input, terminate is the terminate signal, and o is the output port.
 
-\section{Communication}\label{ssec:engine-comm}
+\section{Communication}\label{sec:engine-comm}
 %In Yao's GC protocol, the parties have to send and receive information in order to find the result.
 The JustGarble implementation of the GC protocol lacks the communication features required by the GC protocol.
 We implemented and integrated these features into our GC engine.
@@ -84,7 +84,7 @@ Alice sends labels corresponding to her initial values (g\_init) to Bob as well 
 The initial labels are sent only for the first cycle.
 The same goes for the Bob's initial and input values, but through OT.
 
-\subsection{Pipelining and Low Memory Mode}
+\subsection{Pipelining and Low Memory Mode}\label{sec:engine-memory}
 In the simple communication scheme described above the memory required to store the labels is not scalable in terms of the number of sequential cycles $c$.
 Both Alice and Bob has to store all the labels in the memory for all $c$ cycles.
 To avoid such large memory footprint, we design an exclusive\TODO{why exclusive?} communication mode for sequential circuits that reduces the memory footprint by pipelining the garbling/evaluation.
@@ -107,8 +107,8 @@ Since we are using the OT extension, the cost of one invocation of OT is almost 
 This means that when the number of Bob's inputs (bit-widths of e\_input times $c$) are lager than 128 the cost of transferring labels through OT increases using pipelining.
 Therefore, there is a trade-off between cost of multiple invocation OT and memory footprint when the number of Bob's input or sequential cycles are large.
 
-\section{Terminate Signal}\label{ssec:engine-term}
-As explained in \sect{ssec:sequen-seq}, sequential circuits are required to be garbled/evaluated for a number of sequential cycles ($c$ cycles).
+\section{Terminate Signal}\label{sec:engine-term}
+As explained in \chap{chap:seq}, sequential circuits are required to be garbled/evaluated for a number of sequential cycles ($c$ cycles).
 To ensure privacy, $c$ has to be determined regardless of the inputs and such that the circuit functionality is ensured to be finished during that number of cycles, i.e., the worst case scenario.
 Some circuits can finish the computation faster than their predetermined number of cycles.
 For example, the sequential circuit presented in \cite{riazi2017toward} for Stable Match algorithm of $n$ pairs can finish the computation in $\BigO{n}$ while in the worst case scenario, the number of cycles is $\BigO{n^2}$.

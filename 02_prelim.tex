@@ -1,10 +1,10 @@
 % !TEX root = 0_main.tex
-\chapter{Preliminaries and Background}\label{chap:prelim}
+\chapter{Preliminaries and Background}\label{ch:prelim}
 In this chapter, we provide a short background about secure multi-party computation and the generalized problem of secure function evaluation (SFE).
 Next, we introduce an important special case of two-party SFE problem and how Yao's Garbled Circuit protocol can solve it.
 Then, we explain basics about combinational and sequential Boolean circuits that are used in the GC protocol to describe functions.
 
-\section{Secure Multi-party Computation}
+\section{Secure Multi-party Computation}\label{sec:prelim-smc}
 In a secure multi-party computation problem, mutually suspicious parties with private attributes wish to compute a joint function on their attributes.
 For example, a group of people wish to find their average salary while keeping their own salary private.
 The parties have to use some sort of distributed protocol to evaluate and learn the output of the function.
@@ -30,7 +30,7 @@ Thus at best, the trusted third party can be emulated using a cryptographic prot
     \caption{Emulation of a trusted third-party in secure multi-party computation (schematic based on~\cite{goldreich2013general}).}\label{fig:multi-party-model}
 \end{figure}
 
-\subsection{Secure Function Evaluation}
+\subsection{Secure Function Evaluation}\label{ssec:prelim-sfe}
 Secure Function Evaluation (SFE) is more general case of secure multi-party computation in which parties are able to evaluate any arbitrary function on their attributes.
 Formally in SFE, there are $p$ parties that are able to securely communicate to each other.
 Each party has an attribute denoted by $i_k$ where $k$ is party identifier.
@@ -41,7 +41,7 @@ The function $f$ can also be described as a tuple of functions $f = (f_1, f_2, .
 A common special case is where $f = f_1 = f_2 = ... = f_p$, meaning all parties receive the same output.
 For example in case of the average of salaries, the result of the average function is evaluated and shared with all the participating parties.
 
-\section{Two-Party Secure Function Evaluation}
+\section{Two-Party Secure Function Evaluation}\label{sec:prelim-2sfe}
 Two-party SFE is an important special case of general secure multi-party computation that was introduced and solved by Andrew Yao in his seminal work \cite{yao1986generate}.
 In this problem, there are two parties: Alice and Bob; each has an attribute (input) $a$ and $b$ and they want to compute $(o_1, o_2) = (f_1(a, b), f_2(a, b))$ where $o_1$ belong to Alice and $o_2$ belongs to Bob and $f_1$ and $f_2$ are arbitrary polynomial-time computable functions.
 \fig{fig:two-party-sfe} illustrates the real model for two-party SFE.
@@ -58,17 +58,17 @@ First, we introduce the adversary model supposed for the GC protocol.
 Next, we describe an important cryptographic primitive called Oblivious Transfer used in the GC protocol.
 Then, we explain Yao's GC protocol and its recent improvements.
 
-\subsection{Adversary Model}
+\subsection{Adversary Model}\label{ssec:prelim-adv}
 We assume that all the parties are semi-honest which means that they follow the protocol exactly as specified without deviation or malicious behavior but they try to learn as much as possible about the other party's input from the information they receive during the protocol.
 This model is often called honest-but-curious (HBC) adversary model in the literature and it is the basis for building a stronger security protocol.
 This model can be generalized to more advanced adversary models that are typically addressed by cut-and-chose methods through multiple runs of the basic HBC model~\cite{lindell2007efficient, lindell2012secure}.
 
-\subsection{Oblivious Transfer}\label{sect:prelim-OT}
+\subsection{Oblivious Transfer}\label{ssec:prelim-ot}
 Oblivious Transfer (OT)~\cite{naor2005computationally} is a cryptographic protocol based on asymmetric cryptography executed between two parties: Alice (sender) and Bob (receiver).
 Through OT, Bob selects and receives a number of messages from a set provided by Alice without revealing his selection to her.
 In a special case of $1$-out-of-$2$ OT protocol ($\textrm{OT}^2_1$), Alice holds a pair of messages $(m_{0}, m_{1})$; Bob holds a selection bit $b \in \{0, 1\}$ and obtains $m_{b}$ without revealing $b$ to Alice and learns nothing about $m_{1-b}$.
 
-\subsection{Yao's Garbled Circuit Protocol}\label{sect:prelim_gc}
+\subsection{Yao's Garbled Circuit Protocol}\label{ssec:prelim-gc}
 Yao's Garbled Circuit protocol~\cite{yao1986generate} allows two parties Alice, called the \textit{Garbler} and Bob, called the \textit{Evaluator}, to jointly compute a function $(o_{Alice}, o_{Bob}) = f(a, b)$ on their private attributes (inputs) $a$, provided by Alice and $b$, provided by Bob such that none of them reveal their inputs to each other.
 In the end, Alice learns $o_{Alice}$ and Bob learns $o_{Bob}$.
 The steps of Yao's protocol are described below.
@@ -87,37 +87,37 @@ The steps of Yao's protocol are described below.
       Alice sends the mapping for $o_{Bob}$ to Bob and Bob sends the labels for $o_{Alice}$ to her, so they can determine the actual value of outputs.
 \end{enumerate}
 
-\subsection{Recent Improvements on the GC Protocol}
+\subsection{Recent Improvements on the GC Protocol}\label{ssec:prelim-imp}
 Throughout the last decade, the GC protocol has gone through a number of theoretical improvements that reduce its computation and communication.
 We describe the most important of these improvements here.
 
-\subsubsection{Free XOR}
+\subsubsection{Free XOR}\label{sssec:prelim-freexor}
 The most significant optimization to GC so far is Free XOR proposed in~\cite{kolesnikov2008improved}.
 In this optimization, for any wire $w$, Alice only generates the label $X_w^{0}$ and computes the label corresponding to 1 as $X_w^{0}\oplus (R \parallel 1)$ where $\parallel$ represents bit concatenation and
 $R$ is a global random ($k-1$)-bit value known only to Alice.
 With this convention, the label for the output of an XOR gate with inputs $a$, $b$ and output $o$ can simply be computed as $X_{o} = X_{a} \oplus X_{b}$.
 Thus it does not need computation or transfer of the garbled tables and the XOR gate becomes \textit{free}.
 
-\subsubsection{Row Reduction}
+\subsubsection{Row Reduction}\label{sssec:prelim-row}
 Row Reduction optimization reduces the size of the tables for the non-XOR gates by $25\%$~\cite{naor1999privacy}.
 Here, instead of generating a label for the output wire of a gate randomly, the output label is produced as a function of the labels of the inputs.
 Alice generates the output label such that the first entry of the garbled table becomes all $0$ and no longer needs to be sent.
 
-\subsubsection{Garbling With a Fixed-key Block Cipher}
+\subsubsection{Garbling With a Fixed-key Block Cipher}\label{sssec:prelim-aes}
 This method allows to efficiently garble and evaluate non-XOR gates using fixed-key AES~\cite{bellare2013efficient}.
 In this garbling scheme which is compatible with the Free XOR and Row Reduction techniques, the output label $X_{o}$ is encrypted with the input label $X_{a}$ and $X_{b}$ using the encryption function $E(X_a,X_b,T,X_o) = \pi(K) \oplus K \oplus X_o$, where $K=2X_a\oplus4X_b\oplus T$, $\pi$ is a fixed-key block cipher (e.g., instantiated with AES), and $T$ is a unique-per-gate number (e.g., gate identifier) called \emph{tweak}.
 A comprehensive proof of security for this method is provided in~\cite{bellare2013efficient}.
 
-\subsubsection{Half Gate}
-The Half Gate method utilizes both free-XOR and row reduction and reduces the cost of AND gates by an additional $25\%$~\cite{zahur2015two}.
+\subsubsection{Half Gate}\label{sssec:prelim-half}
+The Half Gate method utilizes both free-XOR and row reduction and reduces the cost of non-XOR gates by an additional $25\%$~\cite{zahur2015two}.
 Thus, XOR gates remain free and only two rows of a garbled table are required to be communicated between parties for non-XOR gates.
 
-\section{Boolean Circuits}
+\section{Boolean Circuits}\label{sec:prelim-circuit}
 In SFE, the parties are able to evaluate an arbitrary function on their private attributes.
 In a number of SFE protocols including Yao's GC, Goldreich-Micali-Wigderson (GMW)~\cite{goldreich1987play}, and Beaver-Micali-Rogoway (BMR)~\cite{beaver1990round}, the function has to be represented as a Boolean circuit.
 In this context, a Boolean circuit can be defined as a directed graph where nodes are 2-input Boolean gates (e.g., AND, OR, NOT, XOR, etc.), edges are wires connecting the gates, and their direction is from the output of a gate to the input of another gate.
 
-\subsection{Combinational Boolean Circuits}
+\subsection{Combinational Boolean Circuits}\label{ssec:prelim-comb}
 The circuits that are used in GC and other circuit-based SFE protocols are acrylic Boolean circuits.
 In digital circuit theory, such a circuit is called \emph{combinational circuit} and defined as a memory-less circuit in which outputs are functions only of inputs, see \fig{fig:combinational}.
 
@@ -136,7 +136,7 @@ In digital circuit theory, such a circuit is called \emph{combinational circuit}
     }\label{fig:combinational-sequential}
 \end{figure}
 
-\subsection{Sequential Boolean Circuits}
+\subsection{Sequential Boolean Circuits}\label{ssec:prelim-seq}
 Another class of circuits in digital circuit theory are \emph{sequential circuits} in which unlike in combinational, the circuit outputs are functions of both inputs and circuit \emph{states}.
 The circuit states are kept in memory elements such as Flip Flops (FF).
 The states can change at the end of each \emph{clock cycle}\footnote{The clock signal oscillates between a low and a high state and its (rising) edge is typically utilized to coordinate the memory updates.}.

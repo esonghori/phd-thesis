@@ -1,21 +1,19 @@
 % !TEX root = 0_main.tex
 \chapter{Hardware Synthesis for GC}\label{chap:syn}
 In this chapter, first we review the background of the HDL synthesis for digital circuits.
-Next, we explain our approach for generating optimized combinational circuit for the GC protocol using HDL synthesis.
-Then, we discuss the limitation of HDL synthesis techniques and tools for generating large combinational circuits.
+Next, we explain TinyGarble GC synthesis flow that generates optimized combinational circuits for the GC protocol using HDL synthesis in .
+Then, we discuss the limitation of HDL synthesis techniques and tools for generating large combinational circuits for GC.
 
-\section{Background on HDL Synthesis}\label{sect:syn-back}
+\section{Background on HDL Synthesis}\label{sec:syn-back}
 HDL synthesis refers to the process of translating an abstract form of  function (circuit) presentation to the gate-level logic implementation using a series of sophisticated optimizations, transformations, and mapping \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
 An HDL synthesis tool is a computer program which typically accepts the input circuit in some algorithmic form, logic equation, or even a table, and outputs an implementation suitable for the target hardware platform.
-Classic commercial/open-source HDL synthesis tools accept the input functions in the HDL format, e.g., Verilog or VHDL~\cite{tool:DesignCompiler,tool:ABC,tool:Encounter,tool:HDLdesigner,tool:PandA,decaluwe2004myhdl} but newer ones also accept high level format, e.g., C/C++~\cite{Gupta2004, tool:Vivado}.
+Classic commercial/open-source HDL synthesis tools accept the input functions in the HDL format, e.g., Verilog or VHDL \cite{tool:DesignCompiler,tool:ABC,tool:Encounter,tool:HDLdesigner,tool:PandA,decaluwe2004myhdl} but newer ones also accept high level format, e.g., C/C++ \cite{Gupta2004, tool:Vivado}.
 The common target hardware platforms for the synthesized logic include Field Programmable Gate Arrays (FPGA), Programmable Array Logic (PAL), and Application-Specific Integrated Circuits (ASIC).
-
-The input functions (circuits), regardless of their HDL or higher level format, can be defined by the implementer to be purely combinational logic that is fully representable by Boolean functions, or they might be sequential logic which is a more general format.
 
 Typical practical implementations of a logic function utilize a multi-level network of logic elements.
 The tools translate the input to the implementation in two steps: (i) Logic minimization; and (ii) logic optimization.
 Logic minimization simplifies the function by combining the separate terms into larger ones containing fewer variables.
-The best known algorithm for logic minimization is the ESPRESSO algorithm~\cite{brayton1984logic}; although the resulting minimization is not guaranteed to be the global minimum, it provides a very close approximation of the optimal, while the solution is always free from redundancy.
+The best known algorithm for logic minimization is the ESPRESSO algorithm \cite{brayton1984logic}; although the resulting minimization is not guaranteed to be the global minimum, it provides a very close approximation of the optimal, while the solution is always free from redundancy.
 This algorithm has been incorporated as a standard logic function minimization step in virtually any contemporary HDL synthesis tool.
 
 Logic optimization takes this minimized format, further processes it, and eventually maps it onto the available basic logic cells or library elements in the target technology (e.g., Look up tables in FPGA and basic Boolean gates in ASIC).
@@ -29,17 +27,17 @@ The HLS tools handle the micro-architecture and transform the untimed or partial
 It is well-known that the performance of the circuits resulting from automatically compiled HLS code into HDL is inferior to the performance of functions directly written in HDL.
 Therefore, the main driver for the development of HLS tools is user-friendliness and not performance.
 
-\section{TinyGarble HDL Synthesis}
-As explained in \sect{sect:prelim_gc}, Yao's GC protocol requires the underlying function to be represented as a Boolean circuit.
+\section{TinyGarble HDL Synthesis}\label{sec:syn-tiny}
+As explained in \sect{ssec:prelim-gc}, Yao's GC protocol requires the underlying function to be represented as a Boolean circuit.
 Previous work like FairPlay \cite{malkhi2004fairplay} and WYSTERIA \cite{rastogi2014wysteria} used custom-made languages to describe a function and generate the circuit for GC computation.
 In TinyGarble framework, the user may describe a function in a standard HDL like Verilog or VHDL.
 (She may also write the function in a high level language like C/C++ and convert it to HDL using a HLS tool.)
 TinyGarble uses existing HDL synthesis tools to map an HDL to a list of basic binary gates.
 In digital circuit theory, this list is called a \emph{netlist}.
 The netlist is generated based on various constraints and objectives such that it is functionally equivalent to the HDL/HLS input function.
-Exploiting synthesis tools helps to reduce number of AND gates in the circuit and and as a result the total garbling time and communication while also making the framework easily accessible.
+Exploiting synthesis tools helps to reduce number of non-XOR gates in the circuit and and as a result the total garbling time and communication while also making the framework easily accessible.
 
-\section{Synthesis Flow}
+\section{Synthesis Flow}\label{sec:syn-flow}
 The global flow of TinyGarble GC synthesis is shown in \fig{fig:synthesis-flow}.
 It consists of the following four steps:
 
@@ -53,18 +51,15 @@ It consists of the following four steps:
 \end{figure}
 
 \begin{enumerate}
-\item
-  The input to TinyGarble GC synthesis is a file that describes a function written in an HDL like Verilog or VHDL.
-  The function can also be written in a high level language like C/C++ and automatically translated to HDL using an HLS tool.
+\item The input to TinyGarble GC synthesis is a file that describes a function written in an HDL like Verilog or VHDL.
+      The function can also be written in a high level language like C/C++ and automatically translated to HDL using an HLS tool.
 
-\item
-  A standard HDL synthesis tool compiles the HDL to generate a netlist file.
-  The synthesis tool optimizes the netlist based on the user defined objectives/constraints and a customized library.
+\item A standard HDL synthesis tool compiles the HDL to generate the netlist file.
+      The synthesis tool optimizes the netlist based on the user defined objectives/constraints and customized library.
+      The contains and library are set such that the netlist is optimized for evaluation in the GC protocol.
 
-\item
-  The netlist is parsed and topologically sorted.
-  Then, the sorted netlist is stored in fomat readable by TinyGarble GC engine.
-
+\item The netlist is parsed and topologically sorted.
+      Then, the sorted netlist is stored in format readable by TinyGarble GC engine.
 \end{enumerate}
 
 \begin{figure}[ht]
@@ -74,7 +69,7 @@ It consists of the following four steps:
 \label{fig:globalflow_sample}
 \end{figure}
 
-\fig{fig:globalflow_sample} shows examples of files at different steps of TinyGarble GC synthesis flow for the Hamming distance function.
+\fig{fig:globalflow_sample} shows examples of files at different steps of TinyGarble GC synthesis flow for Hamming distance function.
 The \textsl{hamming.c} file contains the description of the function in the C language.
 The user inputs this function to a HLS tool to generate the corresponding description in Verilog.
 The resulting Verilog file is functionally similar to the \textsl{hamming.v} file shown in the figure, but it may look more complicated and be less efficient as it is generated by an automated tool.
@@ -85,14 +80,14 @@ The technology library contains 2-input-1-output logic cells to be compatible wi
 
 In the following, we describe the details of the synthesis steps and how we manipulate the synthesis tools in each of the steps to generate optimized netlists for the GC protocol.
 
-\section{Synthesis library}
+\section{Synthesis library}\label{sec:syn-synlib}
 The first step in the synthesis flow is to convert arithmetic and conditional operations like add, multiply, and if-else to their logical representations that fits best to the user's constraints.
 For example, the sum of two N-bit numbers can be replaced with an N-bit ripple carry adder in case of area optimization or an N-bit carry look ahead adder in case of timing optimization.
 A library that consists of these various implementations is called a \emph{synthesis library}.
 We develop our own synthesis library that includes implementations customized for the GC protocol.
-In this library, we build the arithmetic operations based on a full adder with one AND gate \cite{boyar2006concrete} and conditional operations based on a 2-to-1 multiplexer (MUX) with one AND gate \cite{kolesnikov2008improved}.
+In this library, we build the arithmetic operations based on a full adder with one non-XOR gate \cite{boyar2006concrete} and conditional operations based on a 2-to-1 multiplexer (MUX) with one non-XOR gate \cite{kolesnikov2008improved}.
 
-\section{Technology library}\label{sect:syn-tech}
+\section{Technology library}\label{sec:syn-techlib}
 The next step is to map the structural representation onto a \emph{technology library} to generate the netlist.
 A technology library contains basic units available in the target platform.
 For example, tools targeting Field Programmable Gate Arrays (FPGAs) like Xilinx ISE or Quartus contain Look-Up Tables and Flip Flops in their technology libraries, which form the architecture of an FPGA.
@@ -101,20 +96,20 @@ The technology library contains logical descriptions of these units along with p
 The goal of the synthesis tool in this step is to generate a netlist of library components that best fit the given constraints.
 For HDL synthesis, we use tools targeting ASICs as they allow more flexibility in their input technology library.
 We design a custom technology library that contains 2-input gates as they incur minimum garbled tables in the GC protocol compared to gates with more inputs.
-We set the area of XOR gates to 0 and the area of AND gates to a non-0 value, e.g., 1.
-By choosing area minimization as the only optimization goal, the synthesis tool produces a netlist with the minimum possible number of AND gates.
-This reduces the total computation and communication of the GC protocol due to the Free-XOR optimization~\cite{kolesnikov2008improved}.
+We set the area of XOR gates to 0 and the area of non-XOR gates to a non-0 value, e.g., 1.
+By choosing area minimization as the only optimization goal, the synthesis tool produces a netlist with the minimum possible number of non-XOR gates.
+This reduces the total computation and communication of the GC protocol due to the Free-XOR optimization \cite{kolesnikov2008improved}.
 
 An additional feature of our custom technology library is that it contains non-standard gates (other than basic gates like NOT, AND, NAND, OR, NOR, XOR, and XNOR) to increase flexibility of mapping process.
 For example, the logical functions $F = A\wedge B$ and $F = (\neg A)\wedge B$ requires equal effort in garbling/evaluation.
 However by using only standard gates, the second function will require two gates (a NOT gate and an AND gate) and store one extra pair of labels for $\neg A$ in the memory.
 We include four such non-standard gates with an inverted input in our custom library.
 XOR, XNOR, and NOT gates are free so their area is set to 0.
-The area of the rest of gates, similar to the area of AND, is set 1.
-In order to be consist with the previous work in the literature, we use ``number of AND gates'' to refer to the number of non-free gates in a circuit throughout this thesis.
+The area of the rest of gates, similar to the area of non-XOR, is set 1.
+In order to be consist with the previous work in the literature, we use ``number of non-XOR gates'' to refer to the number of non-free gates in a circuit throughout this thesis.
 Due to the Free-XOR optimization, this metric directly corresponds to time and communication cost of garbling/evaluating the circuit.
 
-\section{Offline Circuit Synthesis}
+\section{Offline Circuit Synthesis}\label{sec:syn-offline}
 In TinyGarble GC synthesis, we use HDL synthesis tools in an offline manner to generate a circuit for a given functionality.
 This offline synthesis followed by a topological sort provides a ready-to-use circuit description for any GC implementations including our TinyGarble GC engine.
 This approach, unlike online circuit generation, does not require misspending time for circuit generation during garbling/evaluation.
@@ -122,7 +117,7 @@ It also enables the use of beneficial synthesis optimization techniques that wer
 Moreover, the synthesis tools have a global view of the circuit, unlike previous work that manually optimized small modules of the circuit.
 This allows more effective optimization for any arbitrary function and set of constraints.
 
-\section{Limitation}\label{sect:syn-limit}
+\section{Limitation}\label{sec:syn-limit}
 The synthesis approach has certain limitations when it comes to generating combinational circuits for extremely large functions.
 The amount of memory and computation resources required by HDL synthesis tools considerably increase for generating large combinational circuits.
 Generally, synthesis tools are not designed to support such large scale combination circuits.
