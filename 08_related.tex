@@ -51,10 +51,10 @@ Generic ways of modifying \acrshort{gc}-based protocols such that they achieve s
 The idea of designing a custom programming language to describe and efficiently compile functions for secure evaluation dates back to Fairplay, the first \acrshort{gc} compiler \cite{malkhi2004fairplay}.
 Fiarplay introduces a custom language created specifically to describe functions, namely the \acrfull{sfdl}.
 \acrshort{sfdl} was compiled to \acrfull{shdl}.
-More powerful languages and compilers were later presented \cite{HKSSW10, kreuter2012billion, rastogi2014wysteria}.
+More powerful languages and compilers were later presented \cite{henecka2010tasty, kreuter2012billion, rastogi2014wysteria}.
 Introduction of a custom programming language is neither user-friendly, nor versatile when compared with a conventional programming languages like C.
 
-Another approach adopted in FastGC~\cite{huang2011faster, HS13}, VMCRYPT~\cite{malka2011vmcrypt}, and ABY~\cite{demmler15aby} for \acrshort{gc} circuit generation is to design a library containing \acrshort{gc} optimized sub-circuits in a general purpose high-level language like Java.
+Another approach adopted in FastGC~\cite{huang2011faster, henecka2013faster}, VMCRYPT~\cite{malka2011vmcrypt}, and ABY~\cite{demmler2015aby} for \acrshort{gc} circuit generation is to design a library containing \acrshort{gc} optimized sub-circuits in a general purpose high-level language like Java.
 This method requires the user to have a thorough understanding of the circuit description of the secure function as the circuits and their decomposition into sub-circuits has to be specified manually.
 
 The first \acrshort{gc} implementation supporting a general purpose language is presented in~\cite{holzer2012secure}, which supports ANSI-C.
@@ -75,7 +75,7 @@ TinyGarble also limits the programmer to a hardware level language which is less
 Our work utilizes TinyGarble's methodology to generate the most optimized Boolean circuit for the \gls{arm} processor.
 The big advantage of \gls{arm2gc} is that the function to be evaluated securely can be written in any programming language and compiled with any \gls{arm} compiler of choice.
 
-The work in~\cite{wang2015secure} accepts a function as a MIPS machine code, which allows the programmer to describe the function in a language of her choice and compile with a standard compiler.
+The work in~\cite{wang2016secure} accepts a function as a MIPS machine code, which allows the programmer to describe the function in a language of her choice and compile with a standard compiler.
 They design a MIPS emulator to securely execute the code.
 To avoid emulating the large number of instructions supported by the MIPS machine, they perform a data independent static analysis before execution of the program to build a small instruction bank and ALU circuit tailored for each processor cycle.
 In contrast, our approach performs this optimization with bit-precision instead of instruction-precision.

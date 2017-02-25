@@ -48,11 +48,11 @@ Some of these reasons also provide a rationale for sequential description of a f
   \label{fig:open-sequential}
 \end{figure}
 
-During the evaluation of a sequential circuit, the combinational block is evaluated $c$ times where $c$ is the number of sequential cycles that the circuit operates.
+During the evaluation of a sequential circuit, the combinational block is evaluated $cc$ times where $cc$ is the number of sequential cycles that the circuit operates.
 We can visualize this process as the unrolled combinational representation of the sequential circuit as shown in \fig{fig:open-sequential}.
-$c$ also shows the folding factor of the sequential circuit ($c=1$ means the circuit is combinational).
+$cc$ also shows the folding factor of the sequential circuit ($cc=1$ means the circuit is combinational).
 The inputs/outputs of the unrolled circuit are the inputs/outputs of the combinational block in all the cycles.
-The present states at each cycle $\textrm{cid}$, where $0 \le \textrm{cid} < c$, are equal to the next states at the previous cycle ($\textrm{cid}-1$).
+The present states at each cycle $\textrm{cid}$, where $0 \le \textrm{cid} < cc$, are equal to the next states at the previous cycle ($\textrm{cid}-1$).
 The present states at $\textrm{cid}=0$ are equal to the input initial value.
 
 In digital hardware, at edge of a cycle, the value of D of an \acrshort{ff} is latched and then transfered to the Q in the next clock cycle.
@@ -60,7 +60,7 @@ In garbling/evaluating of a sequential circuit, an \acrshort{ff} operates as a s
 Thus, it can be dealt with latching the labels from the flip-Flop input D in $\textrm{cid}$ to output Q in $\textrm{cid}+1$.
 Signal clk and rst of \acrshort{ff} can be ignored in sequential \acrshort{gc}.
 
-Garbling/evaluation of the sequential circuit is equivalent of garbling its gates for $c$ times.
+Garbling/evaluation of the sequential circuit is equivalent of garbling its gates for $cc$ times.
 To make sure that the security and correctness of the \acrshort{gc} protocol still holds for the sequential circuits, we use combination of cycle index and gate identifier for the the encryption tweak $T$ (see \sect{sssec:prelim-aes}).
 This way a unique tweak is assigned for the same gates in different cycles makes it same as garbling a unrolled combinational circuit.
 
@@ -114,7 +114,7 @@ At each cycle, the output of the selected sub-circuit is stored in the \acrshort
 \end{figure}
 
 The number of gates that has to garbled/evaluated in the combinational circuit is $C_{U1}+4*C_{U2}+C_{U3}$, where $C_{Ui}$ is the number of gates in $Ui$ sub-circuit.
-Since the sequential circuit has to be garbled/evaluated for 6 times, the total gates for sequential circuit is $6*(C_{U1}+C_{U2}+C_{U3}+C_{\acrshort{mux}})$, where $C_{\acrshort{mux}}$ is number of non-XOR in the \acrshort{mux}.
+Since the sequential circuit has to be garbled/evaluated for $cc=6$ times, the total gates for sequential circuit is $6*(C_{U1}+C_{U2}+C_{U3}+C_{\acrshort{mux}})$, where $C_{\acrshort{mux}}$ is number of non-XOR in the \acrshort{mux}.
 The difference between the cost of the combinational and the sequential circuits is $5*C_{U1}+2*C_{U1}+5*C_{U3}+6*C_{\acrshort{mux}})$.
 We call this difference the sequential \textit{overhead} for garbling an asymmetrical function.
 
