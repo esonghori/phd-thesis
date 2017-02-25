@@ -215,16 +215,16 @@ Finally, we discuss why we do not employ \acrshort{oram} for \gls{arm2gc}.
 \subsection{Global Flow}\label{ssec:arm-global}
 The \gls{arm2gc} framework allows users to write two-party \acrshort{sfe} program in C/C++ (or any language that can be compiled to \gls{arm} binary code).
 \fig{fig:frwk_overview} shows the overview of the framework.
-The framework benefits from the \gls{skipgate} algorithm to reduce the cost of garbling the ARM processor.
+The framework benefits from the \gls{skipgate} algorithm to reduce the cost of garbling the \gls{arm} processor.
 As described in \chap{chap:skipgate}, the \gls{skipgate} algorithm supports secure evaluation of circuits in the form of $f(a,b,p)$ where $a$ and $b$ are Alice's and Bob's inputs and $p$ is a public input known to both parties.
-In the \gls{arm2gc} framework, the circuit $f(\cdot,\cdot,\cdot)$ is the circuit of ARM processor and the public input $p$ is the compiled binary code of the user's \acrshort{sfe} program.
-In order to avoid confusion with ARM circuit, we denote the user's function with $g$.
+In the \gls{arm2gc} framework, the circuit $f(\cdot,\cdot,\cdot)$ is the circuit of \gls{arm} processor and the public input $p$ is the compiled binary code of the user's \acrshort{sfe} program.
+In order to avoid confusion with \gls{arm} circuit, we denote the user's function with $g$.
 Similar to other two-party \acrshort{sfe} functions, $g(\cdot,\cdot)$ has two inputs, one from Alice and one from Bob.
 The high-level code of $g(\cdot,\cdot)$ is compiled using an \gls{arm} cross-compiler, e.g., gcc-arm-linux-gnueabi.
-The compiled binary code of $g(\cdot,\cdot)$ is then passed to the ARM circuit as the public input $p$.
-The parties' private inputs ($a$ and $b$) are passed directly to ARM circuit: $f(a,b,p)$.
+The compiled binary code of $g(\cdot,\cdot)$ is then passed to the \gls{arm} circuit as the public input $p$.
+The parties' private inputs ($a$ and $b$) are passed directly to \gls{arm} circuit: $f(a,b,p)$.
 The \gls{skipgate} algorithm then securely evaluate $f(a,b,p)$ by reducing the circuit into the simpler circuit of $f_{p}(a,b) = f(a,b,p)$.
-The ARM circuit computes the function $g(\cdot,\cdot)$ on the private inputs and returns its output: $c = f(a,b,p) = g(a,b)$.
+The \gls{arm} circuit computes the function $g(\cdot,\cdot)$ on the private inputs and returns its output: $c = f(a,b,p) = g(a,b)$.
 
 \begin{figure}[h]
 \centering
@@ -250,7 +250,7 @@ The other \acrshort{ff}s in the stack, output, pipeline registers, and the regis
 The \gls{arm} circuit is garbled using sequential garbling process of \gls{tinygarble} \acrshort{gc} engine (see \appx{chap:engine}) for a pre-specified number of sequential cycles $cc$.
 
 A signal called \textit{terminate} is produced by the \gls{arm} circuit that indicates if \texttt{gc\_main} function is returned.
-The signal can be revealed to the parties once in $T$ cycles (predetermined by parties) to reduce the total number of cycles of garbling the \gls{ARM} circuit.
+The signal can be revealed to the parties once in $T$ cycles (predetermined by parties) to reduce the total number of cycles of garbling the \gls{arm} circuit.
 For $T=1$, the parties instantly identify the termination, but the exact number of cycles the function evaluated for the given inputs is revealed.
 A larger $T$ would reduce this information leakage, but increase the garbling cost.
 Appendix \ref{sec:engine} provides more details about the support of the terminate signal in \gls{tinygarble} \acrshort{gc} engine.

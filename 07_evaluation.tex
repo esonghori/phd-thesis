@@ -1,27 +1,33 @@
 % !TEX root = 0_main.tex
-\chapter{Evaluation}
-We use a variety of benchmark functions to evaluate the performance and practicability of \gls{tinygarble}.
-In this section, we first describe our experimental setup (\sect{sect:exp}) and metrics for quantifying the performance of \gls{tinygarble} (\sect{ssect:metrics}).
-We outline the performance comparison of \gls{tinygarble} (with \acrshort{hdl} synthesizer and our custom libraries) on combinational benchmark functions with \gls{pcf} \cite{kreuter2013pcf}, one of the best known earlier automated methodologies to generate circuits for garbling in \sect{ssect:customlib}.
-\gls{tinygarble}'s performance in generating sequential circuits for benchmark functions using a standard \acrshort{hdl} synthesis tool is demonstrated in \sect{ssect:seqeval}.
-\sect{ssect:cacheTime} shows the CPU time for various numbers of sequential cycles which demonstrates the effect of memory footprint reduction in garbling time.
-\sect{ssect:HLSeval} shows a comparison between \gls{tinygarble}'s performance using an \acrshort{hls} tool (input written in C) and using a conventional \acrshort{hdl} synthesis tool (input given in Verilog).
-Lastly, \sect{ssect:mipsres} shows the result of our garbled processor and implementation of Hamming distance as a benchmark.
+\chapter{Evaluation}\label{chap:eval}
+This chapter is dedicated to the evaluation of proposed frameworks and algorithms in this thesis.
+We fist discuss the evaluation of \gls{tinygarble} GC synthesis flow for combinational and sequential circuits by comparing its result with that of the prior art (\chap{chap:syn} and \chap{chap:seq}).
+We next discuss the result of the \gls{skipgate} algorithm and its effect on the sequential circuits.
+We then present the result of secure evaluation of \gls{mips} processor for \acrshort{pf-sfe} and \acrshort{sfe}.
+Finally, we reports the result of evaluating \gls{arm2gc} framework.
 
-We also compare the performance of the commercial logic synthesis tool with the academic, open-source tools in Appendix \ref{app:seqos}.
+\section{\gls{tinygarble} Synthesis}\label{sec:eval-tinygarble}
+We use a variety of benchmark functions to evaluate the performance and practicability of \gls{tinygarble} synthesis of combinational and seqeuntial circuits.
+In this section, we first describe our experimental setup and metrics for quantifying the performance of \gls{tinygarble}.
+Next, we outline the performance comparison of \gls{tinygarble} (with \acrshort{hdl} synthesizer and our custom libraries) on combinational benchmark functions with \gls{pcf} \cite{kreuter2013pcf}, one of the best known earlier automated methodologies to generate circuits for garbling.
+We next demonstrate \gls{tinygarble}'s performance in generating sequential circuits for benchmark functions using a standard \acrshort{hdl} synthesis tool.
+Next, we report the \acrshort{cpu} time for various numbers of sequential cycles which demonstrates the effect of memory footprint reduction in garbling time.
+Lastly, we discuss the difference between \gls{tinygarble}'s performance using an \acrshort{hls} tool (input written in C) and using a conventional \acrshort{hdl} synthesis tool (input given in Verilog).
+
+We also compare the performance of the commercial logic synthesis tool with the academic, open-source tools in \appx{chap:open-source}.
 We show that in most cases, the performance of the open-source tool is comparable to the commercial tool.
 
-\section{Experimental Setup}
-The circuit generations are all done on a system with Linux RedHat Server 5.6, 8~GB of memory, and Intel Xeon X5450 CPU @ 3~GHz.
+\subsection{Experimental Setup}
+The circuit generations in this section are done on a system with Linux RedHat Server 5.6, 8~GB of memory, and Intel Xeon X5450 CPU @ 3~GHz.
 We use another system with Ubuntu 14.10 Desktop, 12.0~GB of memory, and Intel Core i7-2600 CPU @ 3.4GHz to assess the timing performance of the sequential garbling scheme in \sect{ssect:cacheTime}.
 
-Two sets of \acrshort{hdl} synthesis tool chains are used in our experiments: one commercial and one open-source (Appendix \ref{app:seqos}).
-Our commercial \acrshort{hdl} level synthesis tool is Synopsis Design Compiler (DC) 2010.03-SP4 \cite{tool:DesignCompiler}.
-We also use the Synopsis Library Compiler from the DC package to interpret our custom technology library.
+Two sets of \acrshort{hdl} synthesis tool chains are used in our experiments: one commercial and one open-source (\appx{chap:open-source}).
+Our commercial \acrshort{hdl} level synthesis tool is \gls{synopsys-dc} 2010.03-SP4 \cite{tool:DesignCompiler}.
+We also use the Synopsys Library Compiler from the DC package to interpret our custom technology library.
 In \sect{ssect:HLSeval}, we utilize Xilinx Vivado \acrshort{hls} \cite{tool:Vivado}, a commercially available \acrshort{hls} tool whose inputs are written in the C/C++ programming language.
 We emphasize that \gls{tinygarble} can operate with any commercial or open-source sequential \acrshort{hdl}-level (or \acrshort{hls}) synthesizer, as long as the synthesizer is capable of performing state-of-the-art logic optimization and mapping algorithms.
 
-\section{Performance Metrics}
+\subsection{Performance Metrics}
 We use the following metrics to measure the efficiency of \gls{tinygarble} for generating garbled circuits:
 
 \begin{itemize}
@@ -41,7 +47,7 @@ We use the following metrics to measure the efficiency of \gls{tinygarble} for g
 	However, in general, negative $\mathit{GTD}$ shows improvement in the number of non-XOR gates and generated garbled tables that results from logic synthesis optimization.
 \end{itemize}
 
-\section{Benchmark functions}
+\subsection{Benchmark functions}
 We evaluate \gls{tinygarble}'s circuit generation method on various benchmark functions.
 Several of these functions have been used in previous works, e.g., \gls{pcf}~\cite{kreuter2013pcf}.
 In the following, we introduce our benchmarks and explain how we fold them into a sequential representation.
@@ -79,7 +85,7 @@ We implement the Keccak-f permutations[$1600$] procedure for realizing this func
 The SHA3 function consists of 24 steps, each with a symmetric structure.
 It can be folded 24 times without any significant overhead.
 
-\section{Combinational Garbled Circuit}
+\subsection{Combinational Garbled Circuit}
 To show the performance gain of using our custom libraries, we compare \gls{tinygarble} combinational circuits with circuits reported in \gls{pcf} \cite{kreuter2013pcf}.
 We choose \gls{pcf} because among the \emph{automated} \acrshort{gc} tools available at the time of writing, it shows better results for most of the benchmarks.
 In some other work like FastGC \cite{huang2011faster}, a number of benchmark circuits have been more aggressively improved (compared to \gls{pcf}) using ad-hoc and mostly manual optimizations, but without a generalizable methodology.
@@ -94,18 +100,18 @@ This means that even without using sequential circuits, the memory footprint can
 In case of Hamming distance, \gls{tinygarble} shows, on average, $80\%$ improvement in number of garbled tables.
 Another automated tool CBMC-\acrshort{gc} \cite{franz2014cbmc} reports better result compared to \gls{pcf} for Hamming 160 (non-XOR $\numprint{4738}$, total gates $\numprint{20356}$).
 However, \gls{tinygarble} shows $66\%$ improvement in number of garbled tables compared to CBMC-\acrshort{gc}.
-In case of 256-bit and 1024-bit Multiplication, and $8\times 8$ and $16\times 16$ Matrix Multiplication, because of the huge (impractical) sizes, Synopsis DC was unable to generate the entire combinational circuit.
-This is because Synopsis DC is a tool developed for commercial applications.
+In case of 256-bit and 1024-bit Multiplication, and $8\times 8$ and $16\times 16$ Matrix Multiplication, because of the huge (impractical) sizes, \gls{synopsys-dc} was unable to generate the entire combinational circuit.
+This is because \gls{synopsys-dc} is a tool developed for commercial applications.
 The real-life applications are almost always written sequentially, otherwise the design would not be scalable or even amenable to offline compilation onto a hardware circuit.
 We emphasize that our sequential circuit ($cc>1$) provides the exact same functionality while having a very small memory footprint compared with the reference circuit.
 
-\subsection{Comparison with Hand-Optimized Circuits}
+\subsubsection{Comparison with Hand-Optimized Circuits}
 The netlists generated by the automated flow of \gls{tinygarble} show similar performance as the hand-optimized netlists in many cases.
 For example, \cite{kolesnikov2009improved} describe an $N$-bit sum circuit with $5N$ gates of which $N$ gates are non-XOR and an $N$-bit comparison circuit with $4N$ gates of which $N$ gates are non-XOR.
 The circuits generated by \gls{tinygarble} have about the same number of gates for these two functions.
 Note that one can always add any hand-optimized module to the synthesis library of \gls{tinygarble}.
 
-\section{Sequential Garbled Circuit}
+\subsection{Sequential Garbled Circuit}
 As described in \sect{sect:sequen}, the user has the degree of freedom to fold a combinational circuit and convert it to a sequential one to reduce the memory footprint.
 $cc$ denotes the number of sequential cycles required to garble/evaluate the circuit.
 This value demonstrates the amount of folding that is performed before the circuit is input to the synthesizer.
@@ -152,7 +158,7 @@ Observe that the savings are typically more for larger bit-widths while extreme 
 
 Because of the \gls{tinygarble} superior scalability, we are able to implement functions that have never been reported before, such as SHA-3, which can be represented using $\numprint{344059}$ and $\numprint{6788}$ gates respectively.
 
-\section{Effect of Folding on Garbling Time}
+\subsection{Effect of Folding on Garbling Time}
 So far, we have only reported the overhead in terms of garbled tables ($\mathit{GTD}$) that is a function of the number of non-XOR gates.
 As explained in \cite{bellare2013efficient}, if we see garbling as a cryptographic primitive, its computation time (without considering communication) will also be interesting.
 In practice, smaller circuits which can fit entirely in the processor cache result in fewer cache misses and therefore, consume less CPU cycles for garbling.
@@ -179,7 +185,7 @@ The CPU time in number of cycles and the approximate memory footprint in KBytes 
 	\label{fig:cpu_time}
 \end{figure}
 
-\section{High Level Synthesis Tools}
+\subsection{High Level Synthesis Tools}
 The design automation community has been working on tools that work with higher-level languages and abstractions than \acrshort{hdl}.
 While a host of commercial and academic \acrshort{hls} tools are available \cite{tool:Vivado, tool:PandA, decaluwe2004myhdl, Gupta2004}, we selected the Xilinx Vivado \acrshort{hls} for compiling C code to \acrshort{hdl} which can then be synthesized using a conventional \acrshort{hdl} synthesis tool.
 The \acrshort{hls} engine in the Vivado suite is built upon the xPilot project \cite{Chapter:Zhang2008}.
@@ -244,33 +250,11 @@ It will store the Hamming distance of $A$ and $B$ in address $1$.
 \caption{Hamming distance assembly code.}\label{figure:hamminassembly}
 \end{figure}
 
-\section{Open Source Logic Synthesis Tools}
-\gls{tinygarble} offers a generic methodology for generating \acrshort{gc} that is transparent to the underlying logic synthesis tool.
-To show this point, we demonstrate an implementation of \gls{tinygarble} using the Yosys \cite{tool:Yosys} and ABC \cite{tool:ABC} logic synthesis tool chain for circuit generation.
-Both of these tools are open-source and available online.
-We compare the performance of the commercial \acrshort{hdl} synthesis tool, i.e., Synopsys DC, with this open-source synthesis tool chain.
-ABC is an academic package developed at the University of California Berkeley.
-Yosys is an \acrshort{hdl}-based synthesis tool which calls ABC for its technology mapping.
-The \acrshort{hdl} inputs for describing both sequential and combinational circuits are written in the Verilog programming language.
-
-We compare the performance of these open-source tools to the commercially available Synopsys DC.
-The results are presented in \tab{table:abc}.
-For comparison purposes, we compute $\mathit{GTD}$ and $\mathit{MFE}$ using the netlists generated by Synopsys DC as reference.
-For most of the benchmarks $\mathit{GTD}$s are either very small or zero which implies that the number of non-XOR gates in circuits generated by Yosys and by Synopsys DC are almost similar.
-In terms of memory footprint, different tools perform better for different benchmark functions.
-These results shows that \gls{tinygarble} is transparent to the underlying logic synthesis tool as long as the tool is up to date with respect to the known methods for logic minimization and mapping.
-Since the logic synthesis tools perform a series of optimizations, they may use different (heuristic) algorithms for some of their internal steps which could lead to slightly different results.
-A user can choose between different synthesis tools based on their performance and availability.
-
-\begin{table}[ht]
-\caption{Comparison of circuit generation performance between the commercial Synopsys DC and Yosys+ABC open source logic synthesizer.}
-\label{table:abc}
-\centering
-\includegraphics[width=0.7\textwidth]{abc-crop.pdf}
-\end{table}
-
 \section{Evaluation Setup of GarbledCPU}\label{ssect:evalset}
-We create different instances of a single-cycle \gls{mips} architecture with specific, restricted, and full \acrshort{isa} to support a trade-off between efficiency and privacy. (Full \acrshort{isa} was proposed in \cite{songhori2015tinygarble} and is reported for comparison.) The different \gls{mips} instances are synthesized using Synopsys Design Compiler DC H-2013.03-SP4 to generate optimized sequential Boolean circuits. These circuits are then evaluated on our hardware \acrshort{gc} evaluator implemented using Vivado 2014.4.1 on a Xilinx Virtex-7 \acrshort{fpga}.
+We create different instances of a single-cycle \gls{mips} architecture with specific, restricted, and full \acrshort{isa} to support a trade-off between efficiency and privacy.
+The result of full \acrshort{isa} \gls{mips} is presented in previous section and is used here for comparison.
+The different \gls{mips} instances are synthesized using \gls{synopsys-dc} H-2013.03-SP4 to generate optimized sequential Boolean circuits.
+These circuits are then evaluated on our hardware \acrshort{gc} evaluator implemented using Vivado 2014.4.1 on a Xilinx Virtex-7 \acrshort{fpga}.
 
 \section{Benchmarks}\label{ssect:bench}
 As benchmarks we used Hamming distance, private set intersection and \acrshort{aes}. We compile these benchmarks from high-level C to \gls{mips} binary using a \gls{mips} cross-compiler. For some benchmarks, assembly code manipulation allows to reduce the number of clock cycles required. To assure correctness of both benchmarks and \acrshort{isa} under test, we simulate the resulting binary file using the Modelsim simulator and calculate the number of required cycles to compute each of the benchmarks, reported in~\tab{tab:cyc_bench}, for accurate performance measurements. For Hamming distance, the number of cycles depends on the size of the input strings. In the PSI benchmark, we compute a variant of PSI called PSI cardinality (PSI-CA) where only the number of common elements is revealed. The sets can have different sizes where each element is 32-bit.  For \acrshort{aes}, we assume that one party holds a 128-bit message and the other party holds eleven round keys each of 128-bit length to avoid unnecessary garbling and evaluation of the round-key generation function.
@@ -300,7 +284,7 @@ PSI & $\numprint{128}$ &$\numprint{14267}$\\
 \end{table}
 
 \section{Synthesis of the GarbledCPU \acrshort{isa}}
-We synthesize the \gls{mips} architecture, shown in~\fig{figure:mips}, with Synopsys DC for different ISs and memory sizes: 32 to 512 32-bit words for instruction and data memories. Generating these Boolean circuits is a one-time process and the circuits can be re-used without incurring further compilation costs. \tab{tab:synres} shows the synthesis time and number of non-XOR gates of the \acrshort{isa}'s with different sizes of memories.
+We synthesize the \gls{mips} architecture, shown in~\fig{figure:mips}, with \gls{synopsys-dc} for different \acrshort{isa}s and memory sizes: 32 to 512 32-bit words for instruction and data memories. Generating these Boolean circuits is a one-time process and the circuits can be re-used without incurring further compilation costs. \tab{tab:synres} shows the synthesis time and number of non-XOR gates of the \acrshort{isa}'s with different sizes of memories.
 
 \begin{table}[ht]
 \caption{Synthesis results of different variants of (\acrshort{isa})}\label{tab:synres}
@@ -409,7 +393,7 @@ BUFG & $\numprint{2}$ & $\numprint{6.25}$
 
 \begin{table}[ht]
 \centering
-\caption{Performance of GarbledCPU for different (ISs) with different memory sizes at $100\textrm{MHz}$ clock frequency.}\label{table:performance}
+\caption{Performance of GarbledCPU for different (\acrshort{isa}s) with different memory sizes at $100\textrm{MHz}$ clock frequency.}\label{table:performance}
 \begin{tabular}{l|r|r|r|r|r}
 \multicolumn{1}{c|}{Memory Size (words)} & \multicolumn{1}{c|}{$\numprint{32}$ } &  \multicolumn{1}{c|}{$\numprint{64}$ } & \multicolumn{1}{c|}{$\numprint{128}$ } & \multicolumn{1}{c|}{$\numprint{256}$ } & \multicolumn{1}{c}{$\numprint{512}$ }  \\ \hline \hline
 \multicolumn{6} {c}{Hamming Distance-\acrshort{isa}}\\ \hline
@@ -465,11 +449,11 @@ Our work w/ pipeline & $\numprint{18500}$ & $\numprint{1.1}$
 We also compare the overall performance of our GarbledCPU with the performance of the proposed software solution in \cite{wang2016secure} on the compatible benchmarks. For computing Hamming distance on two 32-bit integer arrays, Wang et al.'s solution takes $1.24s$ to garble 481K gates (see Table 4 in \cite{wang2016secure}). GarbledCPU requires \numprint{6715} non-XOR gates and \numprint{426} cycles (see Tables \ref{tab:synres} and \ref{tab:cyc_bench}), and thus it takes only $0.0314s$ to evaluate 2.8M gates. Given that garbling time is double the evaluation time, this indicates a speedup of factor 18 for GarbledCPU but with $6\times$ more AND gates for the same functionality. In terms of throughput, GarbledCPU can evaluate 90.8M gates and Wang et al.'s solution can evaluate 776K gates which makes GarbledCPU 117 times faster owing to our hardware implementation. However, this speedup assumes on-chip memory and is likely to be much smaller when utilizing off-chip memory.
 
 \subsection{Evaluation Setup}
-We use Synopsis Design Compiler (DC) H-2013.03-SP4~\cite{tool:DesignCompiler} along with \gls{tinygarble}~\cite{songhori2015tinygarble} synthesis and technology libraries to generate the netlists for the benchmark circuits and the \gls{arm} processor.
+We use \gls{synopsys-dc} H-2013.03-SP4~\cite{tool:DesignCompiler} along with \gls{tinygarble}~\cite{songhori2015tinygarble} synthesis and technology libraries to generate the netlists for the benchmark circuits and the \gls{arm} processor.
 
-For the \gls{arm2gc} framework, we use the Amber \gls{arm} project, an open-source implementation of \gls{arm} v2a ISA on opencores~\cite{santifort2010amber}.
+For the \gls{arm2gc} framework, we use the Amber \gls{arm} project, an open-source implementation of \gls{arm} v2a \acrshort{isa} on opencores~\cite{santifort2010amber}.
 The \gls{arm} circuit is modified as explained in \sect{ssec:arm}.
-Synthesizing the \gls{arm} processor with Synopsis DC takes few hours.
+Synthesizing the \gls{arm} processor with \gls{synopsys-dc} takes few hours.
 However, the process is done only once for a given memory size and it can be used for any set of functions and inputs afterwards.
 The benchmark functions for \gls{arm2gc} are implemented in C and compiled using GNU gcc-arm-linux-gnueabi (Ubuntu/Linaro 5.3.1-14ubuntu2).
 We used \texttt{-Os} compiler optimization flag in order to reduce the number of instructions.
