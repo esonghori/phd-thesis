@@ -3,16 +3,13 @@
 \newacronym{pf-sfe}{PF-SFE}{Private-Function SFE}
 \newacronym{sfe}{SFE}{Secure Function Evaluation}
 \newacronym{gc}{GC}{Garbled Circuit}
-\newacronym{mips}{MIPS}{Microprocessor without Interlocked Pipeline Stages}
 \newacronym{oram}{ORAM}{Oblivious Random-Access Machine}
 \newacronym{ff}{FF}{Flip-Flop}
 \newacronym{mux}{MUX}{Multiplexer}
 \newacronym{hdl}{HDL}{Hardware Description Language}
-\newacronym{arm}{ARM}{Advanced RISC Machine}
 \newacronym{aes}{AES}{Advanced Encryption Standard}
 \newacronym{hls}{HLS}{High-Level Synthesis}
 \newacronym{aes-ni}{AES-NI}{AES New Instructions}
-
 \newacronym{bmr}{BMR}{Beaver-Micali-Rogoway}
 \newacronym{gmw}{GMW}{Goldreich-Micali-Wigderson}
 \newacronym{cisc}{CISC}{Complex Instruction Set Computing}
@@ -20,7 +17,6 @@
 \newacronym{alu}{ALU}{Arithmetic Logic Unit}
 \newacronym{utm}{UTM}{Universal Turing Machine}
 \newacronym{uc}{UC}{Universal Circuit}
-\newacronym{pcf}{PCF}{Portable Circuit Format}
 \newacronym{ip}{IP}{intellectual property}
 \newacronym{fpga}{FPGA}{Field-Programmable Gate Array}
 \newacronym{psi}{PSI}{Private Set Intersection}
@@ -61,3 +57,40 @@
 \newacronym{ise}{ISE}{Integrated Synthesis Environment}
 \newacronym{sfdl}{SFDL}{Secure Function Definition Language}
 \newacronym{shdl}{SHDL}{Secure Hardware Description Language}
+
+\newglossaryentry{arm}
+{
+  name=ARM,
+  description={short for Advanced RISC Machine; is a family of RISC architectures for processors}
+}
+\newglossaryentry{mips}
+{
+  name=MIPS,
+  description={short for Microprocessor without Interlocked Pipeline Stages; is a family of RISC architectures for processors}
+}
+\newglossaryentry{tinygarble}
+{
+  name=TinyGarble,
+  description={is a framework introduced in this thesis for two-party secure function evaluation using Yao's garbled circuit protocol}
+}
+\newglossaryentry{arm2gc}
+{
+  name=ARM2GC,
+  description={is a framework introduced in this thesis for high-level two-party secure function evaluation using Yao's garbled circuit protocol.}
+}
+\newglossaryentry{skipgate}
+{
+  name=SkipGate,
+  description={is an algorithm introduced in this thesis for Yao's garbled circuit protocol to reduce the cost of evaluating sequential circuit.}
+}
+
+\newglossaryentry{pcf}
+{
+  name=PCF,
+  description={short for Portable Circuit Format, is a framework introduced in \cite{kreuter2013pcf} for high-level two-party secure function evaluation using Yao's garbled circuit protocol.}
+}
+\newglossaryentry{frigate}
+{
+  name=Frigate,
+  description={is a framework introduced in \cite{mood2016frigate} for high-level two-party secure function evaluation using Yao's garbled circuit protocol.}
+}

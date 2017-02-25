@@ -64,12 +64,12 @@ Garbling/evaluation of the sequential circuit is equivalent of garbling its gate
 To make sure that the security and correctness of the \acrshort{gc} protocol still holds for the sequential circuits, we use combination of cycle index and gate identifier for the the encryption tweak $T$ (see \sect{sssec:prelim-aes}).
 This way a unique tweak is assigned for the same gates in different cycles makes it same as garbling a unrolled combinational circuit.
 
-In \appx{chap:engine}, we discuss our implementation of the \acrshort{gc} protocol for sequential circuits in TinyGarble \acrshort{gc} engine.
+In \appx{chap:engine}, we discuss our implementation of the \acrshort{gc} protocol for sequential circuits in \gls{tinygarble} \acrshort{gc} engine.
 We also explain in more detail about how the encryption tweak is set and how it affects the security and correctness of the \acrshort{gc} protocol.
 
 \section{Synthesis Sequential Circuit}\label{sec:seq-syn}
-Fortunately, extending TinyGarble \acrshort{gc} synthesis to support sequential circuits is straightforward since the synthesis tools are designed to work them in the first place.
-We add memory element of sequential circuits into the technology library of TinyGarble (see \sect{sec:syn-techlib}).
+Fortunately, extending \gls{tinygarble} \acrshort{gc} synthesis to support sequential circuits is straightforward since the synthesis tools are designed to work them in the first place.
+We add memory element of sequential circuits into the technology library of \gls{tinygarble} (see \sect{sec:syn-techlib}).
 These elements can be implemented as \acrshort{ff}s which are connected to a clock signal.
 Although in conventional \acrshort{asic} design \acrshort{ff}s are typically as costly as four NAND gates, as seen above in our \acrshort{gc} application, \acrshort{ff}s do not have any impact on the garbling/evaluation process as they require no cryptographic operations.
 Therefore, we set the area of \acrshort{ff}s to 0 to show its lack of impact on computation and communication time of garbling/evaluation.

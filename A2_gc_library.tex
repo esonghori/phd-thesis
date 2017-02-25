@@ -1,15 +1,15 @@
 \chapter{Garbled Circuit Library}\label{sec:library}
-In this section, we introduce TinyGarble library that consists of \acrshort{gc} optimized circuits for complex mathematical/logical operations that can be used as a building blocks practical applications.
-The SSCD and netlist files of the circuits in the library can be found in TinyGarble repository\footnote{\url{https://github.com/esonghori/TinyGarble/blob/master/scd/netlists/v.tar.gz}}.
+In this section, we introduce \gls{tinygarble} library that consists of \acrshort{gc} optimized circuits for complex mathematical/logical operations that can be used as a building blocks practical applications.
+The SSCD and netlist files of the circuits in the library can be found in \gls{tinygarble} repository\footnote{\url{https://github.com/esonghori/\gls{tinygarble}/blob/master/scd/netlists/v.tar.gz}}.
 
 
 \section{Division and Remainder}
-The TinyGarble library includes the circuit for integer division which takes two numbers as inputs and outputs quotient and remainder (modulus).
+The \gls{tinygarble} library includes the circuit for integer division which takes two numbers as inputs and outputs quotient and remainder (modulus).
 The library includes the circuits for 16-, 32-, and 64-bit integers.
 Two additional circuits are also included in the library that output only quotient and remainder respectively and have fewer number of gates compared to the original circuit.
 
 \section{Floating Point Operations}
-The TinyGarble library includes an extensive set of operations for both IEEE-754 single- and double-precision floating-point numbers.
+The \gls{tinygarble} library includes an extensive set of operations for both IEEE-754 single- and double-precision floating-point numbers.
 It supports addition (fp\_add), subtraction (fp\_sub), division (fp\_div), and multiplication (fp\_mult) of two inputs.
 A comparison circuit (fp\_cmp) is also included that outputs three bits: less than, greater than, equal signals.
 The natural exponentiation circuit (fp\_exp) receives a floating-point input $a$ and computes $e^a$.
@@ -109,13 +109,13 @@ It means 2 to 3.7 times improvement compared to the previous custom compilers.
 The results of both single precision (float) and double precision (double) are reported in the table.
 Pullonen et al, is the only previous work that reported the result for the similar floating-point operations \cite{pullonen2015combining}.
 They used the custom compiler of CBMC-\acrshort{gc} \cite{franz2014cbmc} to compile software implementations of these floating-point operations.
-As can be seen in the table, the circuits in TinyGarble library outperforms the implementation in \cite{pullonen2015combining}.
+As can be seen in the table, the circuits in \gls{tinygarble} library outperforms the implementation in \cite{pullonen2015combining}.
 
 \begin{table}[]
 \center
 \caption{The result of floating-point functions.}\label{table:float}
 \begin{tabular}{l|l||rr||rr||rr}
-\multirow{2}{*}{Function}   & \multicolumn{1}{c||}{\multirow{2}{*}{Precision}} & \multicolumn{2}{c||}{\begin{tabular}[c]{@{}c@{}}Previous work\\\cite{pullonen2015combining}\end{tabular}}                             & \multicolumn{2}{c||}{\begin{tabular}[c]{@{}c@{}}TinyGarble \\Library\end{tabular}}                                & \multicolumn{2}{c}{Comparison}                   \\ \cline{3-8}
+\multirow{2}{*}{Function}   & \multicolumn{1}{c||}{\multirow{2}{*}{Precision}} & \multicolumn{2}{c||}{\begin{tabular}[c]{@{}c@{}}Previous work\\\cite{pullonen2015combining}\end{tabular}}                             & \multicolumn{2}{c||}{\begin{tabular}[c]{@{}c@{}}\gls{tinygarble} \\Library\end{tabular}}                                & \multicolumn{2}{c}{Comparison}                   \\ \cline{3-8}
                             & \multicolumn{1}{c||}{}                           & \multicolumn{1}{c}{Non-XOR} & \multicolumn{1}{c||}{Total gates} & \multicolumn{1}{c}{Non-XOR} & \multicolumn{1}{c||}{Total gates} & \multicolumn{1}{c}{GTD} & \multicolumn{1}{c}{MFE} \\ \hline \hline
 \multirow{2}{*}{fp\_add}    & Single                                          & 5,671                       & 7,052                            & 936                         & 1,562                            & -83.5\%                 & 4.51                    \\
                             & Double                                          & 13,129                      & 15,882                           & 2,030                       & 3,533                            & -84.5\%                 & 4.50                    \\ \hline \hline

@@ -30,47 +30,47 @@ Moreover, their memory management gets complicated when the number of gates is l
 The second approach is to write a new compiler for a higher-level language that translates the instructions into the Boolean logic, e.g., \cite{malkhi2004fairplay,kreuter2012billion,kreuter2013pcf,franz2014cbmc}.
 Although compiler-based approaches can perform global optimizations, they often unroll the circuits into a large list of gates.
 For example, the description of a circuit with one billion gates has at least size $2 \log_2 (10^9) \cdot 10^{9} \approx 7$~GB.
-To reduce circuit description size, the compiler proposed in \cite{kreuter2013pcf}, called PCF (Portable Circuit Format), does not unroll the loops in the circuit until the \acrshort{gc} protocol runs, and therefore seems to have a better scalability than the other compilers.
+To reduce circuit description size, the compiler proposed in \cite{kreuter2013pcf}, called \gls{pcf}, does not unroll the loops in the circuit until the \acrshort{gc} protocol runs, and therefore seems to have a better scalability than the other compilers.
 As we elaborate in related work (see \sect{sect:related}), the existing approaches, including the above proposals, have certain limitations when it comes to real implementation.
 
-Our approach, TinyGarble, is based on synthesizing and optimizing circuits for the \acrshort{gc} protocol as sequential circuits while leveraging powerful logic synthesis techniques with our newly introduced custom-libraries.
+Our approach, \gls{tinygarble}, is based on synthesizing and optimizing circuits for the \acrshort{gc} protocol as sequential circuits while leveraging powerful logic synthesis techniques with our newly introduced custom-libraries.
 
 Our solution simply views the circuit generation for \acrshort{gc} as an atypical logic synthesis task that, if properly defined, can still be addressed by conventional hardware synthesis tools.
-By posing the circuit generation for Yao's protocol as a hardware synthesis problem, TinyGarble naturally benefits from the elegant algorithms and powerful techniques already incorporated in existing logic synthesis solutions, see, \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
+By posing the circuit generation for Yao's protocol as a hardware synthesis problem, \gls{tinygarble} naturally benefits from the elegant algorithms and powerful techniques already incorporated in existing logic synthesis solutions, see, \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
 This view provides a radically different perspective on this important problem in contrast to the earlier work in this area that attempted to generate circuits by building new libraries for general purpose languages such as Java \cite{huang2011faster,malka2011vmcrypt}, custom compilers such as \cite{kreuter2013pcf,franz2014cbmc}, or introduction of new programming languages such as \cite{malkhi2004fairplay,rastogi2014wysteria}.
 
-TinyGarble introduces new techniques for minimizing the number of non-XOR gates which directly results in reduced computation and communication required for the \acrshort{gc} protocol.
+\gls{tinygarble} introduces new techniques for minimizing the number of non-XOR gates which directly results in reduced computation and communication required for the \acrshort{gc} protocol.
 We do so by integrating the cost function in the new custom libraries that we design and use within our logic synthesis flow.
-This way, we are able to gain up to $80\%$ improvement in the number of non-XOR gates for benchmark circuits compared to PCF \cite{kreuter2013pcf}.
-The TinyGarble methodology is automated, i.e., the savings can be achieved for many functions synthesized by our method, regardless of their sophistication.
+This way, we are able to gain up to $80\%$ improvement in the number of non-XOR gates for benchmark circuits compared to \gls{pcf} \cite{kreuter2013pcf}.
+The \gls{tinygarble} methodology is automated, i.e., the savings can be achieved for many functions synthesized by our method, regardless of their sophistication.
 
-One significant contribution of TinyGarble, which differentiates it from the previous work, is expressing the function in a very compact format, namely as a sequential logic.
+One significant contribution of \gls{tinygarble}, which differentiates it from the previous work, is expressing the function in a very compact format, namely as a sequential logic.
 The earlier work in this area mainly described functions in a combinational format, where the value of the output is determined entirely by the circuit inputs.
 This input/output relationship can be expressed by a (combinational) Boolean function and a directed acyclic graph (DAG) of binary gates.
 The sequential circuit description, on the other hand, allows having feedback from the output to the input by adding the notion of a state (memory).
 At each \emph{sequential cycle}, the output of the circuit is determined by the current state of the system and the input.
 For each particular sequential cycle, the relationship between the output and the inputs for the given states can be determined as a Boolean combinational logic.
 
-The only previous work we are aware of which implicitly hinted at the possibility of having a more compact representation is PCF \cite{kreuter2013pcf}.
+The only previous work we are aware of which implicitly hinted at the possibility of having a more compact representation is \gls{pcf} \cite{kreuter2013pcf}.
 It does so by embracing loops and unrolling them only at runtime.
 A sequential circuit, however, goes far beyond the loop embracing performed at the software level.
-Not only does TinyGarble embrace the high-level loops, it also enables the user to further compact the functions by folding the implementation up to its basic elements.
-For example, using TinyGarble, user can compress the 1024-bit addition function into only a 1-bit adder.
+Not only does \gls{tinygarble} embrace the high-level loops, it also enables the user to further compact the functions by folding the implementation up to its basic elements.
+For example, using \gls{tinygarble}, user can compress the 1024-bit addition function into only a 1-bit adder.
 
 An important advantage of our sequential representation is providing a new degree of freedom to the user to fold the functions to simpler computing elements; i.e., the user has the freedom to choose the number of sequential cycles needed for evaluation of the function--the size of the combinational logic path between the states/inputs and the outputs.
 The number of gates in the sequential circuit can be managed by varying the number of cycles.
 The memory footprint of the \acrshort{gc} operation is directly related to the number of gates in the sequential circuit; at any moment during garbling, only the information corresponding to the current cycle needs to be stored.
 Compact sequential circuits yield a small enough memory footprint that can fit mostly on a typical processor cache.
 This helps us to avoid costly cache misses while accessing the wire tokens during the \acrshort{gc} protocol.
-Indeed, TinyGarble can enable practicable embedded implementations with a small memory footprint.
+Indeed, \gls{tinygarble} can enable practicable embedded implementations with a small memory footprint.
 
 The sequential representation enables, for the first time, implementation of a universal processor for private function evaluation where the function is known only to one party.
 We reduce \acrfull{pf-sfe} to general \acrshort{sfe} where the function is known by both parties.
 Our implementation accepts assembly instructions of the private function as input to the \acrshort{gc} protocol.
 Since a processor is inherently a sequential circuit, it was infeasible to be realized with previous \acrshort{gc} tools.
 
-TinyGarble accepts inputs in two different formats: a standard hardware description language (\acrshort{hdl}), or a higher level language as long as it is compatible with the existing high level synthesis (\acrshort{hls}) tools, e.g., the C language for  SPARK \cite{Gupta2004} and Xilinx Vivado \cite{tool:Vivado}, or Python for PandA \cite{tool:PandA}, that converts the high level language to an \acrshort{hdl}.
-Beside user's manual optimization, TinyGarble performs various optimizations through standard \acrshort{hdl} synthesis tools to generate an optimized \emph{netlist}, i.e., list of gates, which is then transformed to be used with a \acrshort{gc} protocol implementation, e.g., JustGarble \cite{bellare2013efficient} or Half Gates \cite{zahur2015two}.
+\gls{tinygarble} accepts inputs in two different formats: a standard hardware description language (\acrshort{hdl}), or a higher level language as long as it is compatible with the existing high level synthesis (\acrshort{hls}) tools, e.g., the C language for  SPARK \cite{Gupta2004} and Xilinx Vivado \cite{tool:Vivado}, or Python for PandA \cite{tool:PandA}, that converts the high level language to an \acrshort{hdl}.
+Beside user's manual optimization, \gls{tinygarble} performs various optimizations through standard \acrshort{hdl} synthesis tools to generate an optimized \emph{netlist}, i.e., list of gates, which is then transformed to be used with a \acrshort{gc} protocol implementation, e.g., JustGarble \cite{bellare2013efficient} or Half Gates \cite{zahur2015two}.
 
 %%%%%
 
@@ -80,12 +80,12 @@ Compilers for \acrshort{sfe} have been continually evolving. A number of compile
 
 Recently, it was shown that the long-established and verified hardware synthesis compilers can be used for generation of Boolean circuits for \acrshort{sfe}, eliminating the need for building ad-hoc logic compilers or tedious handcrafting of Boolean circuits. Another key advantage of conventional logic synthesis is allowing a \emph{sequential logic description} which can be adapted to map general functionalities to Boolean circuits optimized for Yao's \acrshort{gc} protocol. The approach was introduced in \cite{songhori2015tinygarble} and shown to yield great improvements in terms of memory and communication. A fully-automated toolchain which utilizes existing logic synthesis compilers and can be generalized for other \acrshort{sfe} protocols was presented in \cite{demmler2015automated}. This latter work takes advantage of the built-in intellectual property (IP) and custom design libraries which can be readily adapted during circuit synthesis to realize a broad suite of applications optimized for \acrshort{sfe}.
 
-The authors in \cite{songhori2015tinygarble} leverage the capability of synthesizing a sequential circuit and introduce the idea of a general-purpose sequential processor for \acrfull{pf-sfe} by \acrshort{gc}, where both input data and function are private. \acrshort{pf-sfe} is useful for scenarios where the function is proprietary or classified, e.g., credit checking or private database queries. Their so-called \emph{garbled processor} allows to use existing software compilers for describing the function and generates compatible machine code which is also garbled. A partial implementation of a \acrshort{mips} processor is provided in \cite{songhori2015tinygarble} which only considers \acrshort{pf-sfe} where the entire processor circuit and \acrfull{isa} have to be garbled in each instruction step during \acrshort{sfe} in order to hide the executed instructions in the private function. This results in a tremendous cost compared with \acrshort{sfe} for public functions. Thus, their \acrshort{mips} processor incurs an unnecessary overhead for numerous applications in which a private function is not required. (The only benchmark presented in \cite{songhori2015tinygarble} is the Hamming distance function.)
+The authors in \cite{songhori2015tinygarble} leverage the capability of synthesizing a sequential circuit and introduce the idea of a general-purpose sequential processor for \acrfull{pf-sfe} by \acrshort{gc}, where both input data and function are private. \acrshort{pf-sfe} is useful for scenarios where the function is proprietary or classified, e.g., credit checking or private database queries. Their so-called \emph{garbled processor} allows to use existing software compilers for describing the function and generates compatible machine code which is also garbled. A partial implementation of a \gls{mips} processor is provided in \cite{songhori2015tinygarble} which only considers \acrshort{pf-sfe} where the entire processor circuit and \acrfull{isa} have to be garbled in each instruction step during \acrshort{sfe} in order to hide the executed instructions in the private function. This results in a tremendous cost compared with \acrshort{sfe} for public functions. Thus, their \gls{mips} processor incurs an unnecessary overhead for numerous applications in which a private function is not required. (The only benchmark presented in \cite{songhori2015tinygarble} is the Hamming distance function.)
 
-We propose GarbledCPU, the first configurable hardware-based general purpose sequential CPU for \acrshort{sfe}. The FPGA realization of GarbledCPU is based on the \acrshort{mips} instruction set. GarbledCPU provides a generalized support for \acrshort{sfe} of varying flavors of privacy, beyond \acrshort{pf-sfe}, to allow for more relaxed privacy demands and hence an improved performance. More explicitly, with GarbledCPU the parties can evaluate a private, semi-private or public function by revealing none, partial or all information about the function respectively while still benefiting from the simplicity of programming a processor.
+We propose GarbledCPU, the first configurable hardware-based general purpose sequential CPU for \acrshort{sfe}. The FPGA realization of GarbledCPU is based on the \gls{mips} instruction set. GarbledCPU provides a generalized support for \acrshort{sfe} of varying flavors of privacy, beyond \acrshort{pf-sfe}, to allow for more relaxed privacy demands and hence an improved performance. More explicitly, with GarbledCPU the parties can evaluate a private, semi-private or public function by revealing none, partial or all information about the function respectively while still benefiting from the simplicity of programming a processor.
 Both parties decide first which subset of IS they are willing to use which determines the level of privacy ensured. The function is compiled from a high-level language, e.g., C/C++ into assembly code of the agreed upon IS. Next, the garbled processor is securely evaluated given users' garbled input and the compiled function instructions (also garbled) to compute the output.
 
-A recent technical report \cite{wang2016secure} also suggests a secure computation framework using \acrshort{mips} code. The approach relies on garbled universal circuits to emulate the execution of each instruction of the \acrshort{mips} program and on Oblivious RAM (\acrshort{oram}) for memory access. They propose using static analysis of functions to reduce the set of instructions to be garbled. However, \cite{wang2016secure} only presents a software \acrshort{sfe} implementation, while we present the first practical hardware sequential processor for both \acrshort{sfe} and \acrshort{pf-sfe}. An earlier hardware implementation of \acrshort{gc} was reported in \cite{jarvinen2010garbled} but the approach only addresses \acrshort{sfe} with no support for function hiding and is limited to combinational Boolean circuit as it predated \cite{songhori2015tinygarble}. A combinational description limits usability and scalability and is impractical for control-intensive functions such as CPUs that need to be expressed sequentially.
+A recent technical report \cite{wang2016secure} also suggests a secure computation framework using \gls{mips} code. The approach relies on garbled universal circuits to emulate the execution of each instruction of the \gls{mips} program and on Oblivious RAM (\acrshort{oram}) for memory access. They propose using static analysis of functions to reduce the set of instructions to be garbled. However, \cite{wang2016secure} only presents a software \acrshort{sfe} implementation, while we present the first practical hardware sequential processor for both \acrshort{sfe} and \acrshort{pf-sfe}. An earlier hardware implementation of \acrshort{gc} was reported in \cite{jarvinen2010garbled} but the approach only addresses \acrshort{sfe} with no support for function hiding and is limited to combinational Boolean circuit as it predated \cite{songhori2015tinygarble}. A combinational description limits usability and scalability and is impractical for control-intensive functions such as CPUs that need to be expressed sequentially.
 
 %%%%%
 
@@ -94,10 +94,10 @@ The first and by far the most efficient method for two-party \acrshort{sfe} is Y
 Yao's protocol immediately attracted a significant attention from the cryptography community, but was believed to be of limited practical usage for many years.
 The critical challenge of \acrshort{gc} was to generate an optimized Boolean circuit representing the function such that its secure evaluation incurs the minimum communication and encryption cost.
 
-The \acrshort{gc} logic optimization challenge was recently addressed by TinyGarble~\cite{songhori2015tinygarble}.
-Even though the circuit is just a Boolean representation to be used in \acrshort{gc}, a software protocol, TinyGarble showed that the circuit generation can be viewed as an atypical instance of the conventional logic synthesis task.
+The \acrshort{gc} logic optimization challenge was recently addressed by \gls{tinygarble}~\cite{songhori2015tinygarble}.
+Even though the circuit is just a Boolean representation to be used in \acrshort{gc}, a software protocol, \gls{tinygarble} showed that the circuit generation can be viewed as an atypical instance of the conventional logic synthesis task.
 This approach outperforms previous methods for generating Boolean circuit using custom compilers~\cite{malkhi2004fairplay,holzer2012secure, rastogi2014wysteria,demmler2015aby,liu2015oblivm,mood2016frigate}.
-A major disadvantage of TinyGarble, however, is that the efficiency can only be achieved when the function is described in a Hardware Description Language (\acrshort{hdl}), e.g., Verilog, instead of a high-level programming language.
+A major disadvantage of \gls{tinygarble}, however, is that the efficiency can only be achieved when the function is described in a Hardware Description Language (\acrshort{hdl}), e.g., Verilog, instead of a high-level programming language.
 Even when they used the best high-level synthesis compiler, i.e., Vivado \acrshort{hls} ~\cite{tool:Vivado}, they lost the \acrshort{hdl} efficiency.
 In this paper, our goal is to combine the efficiency of hardware synthesis with the versatility of high-level languages.
 
@@ -109,19 +109,19 @@ At each cycle, they generate a custom processor supporting only the instruction(
 
 In this work, we introduce a methodology to perform fine-grain (gate-level) optimization on garbled processor such that only the gates associated to the private inputs incur garbling cost.
 Our key observation is that the gates whose outputs are independent of the private data (and thus known to both parties) can either be computed without communication and encryption or simply skipped.
-This observation gives birth to the novel SkipGate algorithm.
-The algorithm wraps around the \acrshort{gc} protocol to compute the gate outputs that can be computed without communication and to mark the redundant gates for skipping\footnote{SkipGate avoids garbling redundant gates and is orthogonal to cryptographic methods such as Free XOR~\cite{kolesnikov2008improved} and Half Gate~\cite{zahur2015two} that reduce the garbling cost of a gate.}.
+This observation gives birth to the novel \gls{skipgate} algorithm.
+The algorithm wraps around the \acrshort{gc} protocol to compute the gate outputs that can be computed without communication and to mark the redundant gates for skipping\footnote{\gls{skipgate} avoids garbling redundant gates and is orthogonal to cryptographic methods such as Free XOR~\cite{kolesnikov2008improved} and Half Gate~\cite{zahur2015two} that reduce the garbling cost of a gate.}.
 
-SkipGate is mostly effective for reducing the garbling cost of sequential circuits~\cite{songhori2015tinygarble} containing known control paths.
+\gls{skipgate} is mostly effective for reducing the garbling cost of sequential circuits~\cite{songhori2015tinygarble} containing known control paths.
 An example of such a circuit is the garbled processor where the control path depends on the binary code of the function that is known to both parties.
-By utilizing this property, we develop a high-level \acrshort{gc} framework called ARM2GC built upon the \acrshort{arm} instruction set and the SkipGate algorithm.
-Users can develop the secure function in high-level languages, e.g., C/C++ and compile it using standard \acrshort{arm} cross-compilers.
-In contrast to the earlier custom high-level compilers which called for new ad-hoc verification techniques~\cite{rastogi2014wysteria,demmler2015aby,liu2015oblivm,mood2016frigate}, ARM2GC inherits the \acrshort{arm}'s available fully verified compilers.
-Thanks to SkipGate, ARM2GC incurs a garbling cost comparable to the \acrshort{hdl} synthesis approach of TinyGarble while allowing users to develop \acrshort{sfe} applications in a high-level language.
+By utilizing this property, we develop a high-level \acrshort{gc} framework called \gls{arm2gc} built upon the \gls{arm} instruction set and the \gls{skipgate} algorithm.
+Users can develop the secure function in high-level languages, e.g., C/C++ and compile it using standard \gls{arm} cross-compilers.
+In contrast to the earlier custom high-level compilers which called for new ad-hoc verification techniques~\cite{rastogi2014wysteria,demmler2015aby,liu2015oblivm,mood2016frigate}, \gls{arm2gc} inherits the \gls{arm}'s available fully verified compilers.
+Thanks to \gls{skipgate}, \gls{arm2gc} incurs a garbling cost comparable to the \acrshort{hdl} synthesis approach of \gls{tinygarble} while allowing users to develop \acrshort{sfe} applications in a high-level language.
 
-Our work leverages \acrshort{arm} as the general purpose processor, in contrast to the earlier \acrshort{mips}-based garble processors~\cite{songhori2015tinygarble, wang2016secure, songhori2016garbledcpu} because of \acrshort{arm}'s pervasiveness and, most importantly, conditional execution.
-The latter simplifies the framework by reducing conditional branches and making the program flow predictable for both parties to take the full advantage of the SkipGate algorithm.
-We modify the standard \acrshort{arm} architecture (without affecting the instruction set) such that SkipGate is more effective on the circuit.
+Our work leverages \gls{arm} as the general purpose processor, in contrast to the earlier \gls{mips}-based garble processors~\cite{songhori2015tinygarble, wang2016secure, songhori2016garbledcpu} because of \gls{arm}'s pervasiveness and, most importantly, conditional execution.
+The latter simplifies the framework by reducing conditional branches and making the program flow predictable for both parties to take the full advantage of the \gls{skipgate} algorithm.
+We modify the standard \gls{arm} architecture (without affecting the instruction set) such that \gls{skipgate} is more effective on the circuit.
 
 \section{Contributions}
 In brief, our contributions are as follows:
@@ -129,7 +129,7 @@ In brief, our contributions are as follows:
 \item We propose the first hardware-only solution for 2-party \acrshort{gc}-based secure sequential function computation with different \acrshort{sfe} flavors that allows leveraging the trade-off between privacy and performance: application-specific IS for \acrshort{sfe} (\sect{ssect:sfe}), restricted IS (\sect{ssect:semi-pf}) for semi-private \acrshort{sfe}, and full IS (\sect{ssect:pfsfe}) for \acrshort{pf-sfe}.
 \item We realize a proof-of-concept FPGA implementation which demonstrates the feasibility of the sequential garbled processor in hardware, and motivates further research in this direction. GarbledCPU achieves efficiency and performance by leveraging the most recent optimizations for \acrshort{gc} \cite{kolesnikov2008improved,bellare2013efficient,zahur2015two,songhori2015tinygarble}, along with a high-throughput pipelined \acrshort{gc} evaluation on FPGA. It outperforms the fastest software implementation in the literature which relies on the Intel \acrshort{aes-ni} \cite{bellare2013efficient}.
 \item We extensively benchmark more complex functions such as \acrshort{aes}, Private Set Intersection (PSI), and Hamming distance and evaluate them under our different privacy settings using our framework and when applicable, compare our performance with prior work.
-\item We introduce the novel SkipGate algorithm that avoids redundant garbling by utilizing the mutual knowledge between the two parties.
+\item We introduce the novel \gls{skipgate} algorithm that avoids redundant garbling by utilizing the mutual knowledge between the two parties.
 \item
   Adaption of established \acrshort{hdl} synthesis techniques to compile and optimize a function into a netlist of gates for use in secure computation protocols.
 \item
@@ -142,18 +142,18 @@ In brief, our contributions are as follows:
   This helps to avoid costly cache misses and reduces the CPU time required for \acrshort{gc}.
 \item
   Proof-of-concept implementation of benchmark functions such as multiplication, and Hamming distance demonstrates up to 5 orders of magnitude savings in memory footprint and up to $80\%$ efficiency in minimizing the total number of non-XOR gates.
-  Furthermore, TinyGarble enables implementation of large circuits that were not reported in earlier work, such as SHA-3.% and RSA-8192.
+  Furthermore, \gls{tinygarble} enables implementation of large circuits that were not reported in earlier work, such as SHA-3.% and RSA-8192.
 
 \item
   Implementing the first scalable emulation of a universal processor for private function evaluation where the number of instruction invocations is not limited by the memory required for garbling.
-  This design is uniquely enabled by the TinyGarble sequential description.
-  Our design is a secure general purpose processor based on the \acrshort{mips}~I instruction set that receives as inputs the private function from one party and the data from the other.
-\item We develop the ARM2GC framework based on the SkipGate algorithm and \acrshort{arm} processor.
+  This design is uniquely enabled by the \gls{tinygarble} sequential description.
+  Our design is a secure general purpose processor based on the \gls{mips}~I instruction set that receives as inputs the private function from one party and the data from the other.
+\item We develop the \gls{arm2gc} framework based on the \gls{skipgate} algorithm and \gls{arm} processor.
     In this framework, users can efficiently develop \acrshort{sfe} applications in a high-level language like C/C++.
-    It enables them to benefit from the available fully verified compilers of \acrshort{arm}.
-    We modify the \acrshort{arm} architecture (without affecting the instruction set) to make it most effective for the \acrshort{gc} protocol with SkipGate.
-\item We perform extensive experiments to evaluate the SkipGate algorithm and the ARM2GC framework.
-    The ARM2GC framework demonstrates comparable performance to \acrshort{hdl} synthesis approach of TinyGarble~\cite{songhori2015tinygarble}.
+    It enables them to benefit from the available fully verified compilers of \gls{arm}.
+    We modify the \gls{arm} architecture (without affecting the instruction set) to make it most effective for the \acrshort{gc} protocol with \gls{skipgate}.
+\item We perform extensive experiments to evaluate the \gls{skipgate} algorithm and the \gls{arm2gc} framework.
+    The \gls{arm2gc} framework demonstrates comparable performance to \acrshort{hdl} synthesis approach of \gls{tinygarble}~\cite{songhori2015tinygarble}.
     Its overhead is negligible for most of the benchmark functions and has the maximum value of 6\%.
     As expected, it outperforms the state-of-the-art garbled processors~\cite{wang2016secure, songhori2016garbledcpu} and high-level \acrshort{gc} compilers~\cite{holzer2012secure, mood2016frigate}.
 \end{itemize}
@@ -161,7 +161,7 @@ In brief, our contributions are as follows:
 what we explained in hardware synthesis can be expand to other methods such GMW as shown in ~\cite{demmler2015automated} however in this thesis we focus on the \acrshort{gc} protocol.
 
 \section{Global Flow}
-The global flow of TinyGarble framework is shown in \fig{fig:globalflow}.
+The global flow of \gls{tinygarble} framework is shown in \fig{fig:globalflow}.
 The framework consists of two main part (i) \acrshort{gc} synthesis and (ii) \acrshort{gc} engine.
 The \acrshort{gc} synthesis flow receives a function description in \acrshort{hdl} and generates a circuit description that can be efficiently evaluated by the \acrshort{gc} engine.
 The \acrshort{gc} synthesis can generate combinational circuits as well as sequential ones.
@@ -175,7 +175,7 @@ Also most importantly, our \acrshort{gc} engine supports garbling/evaluating of 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{tinygarble_flow-crop.pdf}
-\caption{The global flow of TinyGarble framework.
+\caption{The global flow of \gls{tinygarble} framework.
 The framework consists of \acrshort{gc} synthesis flow and \acrshort{gc} engine.
 The \acrshort{gc} synthesis flow generates the optimized circuit description given a function.
 The \acrshort{gc} engine allows two parties (Alice and Bob) to securely compute the function according to Yao's \acrshort{gc} protocol.
@@ -186,8 +186,8 @@ The \acrshort{gc} engine allows two parties (Alice and Bob) to securely compute 
 \begin{figure}[h]
 \centering
 \includegraphics[width=\textwidth]{arm2gc_flow-crop.pdf}
-\caption{The global flow of ARM2GC framework.
-The framework consists of \acrshort{gc} synthesis flow of TinyGarble and its \acrshort{gc} engine with SkipGate algorithm.
+\caption{The global flow of \gls{arm2gc} framework.
+The framework consists of \acrshort{gc} synthesis flow of \gls{tinygarble} and its \acrshort{gc} engine with \gls{skipgate} algorithm.
 The \acrshort{gc} synthesis flow generates the circuit description of the ARM processor $f(\cdot,\cdot,\cdot)$.
 The function to be securely evaluated ($g(\cdot,\cdot)$) is compiled using an ARM cross-compiler.
 The \acrshort{gc} engine allows two parties (Alice and Bob) to securely compute the ARM circuit $f(a,b,p)$ where $p$ is the binary code of $g(\cdot,\cdot)$.

@@ -1,13 +1,13 @@
-\chapter{TinyGarble \acrshort{gc} Engine}\label{chap:engine}
-In this section, we explain TinyGarble \acrshort{gc} Engine, an implementation of the Yao's \acrshort{gc} protocol for sequential circuits.
-First, we explain JustGarble \cite{bellare2013efficient}, and earlier \acrshort{gc} engine which TinyGarble is built on. \TODO{Do we need this here?}
+\chapter{\gls{tinygarble} \acrshort{gc} Engine}\label{chap:engine}
+In this section, we explain \gls{tinygarble} \acrshort{gc} Engine, an implementation of the Yao's \acrshort{gc} protocol for sequential circuits.
+First, we explain JustGarble \cite{bellare2013efficient}, and earlier \acrshort{gc} engine which \gls{tinygarble} is built on. \TODO{Do we need this here?}
 Next, we describe Simple Sequential Circuit Description (SSCD), a format for storing and processing sequential Boolean circuits in our \acrshort{gc} Engine and how Verilog netlist is translated into SSCD.
 The communication steps and pipelining of the \acrshort{gc} protocol for sequential circuits are also described.
 We then introduce the terminate signal that helps user to identify when the circuit output is ready in oder to reduce the garbling cost.
-We implemented the \acrshort{gc} engine in C++ and its source code is available in TinyGarble repository\footnote{\url{https://github.com/esonghori/TinyGarble}}.
+We implemented the \acrshort{gc} engine in C++ and its source code is available in \gls{tinygarble} repository\footnote{\url{https://github.com/esonghori/\gls{tinygarble}}}.
 
 \section{Yao's \acrshort{gc} Protocol Implementation for Sequential Circuits} \label{sec:engine-gc}
-TinyGarble \acrshort{gc} engine is an implementation of Yao's protocol for garbling and evaluation of sequential circuits.
+\gls{tinygarble} \acrshort{gc} engine is an implementation of Yao's protocol for garbling and evaluation of sequential circuits.
 It is built on JustGarble's implementation of the \acrshort{gc} protocol \cite{bellare2013efficient}.
 We choses JustGarble because it has a number of advantages over other available implementations: simplicity and efficiency (use of \acrshort{aes} block cipher and \acrshort{aes-ni} hardware accelerator).
 However, JustGarble's implementation comes with some shortcomings.
@@ -22,13 +22,13 @@ We uses OpenSSL library to handle big integer and modular exponentiation in OT.
 Half Gate method is also added to our implementation on top of other optimizations including free-XOR and fixed-key block-cipher.
 Similar to JustGarble, we benefit from \acrshort{aes-ni}, hardware implementation of \acrshort{aes} in Intel processors.
 
-One of the prominent feature of TinyGarble \acrshort{gc} engine is its support for garbling/evaluation of sequential circuits.
+One of the prominent feature of \gls{tinygarble} \acrshort{gc} engine is its support for garbling/evaluation of sequential circuits.
 The gates in a sequential circuit are garbled/evaluated for multiple sequential cycles.
 The total number of cycles are agreed by the parties before start of the protocol.
 To ensure security, the encryption tweaks $T$ (see \sect{subsec:preli_GC}) for each gate has to be unique in each cycle\cite[Sect. 3.4]{henecka2013faster}.
 We set tweak $T$ for each gate to be the concatenation of the cycle index (cid) and the unique gate identifiers (gid) in the combinational part of the sequential circuit, i.e., $T = \textrm{cid} || \textrm{gid}$.
 An alternative method could be to use a monotonic counter in the circuit generation/evaluation routines which is increased by one for each gate.
-As in previous work, security and correctness of the \acrshort{gc} garbling/evaluation follow from the uniqueness of the tweak $T$ and the existing proofs of security and correctness are still valid for TinyGarble (see \cite{lindell2009proof, bellare2013efficient, zahur2015two}).
+As in previous work, security and correctness of the \acrshort{gc} garbling/evaluation follow from the uniqueness of the tweak $T$ and the existing proofs of security and correctness are still valid for \gls{tinygarble} (see \cite{lindell2009proof, bellare2013efficient, zahur2015two}).
 
 
 \section{Simple Sequential Circuit Description}\label{sec:engine-sscd}
@@ -51,21 +51,21 @@ SSCD is stored in a human-readable ASCII format.
 A SSCD file consists of seven lines: (1) g\_init\_size, e\_init\_size, g\_input\_size, e\_input\_size, dff\_size, output\_size, terminate (an optional 1-bit output indicating that the circuit is done, see \sect{ssec:engine-term}), and number of gates. (2) gates' first input index. (3) gates' second input index. (4) gates' type. (5) outputs index. (6) Flip-Flops' D index. (7) Flip-Flops' I index (chosen from g\_init or e\_init).
 
 \section{Translating Verilog Netlist to SCD}\label{sec:engine-v2sscd}
-The output of TinyGarble synthesis flow is an optimized gate level Verilog code called netlist.
-The netlist format needs to be translated into SCD format to be readable by TinyGarble \acrshort{gc} engine.
+The output of \gls{tinygarble} synthesis flow is an optimized gate level Verilog code called netlist.
+The netlist format needs to be translated into SCD format to be readable by \gls{tinygarble} \acrshort{gc} engine.
 We developed a tool called V2SCD that translates a Verilog netlist into a SCD file.
 V2SCD first parses the netlist file and detect the gates and their ports.
 Next, it topologically sorts the gates based on their dependencies through wire connections.
-Finally it writes an ASCII file in TinyGarble's SCD format.
+Finally it writes an ASCII file in \gls{tinygarble}'s SCD format.
 
-% TinyGarble's V2SCD accepts a Verilog netlist with a format that is suitable for Garbling/Evaluation.
+% \gls{tinygarble}'s V2SCD accepts a Verilog netlist with a format that is suitable for Garbling/Evaluation.
 % The ports of the netlist should include the following signals: clk, rst, g\_init, e\_init, g\_input, e\_input, o, terminate where clk is clock cycle, rst is an active high reset, g\_init is Alice's initial values, e\_init is Bob's initial values, g\_input is Alice's inputs, e\_input is Bob's input, terminate is the terminate signal, and o is the output port.
 
 \section{Communication}\label{sec:engine-comm}
 %In Yao's \acrshort{gc} protocol, the parties have to send and receive information in order to find the result.
 The JustGarble implementation of the \acrshort{gc} protocol lacks the communication features required by the \acrshort{gc} protocol.
 We implemented and integrated these features into our \acrshort{gc} engine.
-The communication and computation in TinyGarble \acrshort{gc} engine follows the steps below:
+The communication and computation in \gls{tinygarble} \acrshort{gc} engine follows the steps below:
 \begin{enumerate}
 \item Alice generates the garbled tables.
 \item Alice sends her input labels to Bob.
@@ -90,7 +90,7 @@ To avoid such large memory footprint, we design an exclusive\TODO{why exclusive?
 Pipelining for the \acrshort{gc} protocol was first proposed in \cite{husted2013gpu} for combinational circuits where the circuit is divided in multiple chunks and communication is done between garbling each chuck.
 However, the pipelining is more fit for sequential circuits where garbling of the circuit in each cycles creates a natural chunk for the pipeline.
 
-The communication and computation in TinyGarble \acrshort{gc} engine for sequential circuit in low memory mode follows the steps below:
+The communication and computation in \gls{tinygarble} \acrshort{gc} engine for sequential circuit in low memory mode follows the steps below:
 (1) Alice generates garbled tables for one sequential cycle.
 (2) If it is the first cycle, Alice sends her initial labels to Bob.
 (3) If it is the first cycle, Alice sends Bob's initial labels to him through OT.
@@ -112,20 +112,20 @@ To ensure privacy, $c$ has to be determined regardless of the inputs and such th
 Some circuits can finish the computation faster than their predetermined number of cycles.
 For example, the sequential circuit presented in \cite{riazi2017toward} for Stable Match algorithm of $n$ pairs can finish the computation in $\BigO{n}$ while in the worst case scenario, the number of cycles is $\BigO{n^2}$.
 
-To reduce the unnecessary cost after the circuit is done, TinyGarble enables users to add a one-bit output to sequential circuits that indicates in which cycle the computation is done.
+To reduce the unnecessary cost after the circuit is done, \gls{tinygarble} enables users to add a one-bit output to sequential circuits that indicates in which cycle the computation is done.
 We call this output \textit{terminate signal}.
 The use of terminate signal was first proposed in \cite{riazi2017toward} for a specific application of stable matching using sequential \acrshort{gc}.
 We generalized this approach for all sequential circuits.
 Terminate signal enables users to stop garbling/evaluation of the circuit when no further computation is needed, avoiding futile communication and computation.
-In TinyGarble, the signal is revealed every $T$ clock cycles where $1 \le T \le c$ and is predetermined by the users.
+In \gls{tinygarble}, the signal is revealed every $T$ clock cycles where $1 \le T \le c$ and is predetermined by the users.
 Depending on the structure of the sequential circuit and its functionality, revealing the terminate signal leaks some information about the inputs.
 Thus, it has to be used with careful consideration.
 $T=1$ reveals the exact number of cycles for the given inputs to finish the function.
 Larger $T$ reveals less information and $T=c$ reveals no information about the inputs.
 Therefore, revealing terminate signal offers a trade-off between privacy and cost for garbling a sequential circuits.
 
-\section{SkipGate Implementation}\label{sec:engine-skipgate}
-TinyGarble \acrshort{gc} engine supports the SkipGate algorithm on top of its implementation of the \acrshort{gc} protocol.
-The code of the engine is changed according to the SkipGate algorithm described in \chap{chap:skipgate}.
+\section{{\gls{skipgate}} Implementation}\label{sec:engine-skipgate}
+\gls{tinygarble} \acrshort{gc} engine supports the \gls{skipgate} algorithm on top of its implementation of the \acrshort{gc} protocol.
+The code of the engine is changed according to the \gls{skipgate} algorithm described in \chap{chap:skipgate}.
 Two new ports are allowed in the circuit for public input variables: (i) Public initial value (p\_init) that is connected to I input of \acrshort{ff}s and is read only at the first cycle. (ii) Public input (p\_input) that are directly connected to the gates of the circuit and is read every sequential cycles.
 The first line of the SSCD format also includes the size of these two new ports: p\_init\_size,  g\_init\_size, e\_init\_size, p\_input\_size, g\_input\_size, e\_input\_size, dff\_size, output\_size, terminate\_id, and gate\_size.
