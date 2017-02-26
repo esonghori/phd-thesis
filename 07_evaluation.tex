@@ -198,11 +198,12 @@ The \acrshort{hls} engine in the Vivado suite is built upon the xPilot project \
 As can be seen from the table, the resulting memory footprint could increase by a factor between 1 and 4, while the number of garbled tables varies in a range of 3 to 9 times.
 It is well known that writing the \acrshort{hdl} level code which contains the time information and more detailed structural/behavioral description would yield much more efficient circuits than the code written in a higher level language.
 
-\section{Evaluation of \gls{mips} for \acrshort{pf-sfe}}
-We implement general purpose processor for \acrshort{pf-sfe} using \gls{mips}~I where one user provide function description in assembly and the other provides the data.
+\section{Evaluation of \gls{mips} for \acrshort{pf-sfe}} \label{sec:eval-mips-pf-sfe}
+We implement the general purpose processor for \acrshort{pf-sfe} using single-cycle \gls{mips}~I architecture where one user provide function description in assembly and the other provides the data.
 Support of sequential circuits in \gls{tinygarble} enables us to use the \gls{mips} circuit description in Plasma project \cite{rhoads2006plasma} without major modifications.
-In the following, we provide the result of \gls{mips} implementation and its memory footprint and communication load.
+In the following, we provide the result of \gls{mips} implementation and its number of non-XOR and total gates.
 Lastly, we present implementation of Hamming distance with variable input length as a benchmark of private function application on \gls{mips}.
+More benchmark functions are implemented and theri results are compared with \gls{mips} for \gls{sfe} in \sect{sec:eval-mips-sfe}
 
 \subsection{\gls{mips} Implementation}
 We used \gls{tinygarble} to generate the \gls{netlist} for the \gls{mips} sequential circuit.
@@ -220,13 +221,13 @@ The global optimization of \gls{tinygarble} reduces the overall number of gates 
 Modules             & Total gates & Non-XOR \\ \hline \hline
 Controller          & 509                                                  & 470                                                \\
 Bus                 & 603                                                  & 590                                                \\
-ALU                 & 651                                                  & 346                                                \\
+\acrshort{alu}                 & 651                                                  & 346                                                \\
 Shifter             & \numprint{1362}                                                 & \numprint{1092}                                               \\
 Mult                & \numprint{2147}                                                 & \numprint{1792}                                               \\
 Reg File            & \numprint{8880}                                                 & \numprint{3023}                                               \\
-IM                  & \numprint{6048}                                                 & \numprint{2016}                                               \\
-DM                  & \numprint{13779}                                                & \numprint{5423}                                               \\
-PC                  & 309                                                  & 245                                                \\ \hline
+\acrshort{im}                  & \numprint{6048}                                                 & \numprint{2016}                                               \\
+\acrshort{dm}                  & \numprint{13779}                                                & \numprint{5423}                                               \\
+\acrshort{pc}                  & 309                                                  & 245                                                \\ \hline
 Total               & \numprint{34288}                                                & \numprint{14997}                                              \\ \hline \hline
 \gls{mips}                & \numprint{31719}                                                & \numprint{12755}                                              \\ \hline \hline
 \begin{tabular}[c]{@{}l@{}}Global \\optimization\end{tabular} & 7.49\%                                               & 14.95\%
@@ -249,17 +250,24 @@ It will store the Hamming distance of $A$ and $B$ in address $1$.
 \caption{Hamming distance assembly code.}\label{figure:hamminassembly}
 \end{figure}
 
-\section{Evaluation Setup of \gls{mips} for \acrshort{sfe}}} \label{ssect:evalset}
+\section{Evaluation Setup of \gls{mips} for \acrshort{sfe}} \label{sec:eval-mips-sfe}
 We create different instances of a single-cycle \gls{mips} architecture with specific, restricted, and full \acrshort{isa} to support a trade-off between efficiency and privacy.
-The result of full \acrshort{isa} \gls{mips} is presented in previous section and is used here for comparison.
+The result of full \acrshort{isa} \gls{mips} is presented in previous section (\sect{sec:eval-mips-pf-sfe}) and is used here for comparison.
 The different \gls{mips} instances are synthesized using \gls{synopsys-dc} H-2013.03-SP4 to generate optimized sequential Boolean circuits.
 These circuits are then evaluated on our hardware \acrshort{gc} evaluator implemented using Vivado 2014.4.1 on a Xilinx Virtex-7 \acrshort{fpga}.
 
 \section{Benchmarks}\label{ssect:bench}
-As benchmarks we used Hamming distance, private set intersection and \acrshort{aes}. We compile these benchmarks from high-level C to \gls{mips} binary using a \gls{mips} cross-compiler. For some benchmarks, assembly code manipulation allows to reduce the number of clock cycles required. To assure correctness of both benchmarks and \acrshort{isa} under test, we simulate the resulting binary file using the Modelsim simulator and calculate the number of required cycles to compute each of the benchmarks, reported in~\tab{tab:cyc_bench}, for accurate performance measurements. For Hamming distance, the number of cycles depends on the size of the input strings. In the PSI benchmark, we compute a variant of PSI called PSI cardinality (PSI-CA) where only the number of common elements is revealed. The sets can have different sizes where each element is 32-bit.  For \acrshort{aes}, we assume that one party holds a 128-bit message and the other party holds eleven round keys each of 128-bit length to avoid unnecessary garbling and evaluation of the round-key generation function.
+As benchmark functions, we used Hamming distance, \acrfull{psi}, and \acrshort{aes} functions.
+We compile these functions from high-level C to \gls{mips} binary using a \gls{mips} cross-compiler.
+For some functions, assembly code manipulation allows to reduce the number of sequential cycles required.
+To assure correctness of both functions and \acrshort{isa} under test, we simulate the resulting binary file using the Modelsim simulator and calculate the number of required sequential cycles to compute each of the functions, reported in~\tab{tab:cyc_bench}, for accurate performance measurements.
+For Hamming distance, the number of cycles depends on the size of the input strings.
+In the \acrshort{psi} function, we compute a variant of \acrshort{psi} called \acrfull{psi-ca} where only the number of common elements is revealed.
+The sets can have different sizes where each element is 32-bit.
+For \acrshort{aes}, we assume that one party holds a 128-bit message and the other party holds eleven round keys each of 128-bit length to avoid unnecessary garbling and evaluation of the round-key generation function.
 
 \begin{table}[ht]
-\caption{Number of required cycles to compute benchmarks.}\label{tab:cyc_bench}
+\caption{Number of required cycles to compute the benchmark functions.}\label{tab:cyc_bench}
 \centering
 \small
 \begin{tabular}{l|r|r}
@@ -274,19 +282,22 @@ Hamming Distance & $\numprint{64}$ & $\numprint{842}$\\
 \hline
 Hamming Distance & $\numprint{128}$ & $\numprint{1674}$\\
 \hline
-PSI & $\numprint{64}$ &$\numprint{7267}$\\
+\acrshort{psi} & $\numprint{64}$ &$\numprint{7267}$\\
 \hline
-PSI & $\numprint{128}$ &$\numprint{14267}$\\
+\acrshort{psi} & $\numprint{128}$ &$\numprint{14267}$\\
 \hline
 \acrshort{aes} (no key expansion) & $\numprint{128}$ & $\numprint{6178}$\\
 \end{tabular}
 \end{table}
 
-\section{Synthesis of the GarbledCPU \acrshort{isa}}
-We synthesize the \gls{mips} architecture, shown in~\fig{figure:mips}, with \gls{synopsys-dc} for different \acrshort{isa}s and memory sizes: 32 to 512 32-bit words for instruction and data memories. Generating these Boolean circuits is a one-time process and the circuits can be re-used without incurring further compilation costs. \tab{tab:synres} shows the synthesis time and number of non-XOR gates of the \acrshort{isa}'s with different sizes of memories.
+\section{Synthesis of \gls{mips} for Various \acrshort{isa}s}
+We synthesize the \gls{mips} architecture, shown in~\fig{figure:mips}, with \gls{synopsys-dc} for different \acrshort{isa}s and memory sizes: 32 to 512 32-bit words for instruction and data memories.
+Generating these Boolean circuits is a one-time process and the circuits can be re-used without incurring further compilation costs.
+\tab{tab:synres-app} shows the synthesis time and number of non-XOR gates of the hamming distance-, \acrshort{psi}-, and \acrshort{aes}-specific \acrshort{isa} with different sizes of memories.
+\tab{tab:synres-res-full} illustrates the result for restricted and full \acrshort{isa} with different sizes of memories.
 
-\begin{table}[ht]
-\caption{Synthesis results of different variants of (\acrshort{isa})}\label{tab:synres}
+\begin{table}[]
+\caption{Synthesis results of application-specific \acrshort{isa}}\label{tab:synres-app}
 \centering
 \begin{tabular}{l|r|r|r}
 \multicolumn{1}{c|}{Memory Size} & \multicolumn{1}{c|}{Synthesis Time} &  \multicolumn{1}{c|}{\# of Combinatorial} & \multicolumn{1}{c}{\# of Sequential} \\
@@ -295,104 +306,128 @@ We synthesize the \gls{mips} architecture, shown in~\fig{figure:mips}, with \gls
 \hline
 \multicolumn{4} {c}{Hamming Distance-specific \acrshort{isa}}\\
 \hline
-DM, IM = 32 & $\numprint{19.648}$~$s$ & $\numprint{6715}$ & $\numprint{2021}$ \\
+\acrshort{dm}, \acrshort{im} = 32 & $\numprint{19.648}$~$s$ & $\numprint{6715}$ & $\numprint{2021}$ \\
 \hline
-DM, IM = 64 & $\numprint{31.692}$~$s$ & $\numprint{9830}$ & $\numprint{3046}$ \\
+\acrshort{dm}, \acrshort{im} = 64 & $\numprint{31.692}$~$s$ & $\numprint{9830}$ & $\numprint{3046}$ \\
 \hline
-DM, IM = 128 & $\numprint{62.212}$~$s$ & $\numprint{16062}$ & $\numprint{5095}$ \\
+\acrshort{dm}, \acrshort{im} = 128 & $\numprint{62.212}$~$s$ & $\numprint{16062}$ & $\numprint{5095}$ \\
 \hline
-DM, IM = 256 & $\numprint{167.398}$~$s$ & $\numprint{28493}$ & $\numprint{9192}$ \\
+\acrshort{dm}, \acrshort{im} = 256 & $\numprint{167.398}$~$s$ & $\numprint{28493}$ & $\numprint{9192}$ \\
 \hline
-DM, IM = 512 & $\numprint{589.186}$~$s$ & $\numprint{53374}$ & $\numprint{17385}$ \\
+\acrshort{dm}, \acrshort{im} = 512 & $\numprint{589.186}$~$s$ & $\numprint{53374}$ & $\numprint{17385}$ \\
 \hline
-\multicolumn{4} {c}{PSI-specific \acrshort{isa}}\\
+\multicolumn{4} {c}{\acrshort{psi}-specific \acrshort{isa}}\\
 \hline
-DM, IM = 32 & $\numprint{18.735}$~$s$ & $\numprint{6751}$ & $\numprint{2021}$ \\
+\acrshort{dm}, \acrshort{im} = 32 & $\numprint{18.735}$~$s$ & $\numprint{6751}$ & $\numprint{2021}$ \\
 \hline
-DM, IM = 64 & $\numprint{31.117}$~$s$ & $\numprint{9866}$ & $\numprint{3046}$ \\
+\acrshort{dm}, \acrshort{im} = 64 & $\numprint{31.117}$~$s$ & $\numprint{9866}$ & $\numprint{3046}$ \\
 \hline
-DM, IM = 128 & $\numprint{61.551}$~$s$ & $\numprint{16097}$ & $\numprint{5095}$ \\
+\acrshort{dm}, \acrshort{im} = 128 & $\numprint{61.551}$~$s$ & $\numprint{16097}$ & $\numprint{5095}$ \\
 \hline
-DM, IM = 256 & $\numprint{163.564}$~$s$ &$\numprint{28529}$ & $\numprint{9192}$ \\
+\acrshort{dm}, \acrshort{im} = 256 & $\numprint{163.564}$~$s$ &$\numprint{28529}$ & $\numprint{9192}$ \\
 \hline
-DM, IM = 512 & $\numprint{591.145}$~$s$ & $\numprint{53410}$ & $\numprint{17385}$ \\
+\acrshort{dm}, \acrshort{im} = 512 & $\numprint{591.145}$~$s$ & $\numprint{53410}$ & $\numprint{17385}$ \\
 \hline
 \multicolumn{4} {c}{\acrshort{aes}-specific \acrshort{isa}}\\
 \hline
-DM, IM = 256 & $\numprint{169.498}$~$s$ &$\numprint{32177}$ & $\numprint{9214}$ \\
+\acrshort{dm}, \acrshort{im} = 256 & $\numprint{169.498}$~$s$ &$\numprint{32177}$ & $\numprint{9214}$ \\
 \hline
-DM, IM = 512 & $\numprint{594.047}$~$s$ & $\numprint{61570}$ & $\numprint{17406}$\\
-\hline
-\multicolumn{4} {c}{ALU\&Shift \acrshort{isa}}\\
-\hline
-DM, IM = 32 & $\numprint{21.681}$~$s$ & $\numprint{9676}$ & $\numprint{2046}$ \\
-\hline
-DM, IM = 64 & $\numprint{34.588}$~$s$ & $\numprint{12702}$ & $\numprint{3070}$ \\
-\hline
-DM, IM = 128 & $\numprint{65.873}$~$s$ & $\numprint{19694}$ & $\numprint{5118}$ \\
-\hline
-DM, IM = 256 & $\numprint{170.974}$~$s$ &$\numprint{34071}$ & $\numprint{9214}$ \\
-\hline
-DM, IM = 512 & $\numprint{593.945}$~$s$ & $\numprint{66238}$ & $\numprint{17406}$ \\
-\hline
-\multicolumn{4} {c}{ALU-only \acrshort{isa}}\\
-\hline
-DM, IM = 32 & $\numprint{19.599}$~$s$ & $\numprint{8136}$ & $\numprint{2046}$ \\
-\hline
-DM, IM = 64 & $\numprint{31.970}$~$s$ & $\numprint{11696}$ & $\numprint{3070}$ \\
-\hline
-DM, IM = 128 & $\numprint{62.599}$~$s$ & $\numprint{18816}$ & $\numprint{5118}$ \\
-\hline
-DM, IM = 256 & $\numprint{164.894}$~$s$ &$\numprint{33041}$ & $\numprint{9214}$ \\
-\hline
-DM, IM = 512 & $\numprint{598.986}$~$s$ & $\numprint{65183}$ & $\numprint{17406}$ \\
-\hline
-\multicolumn{4} {c}{Full \acrshort{isa}~\cite{songhori2015tinygarble}}\\
-\hline
-DM, IM = 32 & $\numprint{38.331}$~$s$ & $\numprint{13257}$ & $\numprint{2110}$ \\
-\hline
-DM, IM = 64 & $\numprint{50.446}$~$s$ & $\numprint{16818}$ & $\numprint{3134}$ \\
-\hline
-DM, IM = 128 & $\numprint{82.863}$~$s$ & $\numprint{23899}$ & $\numprint{5182}$ \\
-\hline
-DM, IM = 256 & $\numprint{189.157}$~$s$ &$\numprint{38118}$ & $\numprint{9278}$ \\
-\hline
-DM, IM = 512 & $\numprint{616.750}$~$s$ & $\numprint{69423}$ & $\numprint{17470}$ \\
+\acrshort{dm}, \acrshort{im} = 512 & $\numprint{594.047}$~$s$ & $\numprint{61570}$ & $\numprint{17406}$ \\
 \end{tabular}
 \end{table}
 
+\begin{table}[]
+\caption{Synthesis results of restricted and full \acrshort{isa}}\label{tab:synres-res-full}
+\centering
+\begin{tabular}{l|r|r|r}
+\multicolumn{1}{c|}{Memory Size} & \multicolumn{1}{c|}{Synthesis Time} &  \multicolumn{1}{c|}{\# of Combinatorial} & \multicolumn{1}{c}{\# of Sequential} \\
+\multicolumn{1}{c|}{(words)} & \multicolumn{1}{c|}{seconds (s)} &  \multicolumn{1}{c|}{non-XOR gates} & \multicolumn{1}{c}{gates} \\
+\hline
+\hline
+\multicolumn{4} {c}{\acrshort{alu}\&Shift \acrshort{isa}}\\
+\hline
+\acrshort{dm}, \acrshort{im} = 32 & $\numprint{21.681}$~$s$ & $\numprint{9676}$ & $\numprint{2046}$ \\
+\hline
+\acrshort{dm}, \acrshort{im} = 64 & $\numprint{34.588}$~$s$ & $\numprint{12702}$ & $\numprint{3070}$ \\
+\hline
+\acrshort{dm}, \acrshort{im} = 128 & $\numprint{65.873}$~$s$ & $\numprint{19694}$ & $\numprint{5118}$ \\
+\hline
+\acrshort{dm}, \acrshort{im} = 256 & $\numprint{170.974}$~$s$ &$\numprint{34071}$ & $\numprint{9214}$ \\
+\hline
+\acrshort{dm}, \acrshort{im} = 512 & $\numprint{593.945}$~$s$ & $\numprint{66238}$ & $\numprint{17406}$ \\
+\hline
+\multicolumn{4} {c}{\acrshort{alu}-only \acrshort{isa}}\\
+\hline
+\acrshort{dm}, \acrshort{im} = 32 & $\numprint{19.599}$~$s$ & $\numprint{8136}$ & $\numprint{2046}$ \\
+\hline
+\acrshort{dm}, \acrshort{im} = 64 & $\numprint{31.970}$~$s$ & $\numprint{11696}$ & $\numprint{3070}$ \\
+\hline
+\acrshort{dm}, \acrshort{im} = 128 & $\numprint{62.599}$~$s$ & $\numprint{18816}$ & $\numprint{5118}$ \\
+\hline
+\acrshort{dm}, \acrshort{im} = 256 & $\numprint{164.894}$~$s$ &$\numprint{33041}$ & $\numprint{9214}$ \\
+\hline
+\acrshort{dm}, \acrshort{im} = 512 & $\numprint{598.986}$~$s$ & $\numprint{65183}$ & $\numprint{17406}$ \\
+\hline
+\multicolumn{4} {c}{Full \acrshort{isa} (\sect{sec:eval-mips-pf-sfe})}\\
+\hline
+\acrshort{dm}, \acrshort{im} = 32 & $\numprint{38.331}$~$s$ & $\numprint{13257}$ & $\numprint{2110}$ \\
+\hline
+\acrshort{dm}, \acrshort{im} = 64 & $\numprint{50.446}$~$s$ & $\numprint{16818}$ & $\numprint{3134}$ \\
+\hline
+\acrshort{dm}, \acrshort{im} = 128 & $\numprint{82.863}$~$s$ & $\numprint{23899}$ & $\numprint{5182}$ \\
+\hline
+\acrshort{dm}, \acrshort{im} = 256 & $\numprint{189.157}$~$s$ &$\numprint{38118}$ & $\numprint{9278}$ \\
+\hline
+\acrshort{dm}, \acrshort{im} = 512 & $\numprint{616.750}$~$s$ & $\numprint{69423}$ & $\numprint{17470}$ \\
+\end{tabular}
+\end{table}
 
 \begin{itemize}
-\item \emph{Application-specific \acrshort{isa} for public functions:} We synthesized three variants of the application-specific \acrshort{isa} where the selected instructions include only the ones used by a particular function, for various memory sizes. We create the application-specific \acrshort{isa} for the three benchmarks: Hamming distance\footnote{\small{Instructions required for \emph{Hamming distance} are:} \tiny{LW, SW, ADD, SUB, XOR, NOP, SLL and BEQ}}, PSI\footnote{\small{Instructions required for \emph{PSI} are:} \tiny{LW, SW, ADD, SUB, NOP, SLL, BEQ, BNE and SLT}}, and \acrshort{aes}\footnote{ \small{Instructions required for \emph{\acrshort{aes}} are:} \tiny{LW, LB, SW, SB, ADD, SUB, AND, XOR, OR, NOP, SLL, SRL, BEQ, BNE, JAL, JR and SLT}}.
-\item \emph{Restricted \acrshort{isa} for semi-private functions:} We synthesized two variants of the restricted \acrshort{isa}: one without the Mult/Div unit and another without Mult/Div and Shift units. Since the difference between the two depends mainly on reducing the control logic and select lines of multiplexers, the numbers of non-XOR gates for both are different. However, the number of flip-flops are the same.
-\item \emph{Full \acrshort{isa}~\cite{songhori2015tinygarble} for private functions:} We show full \acrshort{isa} synthesis results with different memory sizes in \tab{tab:synres}.
+	\item \emph{Application-specific \acrshort{isa} for public functions:} We synthesized three variants of the application-specific \acrshort{isa} where the selected instructions include only the ones used by a particular function, for various memory sizes.
+	We create the application-specific \acrshort{isa} for the three benchmarks: Hamming distance, \acrshort{psi}, and \acrshort{aes}.
+	Instructions required for Hamming distance function are: LW, SW, ADD, SUB, XOR, NOP, SLL and BEQ.
+	Instructions required for \acrshort{psi} are: LW, SW, ADD, SUB, NOP, SLL, BEQ, BNE and SLT.
+ 	Instructions required for \acrshort{aes} areLW, LB, SW, SB, ADD, SUB, AND, XOR, OR, NOP, SLL, SRL, BEQ, BNE, JAL, JR and SLT.
+
+	\item \emph{Restricted \acrshort{isa} for semi-private functions:} We synthesized two variants of the restricted \acrshort{isa}: one without the Mult/Div unit and another without Mult/Div and Shift units.
+	Since the difference between the two depends mainly on reducing the control logic and select lines of multiplexers, the numbers of non-XOR gates for both are different.
+	However, the number of \acrshort{ff}s are the same.
+
+	\item \emph{Full \acrshort{isa} for private
+	functions:} This variant is an extension to the result reported in \sect{sec:eval-mips-pf-sfe} for different memory sizes.
 \end{itemize}
 
-\section{Performance Evaluation}
-\subsection{Area} \tab{table:resource} shows the resource allocation and utilization of our \acrshort{gc} Evaluator on a Xilinx Virtex-7 \acrshort{fpga}. Note that the \acrshort{fpga} utilization does not vary for different memory sizes and instances of the \gls{mips} processor since the evaluator logic remains unaltered. For different memory sizes and \acrshort{isa} instances, only the non-XOR gate count varies. This only impacts the garbled labels and tables memory which significantly affects the off-chip memory utilized for storing the garbled tables, and the Block Random-Access Memory (BRAM) resources utilization only to a small extent.
+\subsection{Performance of the hardware \acrshort{gc} evaluator}
+\subsubsection{Area}
+\tab{table:resource} shows the resource allocation and utilization of our hardware \acrshort{gc} evaluator on a Xilinx Virtex-7 \acrshort{fpga}.
+Note that the \acrshort{fpga} utilization does not vary for different memory sizes and instances of the \gls{mips} processor since the evaluator logic remains unaltered.
+For different memory sizes and \acrshort{isa} instances, only the non-XOR gate count varies.
+This only impacts the garbled labels and tables memory which significantly affects the off-chip memory utilized for storing the garbled tables, and the \acrfull{bram} resources utilization only to a small extent.
 
-\begin{table}[ht]
+\begin{table}[]
 \centering
-\caption{Resource allocation and utilization of GarbledCPU \acrshort{gc} Evaluator on a Xilinx Virtex-7 \acrshort{fpga}.}
+\caption{Resource allocation and utilization of our hardware \acrshort{gc} evaluator on a Xilinx Virtex-7 \acrshort{fpga}.}
 \label{table:resource}
 \begin{tabular}{l|r|r}
 Resource    & \multicolumn{1}{c|}{Estimation} & \multicolumn{1}{c}{Utilization \%} \\ \hline \hline
-Flip-Flop (\acrshort{ff}) & $\numprint{22035}$ & $\numprint{2.54}$ \\ \hline
-Slice LookUp Table (LUT) & $\numprint{21229}$ & $\numprint{4.90}$ \\ \hline
-BRAM & $\numprint{354}$ & $\numprint{24}$
+\acrfull{ff} & $\numprint{22035}$ & $\numprint{2.54}$ \\ \hline
+Slice \acrfull{lut} & $\numprint{21229}$ & $\numprint{4.90}$ \\ \hline
+\acrshort{bram} & $\numprint{354}$ & $\numprint{24}$
 \\ \hline
 BUFG & $\numprint{2}$ & $\numprint{6.25}$
  \end{tabular}
 \end{table}
 
-\subsection{Performance} \tab{table:performance} presents the runtime required to evaluate GarbledCPU for one instruction in terms of clock cycles and $\mu\textrm{s}$. Our \acrshort{gc} evaluator operates at $100\textrm{MHz}$ on the \acrshort{fpga}. This is used to compute an average evaluation runtime of 1.1 clock cycles per gate for our pipelined \acrshort{gc} evaluator which translates to an average of $11\textrm{ns}$ per gate in our \acrshort{fpga} implementation. The reported runtime can be further improved by providing tighter timing constraints.
+\subsubsection{Performance}
+\tab{table:performance-app} presents the runtime required to evaluate \acrshort{mips} for one instruction in terms of clock cycles and $\mu\textrm{s}$ for application-specific \acrshort{isa}s.
+\tab{table:performance-res-full} repots the same results for restricted and full \acrshort{isa}s.
+Our \acrshort{gc} evaluator operates at $100\textrm{MHz}$ on the \acrshort{fpga}.
+This is used to compute an average evaluation runtime of 1.1 clock cycles per gate for our pipelined \acrshort{gc} evaluator which translates to an average of $11\textrm{ns}$ per gate in our \acrshort{fpga} implementation.
+The reported runtime can be further improved by providing tighter timing constraints.
 
-\subsection{Comparison with Other Work}
-\tab{tab:comp} shows a comparison with other \acrshort{gc} evaluator implementations. However, for fairness, we are leveraging \acrshort{gc} optimizations that were not available at the time for \cite{jarvinen2010garbled}. We compare with our two implementations, the 21-stage pipelined evaluator and un-pipelined variant to show the effect of pipelining in improving our performance by a factor of 7.8. \tab{tab:comp} compares our results with interpolated results estimated for other works. Results indicate that our pipelined \acrshort{gc} evaluator \acrshort{fpga} implementation takes $51\times$ fewer clock cycles compared to the fastest software implementation JustGarble \cite{bellare2013efficient}. Although the \acrshort{cpu} clock frequency ($3.0\textrm{GHz}$) is $30\times$ faster than that of our Virtex-7 \acrshort{fpga} ($100\textrm{MHz}$), our pipelined implementation would still be almost $2\times$ faster than JustGarble in terms of absolute time. Note that our implementation is just a prototype on a reconfigurable \acrshort{fpga} as opposed to a custom design of Intel \acrshort{aes-ni} in \acrshort{cpu}. Implementing GarbledCPU on an ASIC would improve its performance in terms of absolute time even further. Moreover, our implementation is two orders of magnitude faster than the previously fastest hardware implementation of \cite{jarvinen2010garbled}.
-
-\begin{table}[ht]
+\begin{table}[]
 \centering
-\caption{Performance of GarbledCPU for different (\acrshort{isa}s) with different memory sizes at $100\textrm{MHz}$ clock frequency.}\label{table:performance}
+\caption{Performance of evaluating \acrshort{mips} for application-specific \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-app}
 \begin{tabular}{l|r|r|r|r|r}
 \multicolumn{1}{c|}{Memory Size (words)} & \multicolumn{1}{c|}{$\numprint{32}$ } &  \multicolumn{1}{c|}{$\numprint{64}$ } & \multicolumn{1}{c|}{$\numprint{128}$ } & \multicolumn{1}{c|}{$\numprint{256}$ } & \multicolumn{1}{c}{$\numprint{512}$ }  \\ \hline \hline
 \multicolumn{6} {c}{Hamming Distance-\acrshort{isa}}\\ \hline
@@ -409,7 +444,15 @@ Avg. Time per gate (cc)  & $\numprint{1.10}$      & $\numprint{1.11}$   & $\nump
 \# of non-XOR gates       & - & -&- & $\numprint{32177}$   & $\numprint{61570}$\\ \hline
 Time per inst. (cc)       &-  & -&- & $\numprint{35717}$   & $\numprint{68343}$\\ \hline
 Time per inst. ($\mu s$) & - & -& -& $\numprint{357.17}$ & $\numprint{683.43}$ \\ \hline
-Avg. Time per gate (cc)  & -&- &- & $\numprint{1.11}$      & $\numprint{1.11}$ \\ \hline
+Avg. Time per gate (cc)  & -&- &- & $\numprint{1.11}$      & $\numprint{1.11}$ \\
+\end{tabular}
+\end{table}
+
+\begin{table}[]
+\centering
+\caption{Performance of evaluating \acrshort{mips} for restricted and full \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-res-full}
+\begin{tabular}{l|r|r|r|r|r}
+\multicolumn{1}{c|}{Memory Size (words)} & \multicolumn{1}{c|}{$\numprint{32}$ } &  \multicolumn{1}{c|}{$\numprint{64}$ } & \multicolumn{1}{c|}{$\numprint{128}$ } & \multicolumn{1}{c|}{$\numprint{256}$ } & \multicolumn{1}{c}{$\numprint{512}$ }  \\ \hline \hline
 \multicolumn{6} {c}{ALU\&Shift-\acrshort{isa}}\\
 \hline
 \# of non-XOR gates       & $\numprint{9676}$    & $\numprint{12702}$ & $\numprint{19694}$ & $\numprint{34071}$  & $\numprint{66238}$\\ \hline
@@ -422,7 +465,7 @@ Avg. Time per gate (cc)  & $\numprint{1.10}$     & $\numprint{1.10}$   & $\numpr
 Time per inst. (cc)       & $\numprint{8624}$  & $\numprint{12866}$ & $\numprint{21074}$  & $\numprint{35684}$  & $\numprint{73657}$\\ \hline
 Time per inst. ($\mu s$) & $\numprint{86.24}$ & $\numprint{128.66}$     & $\numprint{210.74}$  & $\numprint{356.84}$  & $\numprint{736.57}$\\ \hline
 Avg. Time per gate (cc)  & $\numprint{1.06}$     & $\numprint{1.10}$    & $\numprint{1.12}$    & $\numprint{1.08}$  & $\numprint{1.13}$\\ \hline
-\multicolumn{6} {c}{Full \acrshort{isa}~\cite{songhori2015tinygarble}}\\
+\multicolumn{6} {c}{Full \acrshort{isa} (\sect{sec:eval-mips-pf-sfe})}\\
 \hline
 \# of non-XOR gates       & $\numprint{13257}$    & $\numprint{16818}$   & $\numprint{23899}$ & $\numprint{38118}$ & $\numprint{69423}$\\ \hline
 Time per inst. (cc)       & $\numprint{14848}$  & $\numprint{18668}$ & $\numprint{25811}$ & $\numprint{40786}$  & $\numprint{77060}$\\ \hline
@@ -431,12 +474,23 @@ Avg. Time per gate (cc)  & $\numprint{1.12}$     & $\numprint{1.11}$   & $\numpr
 \end{tabular}
 \end{table}
 
+\subsubsection{Comparison of our hardware \acrshort{gc} evaluator with prior art}
+\tab{tab:comp} shows a comparison with other \acrshort{gc} evaluator implementations \cite{jarvinen2010garbled, bellare2013efficient}.
+However, for fairness, we are leveraging \acrshort{gc} optimizations that were not available at the time for \cite{jarvinen2010garbled}.
+We compare with our two implementations, the 21-stage pipelined evaluator and un-pipelined variant to show the effect of pipelining in improving our performance by a factor of 7.8.
+\tab{tab:comp} compares our results with interpolated results estimated for other works.
+Results indicate that our pipelined \acrshort{gc} evaluator \acrshort{fpga} implementation takes $51\times$ fewer clock cycles compared to the fastest software implementation JustGarble \cite{bellare2013efficient}.
+Although the \acrshort{cpu} clock frequency ($3.0\textrm{GHz}$) is $30\times$ faster than that of our Virtex-7 \acrshort{fpga} ($100\textrm{MHz}$), our pipelined implementation would still be almost $2\times$ faster than JustGarble in terms of absolute time.
+Note that our implementation is just a prototype on a reconfigurable \acrshort{fpga} as opposed to a custom design of Intel \acrshort{aes-ni} in \acrshort{cpu}.
+Implementing our hardware \acrshort{gc} evaluator as ASIC would improve its performance in terms of absolute time even further.
+Moreover, our implementation is two orders of magnitude faster than the previously fastest hardware implementation of \cite{jarvinen2010garbled}.
+
 \begin{table}[ht]
 \centering
 \caption{Comparing our \acrshort{gc} evaluator implementation with other works' estimation for \gls{mips} with 64-word memory.}\label{tab:comp}
 \begin{tabular}{l||r|r}
 \multicolumn{1}{c||}{Method} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}Total time\\(cc)\end{tabular}} & \multicolumn{1}{c}{cc/gate} \\ \hline \hline
-J\"arvinen et al. (SoC)~\cite{jarvinen2010garbled} & $\numprint{37329233}$ & $\numprint{2219.6}$ \\ \hline
+J\"arvinen et al. (\acrshort{soc})~\cite{jarvinen2010garbled} & $\numprint{37329233}$ & $\numprint{2219.6}$ \\ \hline
 J\"arvinen et al. (Stand-Alone \acrshort{fpga})~\cite{jarvinen2010garbled} & $\numprint{4291954}$ & $\numprint{255.2}$ \\ \hline
 JustGarble (\acrshort{cpu})~\cite{bellare2013efficient} & $\numprint{948535}$ & $\numprint{56.4}$ \\ \hline
 Our work w/o pipeline & $\numprint{144635}$ & $\numprint{8.6}$ \\ \hline
@@ -444,11 +498,24 @@ Our work w/ pipeline & $\numprint{18500}$ & $\numprint{1.1}$
 \end{tabular}
 \end{table}
 
-\section{Evaluation of \gls{arm2gc}}\label{sec:eval}
-We also compare the overall performance of our GarbledCPU with the performance of the proposed software solution in \cite{wang2016secure} on the compatible benchmarks. For computing Hamming distance on two 32-bit integer arrays, Wang et al.'s solution takes $1.24s$ to garble 481K gates (see Table 4 in \cite{wang2016secure}). GarbledCPU requires \numprint{6715} non-XOR gates and \numprint{426} cycles (see Tables \ref{tab:synres} and \ref{tab:cyc_bench}), and thus it takes only $0.0314s$ to evaluate 2.8M gates. Given that garbling time is double the evaluation time, this indicates a speedup of factor 18 for GarbledCPU but with $6\times$ more AND gates for the same functionality. In terms of throughput, GarbledCPU can evaluate 90.8M gates and Wang et al.'s solution can evaluate 776K gates which makes GarbledCPU 117 times faster owing to our hardware implementation. However, this speedup assumes on-chip memory and is likely to be much smaller when utilizing off-chip memory.
+% We also compare the overall performance of our \gls{mips} for \acrshot{sfe} with the performance of the proposed software solution in \cite{wang2016secure} on the compatible benchmarks.
+% For computing Hamming distance on two 32-bit integer arrays, Wang et al.'s solution takes $1.24s$ to garble 481K gates (see Table 4 in \cite{wang2016secure}).
+% Our solution requires \numprint{6715} non-XOR gates and \numprint{426} cycles (see Tables \ref{tab:synres} and \ref{tab:cyc_bench}), and thus it takes only $0.0314s$ to evaluate 2.8M gates.
+% Given that garbling time is double the evaluation time, this indicates a speedup of factor 18 for our solution but with $6\times$ more non-XOR gates for the same functionality.
+% In terms of throughput, our approach can evaluate 90.8M gates and Wang et al.'s solution can evaluate 776K gates which makes ours 117 times faster owing to our hardware implementation.
+% However, this speedup assumes on-chip memory and is likely to be much smaller when utilizing off-chip memory.
 
-\subsection{Evaluation Setup}
-We use \gls{synopsys-dc} H-2013.03-SP4~\cite{tool:DesignCompiler} along with \gls{tinygarble}~\cite{songhori2015tinygarble} synthesis and technology libraries to generate the \gls{netlist}s for the benchmark circuits and the \gls{arm} processor.
+\subsection{Evaluation of \gls{arm2gc}}\label{sec:eval-arm2gc}
+In this section, we present the evaluation result of the \gls{skipgate} algorithm and the \gls{arm2gc} framework.
+First, we explain the experimental setup of the evaluation.
+We next discuss the performance metric used to evaluate the algorithm and framework.
+Next, the effect of the \gls{skipgate} algorithm on removing sequential overhead from the benchmark function is reported.
+We then compare the result of the \gls{arm2gc} framework and that of \gls{tinygarble} \acrshort{hdl} synthesis and high-level custom compiler approaches of the previous work.
+The effect of the \gls{skipgate} algorithm on the \gls{arm} circuit is illustrated next.
+Lastly, we provide a number of complex functions that has been implemented using the \gls{arm2gc} framework.
+
+\subsection{Experimental Setup}
+We use \gls{synopsys-dc} H-2013.03-SP4~\cite{tool:DesignCompiler} along with \gls{tinygarble} synthesis flow and technology libraries to generate the \gls{netlist}s for the benchmark circuits and the \gls{arm} processor.
 
 For the \gls{arm2gc} framework, we use the Amber \gls{arm} project, an open-source implementation of \gls{arm} v2a \acrshort{isa} on opencores~\cite{santifort2010amber}.
 The \gls{arm} circuit is modified as explained in \sect{ssec:arm}.
@@ -460,28 +527,8 @@ We modified the header assembly code to change the addresses of stack, code, and
 We do not apply any optimization on the binary code.
 Thus, similar to a normal software compilation, it takes less than a few seconds to compile a function into an \gls{arm} binary code.
 
-\subsection{Benchmark Functions and Metrics}
-We use the benchmark functions that have been frequently used for evaluation in the \acrshort{gc} literature~\cite{holzer2012secure, songhori2015tinygarble, wang2016secure}. The benchmarks are as follows:
-
-\begin{itemize}
-\vspace{-0.06in}
-\item Sum adds two integers.
-\vspace{-0.1in}
-\item Compare compares two integers.
-\vspace{-0.1in}
-\item Hamming finds the Hamming distance between two integers.
-\vspace{-0.1in}
-\item Mult calculates the product of two integers.
-\vspace{-0.1in}
-\item MatrixMult$N\times N$ computes matrix multiplication of two $N\times N$ matrices.
-\vspace{-0.1in}
-\item \acrshort{sha}3 finds \acrshort{sha}3-256 hash of a string.
-\vspace{-0.1in}
-\item \acrshort{aes} computes \acrshort{aes}-128 encryption given two 128-bit numbers as the key and the message.
-\end{itemize}
-
-%Metric
-The most important metric to compare the cost of garbling is the total number of garbled non-XOR gates.
+\subsection{Performance Metrics}
+The most important metric to compare the cost of garbling is the total number of garbled non-XOR gates (same as \acrshort{ngt} in \sect{ssec:eval-tinygarble-setup}).
 This metric encompasses both the cost of computation (encrypting/decrypting garbled tables) and the cost of communication (transferring garbled tables) in the \acrshort{gc} protocol \cite{kolesnikov2008improved}.
 
 \begin{table}
@@ -533,7 +580,6 @@ Note that we use an efficient binary tree-based method~\cite{huang2011faster} fo
 \begin{table}
 \centering
 \caption{The number of garbled non-XOR gates for the benchmark functions. Comparing \gls{arm2gc} to \gls{tinygarble}'s hardware synthesis~\cite{songhori2015tinygarble}.}\label{table:hw_vs_frwk}
-\resizebox{\columnwidth}{!}{%
 \begin{tabular}{l||r|r||r}
 Function (bit) & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}\gls{tinygarble}\\ (Verilog)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c||}{\begin{tabular}[c]{@{}c@{}}\gls{arm2gc}\\ (C)\end{tabular}} & \multicolumn{1}{c}{Overhead} \\ \hline \hline
 Sum 32 & 31 & 31 & 0.0\% \\
@@ -550,16 +596,14 @@ MatrixMult8x8 32 & 492,032 & 522,304 & 6.2\% \\
 \acrshort{sha}3 256 & 38,400 & 37,760 & -1.7\% \\
 \acrshort{aes} 128$\dagger$ & 6,400 & 6,400 & 0.0\%
 \end{tabular}
-}
 \\
 \footnotesize{{$\dagger$}Here, we added the cost of missing key expansion in \acrshort{aes} 128 to the reposted result in~\cite{songhori2015tinygarble}.}
 \end{table}
 
 \subsection{\gls{arm2gc} vs \acrshort{gc} Frameworks Supporting High-level Languages}
-\begin{table*}[t]
+\begin{table}[]
 \centering
 \caption{Number of garbled non-XOR gates for the benchmark functions. Comparing \gls{arm2gc} to previous work.}\label{table:other_vs_frwk}
-\resizebox{0.85\textwidth}{!}{%
 \begin{tabular}{l||r|r|r|r|r|r||r}
 Function (bit) & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}ANSI-C \\ (C)~\cite{holzer2012secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}\gls{tinygarble} \acrshort{hls} \\ (C $\rightarrow$ Verilog)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}\gls{tinygarble} \gls{mips} \\ (C)~\cite{songhori2015tinygarble}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}\acrshort{sfe} \gls{mips} \\ (C)~\cite{wang2016secure}\end{tabular}} & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}GarbledCPU \\ (C)~\cite{songhori2016garbledcpu}\end{tabular}} & \multicolumn{1}{c||}{\begin{tabular}[c]{@{}c@{}}\gls{frigate} \\ (C)~\cite{mood2016frigate}\end{tabular}} & \multicolumn{1}{c}{\begin{tabular}[c]{@{}c@{}}ARM2Garble\\ (C)\end{tabular}} \\ \hline \hline
 Sum 32 & 32 & 288 & - & - & - & - & 31 \\
@@ -576,8 +620,7 @@ MatrixMult8x8 32 & 905,728 & - & - & - & - & - & 522,304 \\
 \acrshort{sha}3 256 & - & - & - & - & - & - & 37,760 \\
 \acrshort{aes} 128 & - & - & - & - & 198,789,506 & 10,383 & 6,400
 \end{tabular}
-}
-\end{table*}
+\end{table}
 
 \tab{table:other_vs_frwk} reports the cost of garbling for the benchmark functions constructed by the prior-art \acrshort{gc} frameworks~\cite{holzer2012secure, songhori2015tinygarble, mood2016frigate} and garbled processors~\cite{wang2016secure, songhori2016garbledcpu} along with the \gls{arm2gc} framework.
 The corresponding programming language is shown between parentheses.
@@ -587,11 +630,10 @@ For example, \gls{arm2gc} results $12.2\times$,  $5.1\times$, $74,000\times$, $5
 \gls{arm2gc} also results in $38.3\%$ less non-XOR gates compared to \gls{frigate}~\cite{mood2016frigate} for \acrshort{aes} function.
 
 \subsection{Effect of {\gls{skipgate}} on \gls{arm}}
-\begin{table}[h]
+\begin{table}
 \centering
 \caption{\gls{skipgate} algorithm improvement on the \gls{arm} sequential circuit.}
 \label{tab:sys_improvment_frwk}
-\resizebox{\columnwidth}{!}{%
 \begin{tabular}{l||r|r||r}
 \multirow{2}{*}{Function (bit)} & \multicolumn{2}{c||}{\# of non-XOR gates} &
 \multicolumn{1}{c}{\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Improvement \\ (1000X)\end{tabular}}} \\ \cline{2-3}
@@ -610,7 +652,6 @@ MatrixMult8x8 32 & 1,079,894,416 & 522,304 & 2 \\
 \acrshort{sha}3 256 & 29,354,783,052 & 37,760 & 777 \\
 \acrshort{aes} 128 & 54,621,701,856 & 6,400 & 8,535
 \end{tabular}
-}
 \end{table}
 
 \tab{tab:sys_improvment_frwk} shows the cost of garbling an \gls{arm} processor for the benchmark functions using conventional \acrshort{gc} compared to \acrshort{gc} with the \gls{skipgate} algorithm.
@@ -625,11 +666,10 @@ These dramatic improvements are due to the large number of public inputs in the 
 Comparing the result of \tab{tab:sys_impvoment} and \tab{tab:sys_improvment_frwk} shows that the extend of \gls{skipgate}'s impact highly depends on the structure of the circuit, as well as the degree of presence of public values in the circuit.
 
 \subsection{Complex Functions}
-\begin{table}[h]
+\begin{table}
 \centering
 \caption{\gls{skipgate} algorithm improvement on the \gls{arm} sequential circuit for the complex functions.}
 \label{tab:complex_funct}
-\resizebox{\columnwidth}{!}{%
 \begin{tabular}{l||r|r||r}
 \multirow{2}{*}{Function (bit)} & \multicolumn{2}{c||}{\# of non-XOR gates} & \multicolumn{1}{c}{\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Improvement \\ (1000X)\end{tabular}}} \\ \cline{2-3}
  & \multicolumn{1}{c|}{Conventional \acrshort{gc}+\gls{arm}} & \multicolumn{1}{c||}{\gls{arm2gc}} & \multicolumn{1}{c}{} \\ \hline
@@ -638,7 +678,6 @@ Merge-Sort32 32 & 981,712,458 & 540,645 & 2 \\
 Dijkstra64 32 & 1,493,339,886 & 59,282 & 25 \\
 CORDIC 32 & 228,847,596 & 4,601 & 50
 \end{tabular}
-}
 \end{table}
 
 As shown in \tab{tab:complex_funct}, we also develop a number of more complex functions with the \gls{arm2gc} framework.
