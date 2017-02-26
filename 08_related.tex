@@ -67,12 +67,12 @@ As a result, users cannot benefit from the optimizations provided by general pur
 Moreover, these compilers are less scrutinized and therefore more prone to bugs.
 In contrast, the \gls{arm2gc} framework supports any general purpose \gls{arm} compiler and thus benefit from all the state-of-the-art optimizations, supports legacy codes, and is fully verified.
 
-The TinyGarle framework~\cite{songhori2015tinygarble} allows a user to describe the function with a Hardware Description Language (HDL) like Verilog or VHDL.
+The \gls{tinygarble} framework~\cite{songhori2015tinygarble} allows a user to describe the function with a \acrfull{hdl} like \gls{verilog} or \gls{vhdl}.
 It presents customized \acrshort{gc} optimized libraries which enable synthesis of the HDL code with standard logic synthesis tools, thus, benefiting from the standard hardware optimizations.
-TinyGarble also suggests sequential circuits to \acrshort{gc} to solve the unscalablity issue.
+\gls{tinygarble} also suggests sequential circuits to \acrshort{gc} to solve the unscalablity issue.
 Unlike~\cite{kreuter2013pcf}, it allows to infer loops automatically and to optimize across multiple sub-circuits.
-TinyGarble also limits the programmer to a hardware level language which is less user friendly than a high level compiler.
-Our work utilizes TinyGarble's methodology to generate the most optimized Boolean circuit for the \gls{arm} processor.
+\gls{tinygarble} also limits the programmer to a hardware level language which is less user friendly than a high level compiler.
+Our work utilizes \gls{tinygarble}'s methodology to generate the most optimized Boolean circuit for the \gls{arm} processor.
 The big advantage of \gls{arm2gc} is that the function to be evaluated securely can be written in any programming language and compiled with any \gls{arm} compiler of choice.
 
 The work in~\cite{wang2016secure} accepts a function as a MIPS machine code, which allows the programmer to describe the function in a language of her choice and compile with a standard compiler.

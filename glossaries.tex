@@ -29,7 +29,6 @@
 \newacronym{d-ff}{D-FF}{Data Flip-Flop}
 \newacronym{pal}{PAL}{Programmable Array Logic}
 \newacronym{asic}{ASIC}{Application-Specific Integrated Circuits}
-\newacronym{vhdl}{VHDL}{VHSIC Hardware Description Language}
 \newacronym{vhsic}{VHSIC}{Very High Speed Integrated Circuit}
 \newacronym{ha}{HA}{Half Adder}
 \newacronym{fa}{FA}{Full Adder}
@@ -42,6 +41,7 @@
 \newacronym{sscd}{SSCD}{Simple Sequential Circuit Description}
 \newacronym{scd}{SCD}{Simple Circuit Description}
 \newacronym{gt}{GT}{Garbled Tables}
+\newacronym{ngt}{\#GT}{Number of Garbled Tables}
 \newacronym{gtd}{GTD}{Garbled Tables Difference}
 \newacronym{mfe}{MFE}{Memory Footprint Efficiency}
 \newacronym{cbmc}{CBMC}{ANSI-C Bounded Model Checking}
@@ -76,32 +76,47 @@
 \newglossaryentry{arm2gc}
 {
   name=ARM2GC,
-  description={is a framework introduced in this thesis for high-level two-party secure function evaluation using Yao's garbled circuit protocol.}
+  description={is a framework introduced in this thesis for high-level two-party secure function evaluation using Yao's garbled circuit protocol}
 }
 \newglossaryentry{skipgate}
 {
   name=SkipGate,
-  description={is an algorithm introduced in this thesis for Yao's garbled circuit protocol to reduce the cost of evaluating sequential circuit.}
+  description={is an algorithm introduced in this thesis for Yao's garbled circuit protocol to reduce the cost of evaluating sequential circuit}
 }
 
 \newglossaryentry{pcf}
 {
   name=PCF,
-  description={short for Portable Circuit Format, is a framework introduced in \cite{kreuter2013pcf} for high-level two-party secure function evaluation using Yao's garbled circuit protocol.}
+  description={short for Portable Circuit Format, is a framework introduced in \cite{kreuter2013pcf} for high-level two-party secure function evaluation using Yao's garbled circuit protocol}
 }
 \newglossaryentry{frigate}
 {
   name=Frigate,
-  description={is a framework introduced in \cite{mood2016frigate} for high-level two-party secure function evaluation using Yao's garbled circuit protocol.}
+  description={is a framework introduced in \cite{mood2016frigate} for high-level two-party secure function evaluation using Yao's garbled circuit protocol}
 }
 
 \newglossaryentry{netlist}
 {
   name=netlist,
-  description={is a description of a Boolean circuit through listing its Boolean gates and the dependencies between them.}
+  description={is a description of a Boolean circuit through listing its Boolean gates and the dependencies between them}
 }
 \newglossaryentry{synopsys-dc}
 {
   name=Synopsys DC,
-  description={short for Synopsys Design Compiler, is a commercial synthesis tool targeting \acrfull{asic}.}
+  description={short for Synopsys Design Compiler, is a commercial synthesis tool targeting \acrfull{asic}}
+}
+\newglossaryentry{verilog}
+{
+  name=Verilog,
+  description={is a \acrfull{hdl} standardized as IEEE 1364 and used for designing digital hardwares}
+}
+\newglossaryentry{vhdl}
+{
+  name=VHDL,
+  description={short for \acrshort{vhsic} Hardware Description Language, is a \acrfull{hdl} used for designing digital hardwares}
+}
+\newglossaryentry{rdtsc}
+{
+  name=RDTSC,
+  description={is an assembly instruction for x86 processors that is used for measuring \acrshort{cpu} time} 
 }
