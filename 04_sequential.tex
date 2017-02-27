@@ -4,6 +4,7 @@ Sequential circuits can be used as a very compact Boolean circuit description. W
 In the following chapter, we first describe the concept of sequential circuits using an example.
 Next, we discuss synthesizing sequential circuit for the \acrshort{gc} protocol.
 Then, we explain the modifications required to garble/evaluate sequential circuits.
+A version of chapter has been published in 2015 IEEE Symposium on Security and Privacy (S\&P) \cite{songhori2015tinygarble}.
 
 \section{Sequential Circuits}\label{sec:seq-seq}
 In the context of the \acrshort{gc} protocol, we can defined sequential circuit as a folded version of combinational circuit that needs to be evaluated multiple cycle.
@@ -11,7 +12,7 @@ Unlike combinational circuits where the output depends only on the inputs, the o
 Usually, intermediate values during computation is stored as a state of the circuit and is used in later cycles to complete computation of the function.
 In following, we illustrate the difference between combination and sequential circuit using a simple 4-bit adder as a function.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width=0.85\textwidth]{adder-crop.pdf}
     \caption{Combinational and sequential design of a 4-bit Adder.
@@ -41,7 +42,7 @@ Nearly all commercial circuits used in digital hardware are designed in sequenti
 There are multiple reasons for preferring sequential circuit description over combinational including the reduction in complexity, area, power, and cost, as well as natural mapping of finite state machine control functions into a sequential format.
 Some of these reasons also provide a rationale for sequential description of a function in \acrshort{gc}, including: (i) reduction in size and memory footprint that is achieved by introducing the state elements and feedback loop from output to input; (ii) removing the need to perform costly compile-time/runtime loop unrolling by embracing loops within the sequential feedback loop; (iii) providing a new degree of freedom for folding by the placement of memory elements in the long combinational paths--the placement can be done in accordance with the user's objective; (iv) solving the limitation of synthesis techniques and tools for large function (see /sec{sect:syn-limit}) by describing circuits in compact sequential format.
 
-\begin{figure}[h]
+\begin{figure}
   \centering
   \includegraphics[width=0.9\textwidth]{sequential-open-crop.pdf}
   \caption{Functionally equivalent unrolled sequential circuit corresponding to \fig{fig:sequential}.}
@@ -99,7 +100,7 @@ If cid is 0, U1 is selected, if it is 5, U3 is selected, otherwise U2 is selecte
 The unselected sub-circuits remain idle in that cycle, since its output is not used.
 At each cycle, the output of the selected sub-circuit is stored in the \acrshort{ff} to be used in the next cycles.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \begin{subfigure}[t]{0.7\textwidth}
         \includegraphics[width=\textwidth]{seq-overhead-comb-crop.pdf}

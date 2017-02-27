@@ -6,6 +6,9 @@ In this chapter first, we explain the problem of \acrfull{pf-sfe} and how a proc
 Next, we explain how we used \gls{mips} processor, a simple text-book processor, to solve \acrshort{pf-sfe} problem.
 Next, we study how a garbled processor can be modified to used for \acrshort{sfe} problem as a mean to make it easy for user to develop \acrshort{sfe} applications.
 Then, we explain how \gls{arm}, a more sophisticated processor, can be well suited for solving \acrshort{sfe} development if its secure evaluation accompanied by the \gls{skipgate} algorithm.
+A version of \sect{sec:processor-pfsfe} and \sect{sec:processor-pro-pfsfe} of this chapter has been published in 2015 IEEE Symposium on Security and Privacy (S\&P) \cite{songhori2015tinygarble}.
+A version of \sect{ssec:processor-mips-sfe-public} of this chapter has been published in 2016 Proceedings of the 53rd Annual Design Automation Conference (DAC) \cite{songhori2016garbledcpu}.
+
 
 \section{Private Function Evaluation}\label{sec:processor-pfsfe}
 Two-party \acrfull{pf-sfe} allows secure computation of a function $f_{Alice}(\cdot)$ held by one party (Alice) operating on another party's data $x_{Bob}$ (Bob) while both the data and the function are kept private.
@@ -98,7 +101,7 @@ The parties' inputs are connected to the initial signal inputs of \acrshort{ff}s
 Bob's outputs are connected to the outputs of \acrshort{ff}s in the specified address of \acrshort{dm}.
 The output address in \acrshort{dm} is part of the agreed memory configuration.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=0.95\textwidth]{mips-complex-crop.pdf}
 \caption{Lite \gls{mips} architecture.
@@ -176,7 +179,7 @@ Its architecture is shown in \fig{fig:evaluator} and consists of:
 As shown in \fig{fig:evaluator}, Bob's input labels in the Label memory are initialized by the \acrshort{ot} protocol with Alice.
 The rest of the labels in the Labels memory and the Garbled Tables memory are received in clear-text from Alice.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{Evaluator-crop.pdf}
 \caption{Architecture of our hardware \acrshort{gc} Evaluator.}
@@ -226,7 +229,7 @@ The parties' private inputs ($a$ and $b$) are passed directly to \gls{arm} circu
 The \gls{skipgate} algorithm then securely evaluate $f(a,b,p)$ by reducing the circuit into the simpler circuit of $f_{p}(a,b) = f(a,b,p)$.
 The \gls{arm} circuit computes the function $g(\cdot,\cdot)$ on the private inputs and returns its output: $c = f(a,b,p) = g(a,b)$.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=0.7\textwidth]{frwk_overview-crop.pdf}
 \caption{Overview of the \gls{arm2gc} framework.}\label{fig:frwk_overview}
@@ -269,7 +272,7 @@ Replacing conditional branches with conditional instructions in garbled \gls{arm
 Moreover, we modify the \gls{arm} controller such that conditional instructions always take the same number of cycles regardless of their condition (taken or not taken).
 Otherwise, the program flow will be dependent on the secret condition and as a result, program flow itself will become secret which in turn reduces the efficiency of the execution.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \begin{subfigure}{0.40\columnwidth}
         \centering
@@ -320,7 +323,7 @@ The user can typically alter the program in a way that the compiler avoids such 
 However, in these cases, the \gls{skipgate} algorithm removes most of the gates in the register file.
 Since the cost of fetching instructions remains smaller than that of break-even points of sub-linear \acrshort{oram}s, using \acrshort{oram} would not improve the efficiency for this case either.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{branch-crop.pdf}
 \caption{In case of compiler failure to replace a secret branch with conditional instructions, the parties do not know which instruction is executed after the branch.
@@ -336,7 +339,7 @@ This means that, instead of having a complete oblivious access to the register f
 This costs far less than 1-out-of-16 oblivious access.
 The cost of oblivious access using \acrshort{mux}s and \gls{skipgate} to a {\it subset} of a memory is equal to an oblivious access to a memory with size of the subset.
 
-\begin{figure}[h]
+\begin{figure}
 \centering
 \includegraphics[width=0.9\textwidth]{registers-crop.pdf}
 \caption{Bit-precise details of how source register is fetched while executing two instructions \texttt{add \$1, \$2, \$3} and \texttt{sub \$5, \$6, \$7} at the same time after a branch on a secret condition value \texttt{S}.}

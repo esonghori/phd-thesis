@@ -1,3 +1,4 @@
+% !TEX root = 0_main.tex
 \chapter{Open Source Logic Synthesis Tools}\label{chap:open-source}
 \gls{tinygarble} offers a generic methodology for generating \acrshort{gc} that is transparent to the underlying logic synthesis tool.
 To show this point, we demonstrate an implementation of \gls{tinygarble} using the Yosys \cite{tool:Yosys} and ABC \cite{tool:ABC} logic synthesis tool chain for circuit generation.
@@ -16,7 +17,7 @@ These results shows that \gls{tinygarble} is transparent to the underlying logic
 Since the logic synthesis tools perform a series of optimizations, they may use different (heuristic) algorithms for some of their internal steps which could lead to slightly different results.
 A user can choose between different synthesis tools based on their performance and availability.
 
-\begin{table}[ht]
+\begin{table}
 \caption{Comparison of circuit generation performance between the commercial \gls{synopsys-dc} and Yosys+ABC open source logic synthesizer.}
 \label{table:abc}
 \centering

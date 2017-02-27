@@ -27,7 +27,7 @@ The gates in the \acrshort{mux} itself act as wires and pass the output of f$_1$
 However in the conventional \acrshort{gc} protocol where public wire $x$ was teared as a secret value, the entire circuit had to be garbled/evaluated.
 In the following subsection, we explain how the \gls{skipgate} algorithm identifies such gates to reduce the garbling cost in circuits with public wires.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width = 0.45\textwidth]{mux-crop.pdf}
     \caption{Motivational example: two sub-circuits connecting to a \acrshort{mux} with a public select signal.}
@@ -160,7 +160,7 @@ This approach has two main disadvantageous:
 First, it makes the protocol complicated if one wants to enhance the security of the protocol to be secure against malicious adversaries.
 Second, it increases the communication overhead which is the bottleneck of the \acrshort{gc} protocol.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width=0.40\textwidth]{phaseOneExample-crop.pdf}
     \caption{Four examples of replacing gates in Phase 1 by zero, one, wire, or inverter.
@@ -199,7 +199,7 @@ She then generates garbled tables for gates with non-zero \texttt{label\_fanout}
 By the end of Phase 2, due to the recursive nature of the fanout reduction, \texttt{label\_fanout} of some gates that have already been garbled may become 0.
 In Line 17 of \alg{alg:phase2_alice}, Alice filters the garbled tables that have non-zero \texttt{label\_fanout} to be sent to Bob.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width = 0.50\textwidth]{phaseTwoExample-crop.pdf}
     \caption{Four examples of replacing and computing gates in Phase 2.
@@ -270,7 +270,7 @@ It first decreases the \texttt{label\_fanout} of the given gate.
 If the \texttt{label\_fanout} becomes 0, it recursively calls itself with the gates that generate the secret input(s).
 This process is illustrated on an example circuit in \fig{fig:phaseOneRecursive}.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{phaseOneRecursiveExample-crop.pdf}
     \caption{Recursive reduction of \texttt{label\_fanout} to skip unnecessary gates in Phase 1.}
@@ -289,7 +289,7 @@ The extra bit helps him to differentiate between identical and inverted secret v
 The gates in the sub-circuit f$_0$ will all be skipped for garbling because their \texttt{label\_fanout} will be zero.
 The gates in the \acrshort{mux} also will be bypassed since they belong to Groups (i-iii).
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \includegraphics[width = 0.5\textwidth]{mux_annotated-crop.pdf}
     \caption{\gls{skipgate} macro effect on the example in \fig{fig:mux}.

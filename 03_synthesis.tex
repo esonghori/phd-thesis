@@ -1,8 +1,9 @@
 % !TEX root = 0_main.tex
 \chapter{Hardware Synthesis for \acrshort{gc}}\label{chap:syn}
 In this chapter, first we review the background of the \acrshort{hdl} synthesis for digital circuits.
-Next, we explain \gls{tinygarble} \acrshort{gc} synthesis flow that generates optimized combinational circuits for the \acrshort{gc} protocol using \acrshort{hdl} synthesis in .
+Next, we explain \gls{tinygarble} \acrshort{gc} synthesis flow that generates optimized combinational circuits for the \acrshort{gc} protocol using \acrshort{hdl} synthesis.
 Then, we discuss the limitation of \acrshort{hdl} synthesis techniques and tools for generating large combinational circuits for \acrshort{gc}.
+A version of chapter has been published in 2015 IEEE Symposium on Security and Privacy (S\&P) \cite{songhori2015tinygarble}.
 
 \section{Background on \acrshort{hdl} Synthesis}\label{sec:syn-back}
 \acrshort{hdl} synthesis refers to the process of translating an abstract form of  function (circuit) presentation to the gate-level logic implementation using a series of sophisticated optimizations, transformations, and mapping \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
@@ -41,7 +42,7 @@ Exploiting synthesis tools helps to reduce number of non-XOR gates in the circui
 The global flow of \gls{tinygarble} \acrshort{gc} synthesis is shown in \fig{fig:synthesis-flow}.
 It consists of the following four steps:
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
 \includegraphics[width=0.95\textwidth]{synthesis_flow-crop.pdf}
 \caption{\gls{tinygarble} \acrshort{gc} synthesis flow.
@@ -62,7 +63,7 @@ It consists of the following four steps:
       Then, the sorted netlist is stored in format readable by \gls{tinygarble} \acrshort{gc} engine.
 \end{enumerate}
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
 \includegraphics[width=\textwidth]{HLS_HDL_netlist-crop.pdf}
 \caption{Sample files at the different steps of \gls{tinygarble} \acrshort{gc} synthesis flow for Hamming distance function.}

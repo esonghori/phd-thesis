@@ -1,5 +1,5 @@
 % !TEX root = 0_main.tex
-\chapter{Preliminaries and Background}\label{ch:prelim}
+\chapter{Preliminaries and Background}\label{chap:prelim}
 In this chapter, we provide a short background about secure multi-party computation and the generalized problem of secure function evaluation (\acrshort{sfe}).
 Next, we introduce an important special case of two-party \acrshort{sfe} problem and how Yao's Garbled Circuit protocol can solve it.
 Then, we explain basics about combinational and sequential Boolean circuits that are used in the \acrshort{gc} protocol to describe functions.
@@ -16,7 +16,7 @@ Of course such a trusted party cannot be found in real scenarios of distributed 
 Thus at best, the trusted third party can be emulated using a cryptographic protocol (the real model)~\cite{goldreich2013general}.
 \fig{fig:multi-party-model} illustrates the idea model with a trusted third party and its emulation in the real model using a secure multi-party computation protocol.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \begin{subfigure}[tl]{0.3\textwidth}
         \includegraphics[width=\textwidth]{emulate_ideal-crop.pdf}
@@ -46,7 +46,7 @@ Two-party \acrshort{sfe} is an important special case of general secure multi-pa
 In this problem, there are two parties: Alice and Bob; each has an attribute (input) $a$ and $b$ and they want to compute $(o_1, o_2) = (f_1(a, b), f_2(a, b))$ where $o_1$ belong to Alice and $o_2$ belongs to Bob and $f_1$ and $f_2$ are arbitrary polynomial-time computable functions.
 \fig{fig:two-party-sfe} illustrates the real model for two-party \acrshort{sfe}.
 
-\begin{figure}[ht]
+\begin{figure}
 \centering
 \includegraphics[width=0.70\textwidth]{two_party_SFE-crop.pdf}
 \caption{The real model for two-party Secure Function Evaluation (\acrshort{sfe}).}
@@ -121,7 +121,7 @@ In this context, a Boolean circuit can be defined as a directed graph where node
 The circuits that are used in \acrshort{gc} and other circuit-based \acrshort{sfe} protocols are acrylic Boolean circuits.
 In digital circuit theory, such a circuit is called \emph{combinational circuit} and defined as a memory-less circuit in which outputs are functions only of inputs, see \fig{fig:combinational}.
 
-\begin{figure}[h]
+\begin{figure}
     \centering
     \begin{minipage}[t]{0.4\textwidth}
         \includegraphics[width=\textwidth]{combinational-crop.pdf}
@@ -142,7 +142,7 @@ The circuit states are kept in memory elements such as Flip Flops (\acrshort{ff}
 The states can change at the end of each \emph{clock cycle}\footnote{The clock signal oscillates between a low and a high state and its (rising) edge is typically utilized to coordinate the memory updates.}.
 In this thesis, we use only \acrfull{d-ff}, a type of \acrshort{ff} that has four inputs: D (data), I (initial), clk (clock), and rst (reset) and one output: Q (latched data).
 
-\begin{figure}[h]
+\begin{figure}
     \centering
 	\includegraphics[width=0.4\textwidth]{ff-crop.pdf}
 	\caption{Schematic of a \acrshort{d-ff} with initial value.}

@@ -219,7 +219,7 @@ This is because for $cc \geq 4$, the memory space required for garbling complete
 The minimum \acrshort{cpu} cycle per gate happens at $cc=\numprint{2048}$ for $3.2$~KB memory footprint.
 This signifies the fact that even for large functions, we can use the sequential approach to fit the corresponding memory space requirement into the cache and avoid the penalty of cache misses, thus achieving a large reduction in garbling time.
 
-\begin{figure}[t]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.9\textwidth]{CPU_Time-crop.pdf}
 	\caption{Garbling $\numprint{32768}$-bit Sum function.
@@ -302,7 +302,7 @@ It has only $16$ instructions and is stored in $16\times32$bit of the IM.
 The function requires that $l$, $A$, and $B$ are stored in addresses $0$, $[2:l+1]$, and $[l+2:2l+1]$ of \acrshort{dm} respectively.
 It will store the Hamming distance of $A$ and $B$ in address $1$.
 
-\begin{figure}[]
+\begin{figure}
 \resizebox{!}{0.45\textheight}{%
 \lstinputlisting{Hamming.s}
 }
@@ -325,7 +325,7 @@ In the \acrshort{psi} function, we compute a variant of \acrshort{psi} called \a
 The sets can have different sizes where each element is 32-bit.
 For \acrshort{aes}, we assume that one party holds a 128-bit message and the other party holds eleven round keys each of 128-bit length to avoid unnecessary garbling and evaluation of the round-key generation function.
 
-\begin{table}[ht]
+\begin{table}
 \centering
 \caption{Number of required cycles to compute the benchmark functions.}\label{tab:cyc_bench}
 \begin{tabular}{l||r|r}
@@ -543,7 +543,7 @@ Note that our implementation is just a prototype on a reconfigurable \acrshort{f
 Implementing our hardware \acrshort{gc} evaluator as ASIC would improve its performance in terms of absolute time even further.
 Moreover, our implementation is two orders of magnitude faster than the previously fastest hardware implementation of \cite{jarvinen2010garbled}.
 
-\begin{table}[ht]
+\begin{table}
 \centering
 \caption{Comparing our \acrshort{gc} evaluator implementation with other works' estimation for \gls{mips} with 64-word memory.}\label{tab:comp}
 \begin{tabular}{l||r|r}

@@ -1,53 +1,37 @@
 % !TEX root = 0_main.tex
-\chapter{Related Work}
-We classify related work into compilers for \acrshort{gc}s (\sect{sect:GCCompiler}), libraries for \acrshort{gc}s (\sect{sect:GCLibs}), \acrshort{gc} implementations with hardware accelerators (\sect{sect:HWaccel}), and \acrshort{gc} implementations on mobile devices (\sect{sect:mobile}).
+\chapter{Related Work}\label{chap:related}
+In this chapter, we review the related work in the literature.
+First, we classify the related work into compilers for \acrshort{gc}s (\sect{sect:GCCompiler}), libraries for \acrshort{gc}s (\sect{sect:GCLibs}), \acrshort{gc} implementations with hardware accelerators (\sect{sect:HWaccel}), and \acrshort{gc} implementations on mobile devices (\sect{sect:mobile}).
 
-\section{Compiler for Garbled Circuits}
+\section{Compiler for Garbled Circuits}\label{sec:related-compiler}
 The following tools compile high level function descriptions into a Boolean circuit which can be used in \acrshort{gc}.
 The first realization of \acrshort{gc}s was Fairplay \cite{malkhi2004fairplay} which provides a custom high level procedural language called \acrfull{sfdl} that is compiled into a circuit description language, \acrfull{shdl}.
 Another compiler is TASTY \cite{henecka2010tasty} which allows to combine garbled circuits and homomorphic encryption.
 The compiler of \cite{kreuter2012billion} for the first time showed scalability to circuits consisting of billions of gates, e.g., a 4095x4095-bit edit distance circuit with almost 6 Billion gates.
 The compiler of \cite{franz2014cbmc} allows to use a subset of \acrshort{ansi}-\gls{c} as input language.
 
+The recent work of~\cite{mood2016frigate} studies the state-of-the-art compilers for performing secure function evaluation using high-level languages like \gls{c} or Java.
+They show that the majority of such compilers are not thoroughly validated and they reported the observed flaws in six commonly used platforms.
+As they discuss in their paper, there are serious limitations for formal verification and due to its impracticality, they limit their analysis to validation by testing.
+This type of testing does not detect all possible flaws in the compilation process.
+
+The authors in~\cite{mood2016frigate} also introduce Frigate, a new \gls{c}-style language for \acrshort{sfe} and the corresponding compiler.
+Whereas in our work, we utilize \gls{c} language with standard \gls{arm} cross compiler.
+Our work also support any programming language and corresponding compiler.
+As of now, Frigate only supports three different types (\texttt{uint\_t} , \texttt{int\_t}, and \texttt{struct\_t}).
+The user can add her own types but it requires a good understanding of the internal structure of the compiler.
+Since these three types have a specific bit length, the final computation is not bit-level efficient.
+For example for a 9-bit comparison, Frigate needs to do the comparison for a given bit length of \texttt{int\_t}.
+On the contrary, the \gls{arm2gc} framework eliminates unnecessary gates and evaluates the circuit only up to the number of bits needed.
+Frigate divides the program into different functions and creates the circuit by calling the corresponding functions and as a result prohibits the overall circuit optimization.
+In contrast, our \gls{arm} circuit is optimized globally using state-of-the-art hardware synthesis techniques.
+Therefore, our overall platform is based on very well-developed and debugged tools that have been used in industry for many years.
+Also, if any new update becomes available for these tools, they can effortlessly be incorporated into our framework.
+
+
 To reduce the memory overhead for storing large circuits and hence increase scalability, \gls{pcf} \cite{kreuter2013pcf} introduced loops that, if given manually in the high level language, are kept until the \acrshort{gc} evaluation.
 In contrast to \gls{pcf}, \gls{tinygarble} allows to infer loops automatically and also allows to optimize across multiple sub-circuits.
 
-\section{Libraries for Garbled Circuits}
-Instead of compiling circuits, FastGC \cite{huang2011faster} proposed to use a library-based approach where circuits can be programmed and easily integrated into high-level applications.
-Another \acrshort{gc} library is VMCrypt \cite{malka2011vmcrypt} that allows to dynamically construct and deconstruct sub-circuits.
-FastGC was extended in \cite{henecka2013faster} to re-use the same sub-circuits.
-Another library for secure computation is ABY that allows the efficient combination of multiple secure computation approaches \cite{demmler2015aby}.
-
-In all these library-based approaches the circuits and their decomposition into sub-circuits has to be specified manually by the programmer, whereas we provide an automated approach.
-
-\section{\acrshort{gc} Implementations with Hardware Accelerators}
-The following works provide better performance by implementing garbled circuits in hardware, on \acrshort{gpu}s, or using \acrshort{aes-ni} available in recent \acrshort{cpu}s.
-These works can benefit from the compact representation generated by \gls{tinygarble}.
-
-J\"arvinen et al., \cite{jarvinen2010garbled} proposed a generic hardware architecture for \acrshort{gc}.
-They realized two \acrshort{fpga}-based prototypes: a system-on-a-programmable-chip with access to a hardware crypto accelerator targeting smartcards and smartphones, and a stand-alone hardware implementation targeting \acrshort{asic}s.
-
-Recently, several accelerations of \acrshort{gc}s using \acrshort{gpu}s have been proposed.
-Husted et al., implemented Yao's \acrshort{gc} by using optimizations such as Free XOR, pipelining, and \acrshort{ot} extension \cite{husted2013gpu}.
-Pu et al., realized dynamic programming based on \acrshort{gc} to solve the Edit-Distance and the Smith-Waterman problems \cite{pu2013computing}.
-They also used the same optimizations as \cite{husted2013gpu} along with permute-and-encrypt, efficient lookup-table design, and compact circuits \cite{pu2013computing}.
-Frederiksen et al., implemented a secure computation protocol with security against malicious adversaries based on cut-and-choose of Yao's garbled circuit and an efficient \acrshort{ot} extension for two-party computation on \acrshort{gpu}s \cite{frederiksen2013fast}.
-
-Bellare et al., propose JustGarble in which they use fixed-key \acrshort{aes} for circuit-garbling \cite{bellare2013efficient}.
-They show their implementation using \acrshort{aes-ni} can efficiently garble and execute a circuit far faster than any prior report.
-
-\section{\acrshort{gc} Implementations on Mobile Devices}
-Our approach for generating compact circuit representations is also beneficial when performing secure computation on resource constrained devices such as mobile devices which have a limited amount of main memory.
-Secure computation on mobile devices using garbled circuits was proposed in \cite{huang2011privacy}.
-Also the protocol described in \cite{demmler2014ad}, which uses a smartcard installed in the mobile device, can benefit from our more compact circuit representation.
-In \cite{carter2016secure, carter2014whitewash}, the mobiles no longer need to process circuits any more as \acrshort{gc} generation and evaluation is outsourced to cloud servers.
-
-\section{\acrshort{hdl} Synthesis for Other \acrshort{sfe} protocols}
-
-\section{Securing \acrshort{gc} against Malicious Adversary}
-Generic ways of modifying \acrshort{gc}-based protocols such that they achieve security against stronger malicious adversaries have been proposed, e.g., \cite{lindell2007efficient, lindell2012secure, nielsen2009lego}.
-
-\section{Related work to \gls{arm2gc}}
 The idea of designing a custom programming language to describe and efficiently compile functions for secure evaluation dates back to Fairplay, the first \acrshort{gc} compiler \cite{malkhi2004fairplay}.
 Fiarplay introduces a custom language created specifically to describe functions, namely the \acrfull{sfdl}.
 \acrshort{sfdl} was compiled to \acrfull{shdl}.
@@ -75,6 +59,45 @@ Unlike~\cite{kreuter2013pcf}, it allows to infer loops automatically and to opti
 Our work utilizes \gls{tinygarble}'s methodology to generate the most optimized Boolean circuit for the \gls{arm} processor.
 The big advantage of \gls{arm2gc} is that the function to be evaluated securely can be written in any programming language and compiled with any \gls{arm} compiler of choice.
 
+\section{Libraries for Garbled Circuits}\label{sec:related-library}
+Instead of compiling circuits, FastGC \cite{huang2011faster} proposed to use a library-based approach where circuits can be programmed and easily integrated into high-level applications.
+Another \acrshort{gc} library is VMCrypt \cite{malka2011vmcrypt} that allows to dynamically construct and deconstruct sub-circuits.
+FastGC was extended in \cite{henecka2013faster} to re-use the same sub-circuits.
+Another library for secure computation is ABY that allows the efficient combination of multiple secure computation approaches \cite{demmler2015aby}.
+
+In all these library-based approaches the circuits and their decomposition into sub-circuits has to be specified manually by the programmer, whereas we provide an automated approach.
+
+\section{\acrshort{hdl} Synthesis for Other \acrshort{sfe} Circuit-based Protocols} \label{sec:related-hdl}
+GMW
+
+\section{Securing \acrshort{gc} against Malicious Adversary}\label{sec:related-malicious}
+Generic ways of modifying \acrshort{gc}-based protocols such that they achieve security against stronger malicious adversaries have been proposed, e.g., \cite{lindell2007efficient, lindell2012secure, nielsen2009lego}.
+
+\section{\acrshort{gc} Implementations with Hardware Accelerators} \label{sec:related-hardware}
+The following works provide better performance by implementing garbled circuits in hardware, on \acrshort{gpu}s, or using \acrshort{aes-ni} available in recent \acrshort{cpu}s.
+These works can benefit from the compact representation generated by \gls{tinygarble}.
+
+J\"arvinen et al., \cite{jarvinen2010garbled} proposed a generic hardware architecture for \acrshort{gc}.
+They realized two \acrshort{fpga}-based prototypes: a system-on-a-programmable-chip with access to a hardware crypto accelerator targeting smartcards and smartphones, and a stand-alone hardware implementation targeting \acrshort{asic}s.
+
+Recently, several accelerations of \acrshort{gc}s using \acrshort{gpu}s have been proposed.
+Husted et al., implemented Yao's \acrshort{gc} by using optimizations such as Free XOR, pipelining, and \acrshort{ot} extension \cite{husted2013gpu}.
+Pu et al., realized dynamic programming based on \acrshort{gc} to solve the Edit-Distance and the Smith-Waterman problems \cite{pu2013computing}.
+They also used the same optimizations as \cite{husted2013gpu} along with permute-and-encrypt, efficient lookup-table design, and compact circuits \cite{pu2013computing}.
+Frederiksen et al., implemented a secure computation protocol with security against malicious adversaries based on cut-and-choose of Yao's garbled circuit and an efficient \acrshort{ot} extension for two-party computation on \acrshort{gpu}s \cite{frederiksen2013fast}.
+
+Bellare et al., propose JustGarble in which they use fixed-key \acrshort{aes} for circuit-garbling \cite{bellare2013efficient}.
+They show their implementation using \acrshort{aes-ni} can efficiently garble and execute a circuit far faster than any prior report.
+
+Fang et al., \cite{fang2017secure}
+
+\section{\acrshort{gc} Implementations on Mobile Devices} \label{sec:related-mobile}
+Our approach for generating compact circuit representations is also beneficial when performing secure computation on resource constrained devices such as mobile devices which have a limited amount of main memory.
+Secure computation on mobile devices using garbled circuits was proposed in \cite{huang2011privacy}.
+Also the protocol described in \cite{demmler2014ad}, which uses a smartcard installed in the mobile device, can benefit from our more compact circuit representation.
+In \cite{carter2016secure, carter2014whitewash}, the mobiles no longer need to process circuits any more as \acrshort{gc} generation and evaluation is outsourced to cloud servers.
+
+\section{Garbled Processor}\label{sec:related-processor}
 The work in~\cite{wang2016secure} accepts a function as a MIPS machine code, which allows the programmer to describe the function in a language of her choice and compile with a standard compiler.
 They design a MIPS emulator to securely execute the code.
 To avoid emulating the large number of instructions supported by the MIPS machine, they perform a data independent static analysis before execution of the program to build a small instruction bank and ALU circuit tailored for each processor cycle.
@@ -86,21 +109,3 @@ However, this approach increases the cost for conditional branches.
 To mitigate this problem, we propose to use \gls{arm} processor which supports conditional execution and can replace these branches with conditional instructions (see \sect{ssec:arm}).
 In rare cases where the \gls{arm} compiler fails to replace the conditional branch, we adopted their approach in padding the parallel branches with \texttt{nop} instruction.
 Overall, our evaluation shows that \gls{arm2gc} outperforms their MIPS framework, for example by 4 orders of magnitudes for Hamming distance function, mostly thanks to the \gls{skipgate} algorithm and its bit-precision optimization.
-
-The recent work of~\cite{mood2016frigate} studies the state-of-the-art compilers for performing secure function evaluation using high-level languages like \gls{c} or Java.
-They show that the majority of such compilers are not thoroughly validated and they reported the observed flaws in six commonly used platforms.
-As they discuss in their paper, there are serious limitations for formal verification and due to its impracticality, they limit their analysis to validation by testing.
-This type of testing does not detect all possible flaws in the compilation process.
-
-The authors in~\cite{mood2016frigate} also introduce Frigate, a new \gls{c}-style language for \acrshort{sfe} and the corresponding compiler.
-Whereas in our work, we utilize \gls{c} language with standard \gls{arm} cross compiler.
-Our work also support any programming language and corresponding compiler.
-As of now, Frigate only supports three different types (\texttt{uint\_t} , \texttt{int\_t}, and \texttt{struct\_t}).
-The user can add her own types but it requires a good understanding of the internal structure of the compiler.
-Since these three types have a specific bit length, the final computation is not bit-level efficient.
-For example for a 9-bit comparison, Frigate needs to do the comparison for a given bit length of \texttt{int\_t}.
-On the contrary, the \gls{arm2gc} framework eliminates unnecessary gates and evaluates the circuit only up to the number of bits needed.
-Frigate divides the program into different functions and creates the circuit by calling the corresponding functions and as a result prohibits the overall circuit optimization.
-In contrast, our \gls{arm} circuit is optimized globally using state-of-the-art hardware synthesis techniques.
-Therefore, our overall platform is based on very well-developed and debugged tools that have been used in industry for many years.
-Also, if any new update becomes available for these tools, they can effortlessly be incorporated into our framework.
