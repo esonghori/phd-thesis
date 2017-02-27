@@ -59,44 +59,76 @@ In contrast, our \gls{arm} circuit is optimized globally using state-of-the-art 
 Therefore, our overall platform is based on very well-developed and debugged tools that have been used in industry for many years.
 Also, if any new update becomes available for these tools, they can effortlessly be incorporated into our framework.
 
-Introduction of a custom programming language is neither user-friendly, nor versatile when compared with a conventional programming languages like \gls{c}.
-Moreover, using this methodology for generating Boolean circuits, the user has to compiler her code with a newly designed custom compiler.
-As a result, the user cannot benefit from the optimizations provided by general purpose compilers.
+Generally, introduction of a new custom programming language is neither user-friendly, nor versatile when compared with a conventional programming languages like \gls{c}.
+Moreover, the user has to compiler her code with a newly designed custom compiler in these works.
+As a result, the user cannot benefit from the optimizations provided by general-purpose and standard compilers.
 Furthermore, these compilers are less scrutinized and therefore more prone to bugs.
-In contrast, the \gls{arm2gc} framework supports any general purpose \gls{arm} compiler and thus benefit from all the state-of-the-art optimizations, supports legacy codes, and is fully verified.
-
+In contrast, the \gls{arm2gc} framework supports any general-purpose \gls{arm} compiler and thus benefit from all the state-of-the-art optimizations, supports legacy codes, and is fully verified.
 
 \section{Libraries for Garbled Circuits}\label{sec:related-library}
-Instead of compiling circuits, FastGC \cite{huang2011faster} proposed to use a library-based approach where circuits can be programmed and easily integrated into high-level applications.
-Another \acrshort{gc} library is VMCrypt \cite{malka2011vmcrypt} that allows to dynamically construct and deconstruct sub-circuits.
-FastGC was extended in \cite{henecka2013faster} to re-use the same sub-circuits.
-Another library for secure computation is ABY that allows the efficient combination of multiple secure computation approaches \cite{demmler2015aby}.
+Instead of compiling circuits, Huang et al., \cite{huang2011faster} proposed  FastGC framework that uses a library-based approach where circuits can be programmed and integrated into high-level applications.
 
-In all these library-based approaches the circuits and their decomposition into sub-circuits has to be specified manually by the programmer, whereas we provide an automated approach.
+Another library-based \acrshort{gc} framework is VMCrypt proposed by Malka et al., in \cite{malka2011vmcrypt} to address software modularity and scalability issues in the previous \acrshort{gc} frameworks.
+VMCrypt provides a modular software architecture in Java programing language that dynamically constructs and de-constructs sub-circuits.
+VMCrypt removes sub-circuits whose computation is done from the memory by destructing their objects.
 
+Henecka et al., extended the FastGC framework in \cite{henecka2013faster} to re-use the same sub-circuits.
+They also introduce multi-threaded implementation for \acrshort{ot} and cashing circuit descriptions and network packets.
 
-Another approach adopted in FastGC~\cite{huang2011faster, henecka2013faster}, VMCRYPT~\cite{malka2011vmcrypt}, and ABY~\cite{demmler2015aby} for \acrshort{gc} circuit generation is to design a library containing \acrshort{gc} optimized sub-circuits in a general purpose high-level language like Java.
-This method requires the user to have a thorough understanding of the circuit description of the secure function as the circuits and their decomposition into sub-circuits has to be specified manually.
+Demmler et al., proposed ABY, a library-based framework for secure computation that allows the efficient combination of three secure computation schemes: Arithmetic sharing, Boolean sharing, and Yao’s \acrshort{gc} \cite{demmler2015aby}.
+Conversion of the private data between these secure computation schemes is supported using a pre-computed \acrshort{ot}.
 
+Generally, library-based approaches suffer from the fact that user has to manually decompose the function into sub-circuits.
+Thus, the user need to have a thorough understanding of the circuit description.
+Whereas, our methods in \gls{tinygarble} and \gls{arm2gc} are automated approaches and provide more abstraction compared to library-based frameworks.
 
 \section{Garbled Processor}\label{sec:related-processor}
-The work in~\cite{wang2016secure} accepts a function as a MIPS machine code, which allows the programmer to describe the function in a language of her choice and compile with a standard compiler.
-They design a MIPS emulator to securely execute the code.
-To avoid emulating the large number of instructions supported by the MIPS machine, they perform a data independent static analysis before execution of the program to build a small instruction bank and ALU circuit tailored for each processor cycle.
-In contrast, our approach performs this optimization with bit-precision instead of instruction-precision.
+Wang et la., proposed a \acrshort{gc} framework based on \gls{mips} processor in \cite{wang2016secure}.
+Their framework accepts a function as a \gls{mips} machine code, which allows the programmer to describe the function in a language of her choice and compile with a standard compiler.
+They design a \gls{mips} emulator to securely execute the code.
+To avoid emulating the large number of instructions supported by the \gls{mips} processor, they perform a data independent static analysis before execution of the program to build a small instruction bank and \acrshort{alu} circuit tailored for each processor cycle.
+In contrast, our \gls{arm2gc} performs this optimization with bit-precision instead of instruction-precision (see \sect{sec:processor-arm}).
 Moreover, this is done in the runtime while the circuit remains the same for each cycle.
-To solve the problem of secure conditional branch, they propose to pad \texttt{nop} instruction to parallel branches so that their lengths become equal.
+
+To solve the problem of secure conditional branch, Wang et la. propose to pad \texttt{nop} instruction to parallel branches so that their lengths become equal \cite{wang2016secure}.
 This way when the code exits either of the branches, it ends up in the same instruction and the process can continue with less cost.
 However, this approach increases the cost for conditional branches.
-To mitigate this problem, we propose to use \gls{arm} processor which supports conditional execution and can replace these branches with conditional instructions (see \sect{ssec:arm}).
+To mitigate this problem, we propose to use \gls{arm} processor which supports conditional execution and can replace these branches with conditional instructions (see \sect{sec:processor-arm}).
 In rare cases where the \gls{arm} compiler fails to replace the conditional branch, we adopted their approach in padding the parallel branches with \texttt{nop} instruction.
 Overall, our evaluation shows that \gls{arm2gc} outperforms their MIPS framework, for example by 4 orders of magnitudes for Hamming distance function, mostly thanks to the \gls{skipgate} algorithm and its bit-precision optimization.
 
 \section{HDL Synthesis for Other SFE Circuit-based Protocols} \label{sec:related-hdl}
-GMW
+Inspired by \gls{tinygarble}'s methodology, Demmler et al., proposed a method to use industrial \acrshort{hdl} synthesis tools to optimize both size of and depth of Boolean circuits used in secure computation \cite{demmler2015automated}.
+The depth of circuit is a crucial factor in the performance of the circuit-based \acrfull{gmw} protocol \cite{goldreich1987play}.
+The round complexity of \acrshort{gmw} depends on the number of non-XOR gates in the longest path from input to output.
+In \acrshort{gmw} for each layer of non-XOR gates, an \acrshort{ot} needs to executed between the parties.
+Demmler et al., proposed using timing optimization of \acrshort{hdl} synthesis tools to reduce the depth of the circuit \cite{demmler2015automated}.
+They set the area and timing delay of non-XOR gates to a large non-zero value, and those of XOR gates to zero and then force the synthesis tool to reduce the overall delay and area of the circuit.
+This results in a small and shallow circuit in term of non-XOR gates that in turn, reduces the cost of secure evaluation of the circuit in the \acrshort{gmw} protocol.
+The authors also extend their library of the ABY framework \cite{demmler2015aby} with the new optimized circuits including floating-point operations for the \acrshort{gmw} protocol.
+
 
 \section{Securing GC against Malicious Adversary}\label{sec:related-malicious}
-Generic ways of modifying \acrshort{gc}-based protocols such that they achieve security against stronger malicious adversaries have been proposed, e.g., \cite{lindell2007efficient, lindell2012secure, nielsen2009lego}.
+Yao's \acrshort{gc} protocol for two-party \acrshort{sfe} is secure against \acrshort{hbc} adversary, also known as semi-honest or passive adversary.
+A straightforward method to make it secure against malicious adversary is to apply Goldreich-Micali-Wigderson (GMW) compiler to the protocol \cite{goldreich1987play}.
+However, this method is not practical due to use of costly generic zero-knowledge proofs in the GMW compiler \cite{lindell2007efficient}.
+
+Lindell et al., proposed the first practical and efficient method to secure the \acrshort{gc} protocols against malicious adversaries in \cite{lindell2007efficient}.
+They use a scheme for committing inputs and a cut-and-choose technique.
+In the later technique, Alice (garbler) using the original \acrshort{gc} protocol (\acrshort{hbc} adversary) garbles the circuit for multiple times and send them to Bob (evaluator).
+Bob randomly selects half of them and ask Alice to reveal them to him.
+Bob can detects if Alice cheated in garbling any of the circuits.
+If majority of the circuits were garbled correct, Bob evaluates the rest of them and choses the most recurring output as the final output.
+The author later improve their method to make it more efficient in \cite{lindell2012secure}.
+
+Employing cut-and-chose methods like this one means that \acrshort{gc} under malicious adversary requires multiple invocation of \acrshort{gc} under \acrshort{hbc} adversary.
+Thus, reducing the cost of \acrshort{gc} under \acrshort{hbc} (one of the objective of this thesis) immediately results in reducing the cost of \acrshort{gc} under malicious adversary.
+
+Nielsen et al., proposed LEGO, an alternative method for securing \acrshort{gc} in the presence of malicious adversary \cite{nielsen2009lego}.
+The main difference between LEGO and previous cut-and-chose method in \cite{lindell2007efficient, lindell2012secure} is that Alice, instead of garbling the entire circuit for multiple times, garbles a large number of NAND gates.
+Bob, instead of asking to open the entire circuit, asks her to open half of the NAND gates.
+Bob then constructs a fault-tolerant circuit based on the original circuit using the remaining unrevealed NAND gates and evaluate the circuit.
+The authors showed that their method for large circuit is more efficient compared to other cut-and-chose methods.
 
 \section{GC Implementations with Hardware Accelerators} \label{sec:related-hardware}
 The following works provide better performance by implementing garbled circuits in hardware, on \acrshort{gpu}s, or using \acrshort{aes-ni} available in recent \acrshort{cpu}s.
@@ -114,10 +146,12 @@ Frederiksen et al., implemented a secure computation protocol with security agai
 Bellare et al., propose JustGarble in which they use fixed-key \acrshort{aes} for circuit-garbling \cite{bellare2013efficient}.
 They show their implementation using \acrshort{aes-ni} can efficiently garble and execute a circuit far faster than any prior report.
 
-Fang et al., \cite{fang2017secure}
+Most recently, Fang et al., proposed a generic implementation of the \acrshort{gc} protocol on \acrshort{fpga} \cite{fang2017secure}.
+They propose a coarse-grained architecture that do not required to be reprogrammed for evaluating a new \acrshort{sfe} application.
+
 
 \section{GC Implementations on Mobile Devices} \label{sec:related-mobile}
 Our approach for generating compact circuit representations is also beneficial when performing secure computation on resource constrained devices such as mobile devices which have a limited amount of main memory.
 Secure computation on mobile devices using garbled circuits was proposed in \cite{huang2011privacy}.
-Also the protocol described in \cite{demmler2014ad}, which uses a smartcard installed in the mobile device, can benefit from our more compact circuit representation.
+Also the protocol described in \cite{demmler2014ad}, which uses a smart-card installed in the mobile device, can benefit from our more compact circuit representation.
 In \cite{carter2016secure, carter2014whitewash}, the mobiles no longer need to process circuits any more as \acrshort{gc} generation and evaluation is outsourced to cloud servers.

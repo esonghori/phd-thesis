@@ -31,7 +31,7 @@ The second approach is to write a new compiler for a higher-level language that 
 Although compiler-based approaches can perform global optimizations, they often unroll the circuits into a large list of gates.
 For example, the description of a circuit with one billion gates has at least size $2 \log_2 (10^9) \cdot 10^{9} \approx 7$~GB.
 To reduce circuit description size, the compiler proposed in \cite{kreuter2013pcf}, called \gls{pcf}, does not unroll the loops in the circuit until the \acrshort{gc} protocol runs, and therefore seems to have a better scalability than the other compilers.
-As we elaborate in related work (see \sect{sect:related}), the existing approaches, including the above proposals, have certain limitations when it comes to real implementation.
+As we elaborate in related work (see ), the existing approaches, including the above proposals, have certain limitations when it comes to real implementation.
 
 Our approach, \gls{tinygarble}, is based on synthesizing and optimizing circuits for the \acrshort{gc} protocol as sequential circuits while leveraging powerful logic synthesis techniques with our newly introduced custom-libraries.
 
@@ -126,7 +126,7 @@ We modify the standard \gls{arm} architecture (without affecting the instruction
 \section{Contributions}
 In brief, our contributions are as follows:
 \begin{itemize}
-\item We propose the first hardware-only solution for 2-party \acrshort{gc}-based secure sequential function computation with different \acrshort{sfe} flavors that allows leveraging the trade-off between privacy and performance: application-specific IS for \acrshort{sfe} (\sect{ssect:sfe}), restricted IS (\sect{ssect:semi-pf}) for semi-private \acrshort{sfe}, and full IS (\sect{ssect:pfsfe}) for \acrshort{pf-sfe}.
+\item We propose the first hardware-only solution for 2-party \acrshort{gc}-based secure sequential function computation with different \acrshort{sfe} flavors that allows leveraging the trade-off between privacy and performance: application-specific IS for \acrshort{sfe} (), restricted IS () for semi-private \acrshort{sfe}, and full IS () for \acrshort{pf-sfe}.
 \item We realize a proof-of-concept FPGA implementation which demonstrates the feasibility of the sequential garbled processor in hardware, and motivates further research in this direction. GarbledCPU achieves efficiency and performance by leveraging the most recent optimizations for \acrshort{gc} \cite{kolesnikov2008improved,bellare2013efficient,zahur2015two,songhori2015tinygarble}, along with a high-throughput pipelined \acrshort{gc} evaluation on FPGA. It outperforms the fastest software implementation in the literature which relies on the Intel \acrshort{aes-ni} \cite{bellare2013efficient}.
 \item We extensively benchmark more complex functions such as \acrshort{aes}, Private Set Intersection (PSI), and Hamming distance and evaluate them under our different privacy settings using our framework and when applicable, compare our performance with prior work.
 \item We introduce the novel \gls{skipgate} algorithm that avoids redundant garbling by utilizing the mutual knowledge between the two parties.
