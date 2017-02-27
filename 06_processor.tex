@@ -253,7 +253,7 @@ A signal called \textit{terminate} is produced by the \gls{arm} circuit that ind
 The signal can be revealed to the parties once in $T$ cycles (predetermined by parties) to reduce the total number of cycles of garbling the \gls{arm} circuit.
 For $T=1$, the parties instantly identify the termination, but the exact number of cycles the function evaluated for the given inputs is revealed.
 A larger $T$ would reduce this information leakage, but increase the garbling cost.
-Appendix \ref{sec:engine} provides more details about the support of the terminate signal in \gls{tinygarble} \acrshort{gc} engine.
+\appx{chap:engine} provides more details about the support of the terminate signal in \gls{tinygarble} \acrshort{gc} engine.
 Eventually, when the function is executed, the parties reveal the content of the output memory to each other in order to learn output $c = g(a,b)$.
 
 \subsection{\gls{arm} as a Garbled Processor}\label{ssec:arm}

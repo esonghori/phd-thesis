@@ -25,7 +25,7 @@ Similar to JustGarble, we benefit from \acrshort{aes-ni}, hardware implementatio
 One of the prominent feature of \gls{tinygarble} \acrshort{gc} engine is its support for garbling/evaluation of sequential circuits.
 The gates in a sequential circuit are garbled/evaluated for multiple sequential cycles.
 The total number of cycles are agreed by the parties before start of the protocol.
-To ensure security, the encryption tweaks $T$ (see \sect{subsec:preli_GC}) for each gate has to be unique in each cycle\cite[Sect. 3.4]{henecka2013faster}.
+To ensure security, the encryption tweaks $T$ (see \sect{sssec:prelim-aes}) for each gate has to be unique in each cycle\cite[Sect. 3.4]{henecka2013faster}.
 We set tweak $T$ for each gate to be the concatenation of the cycle index (cid) and the unique gate identifiers (gid) in the combinational part of the sequential circuit, i.e., $T = \textrm{cid} || \textrm{gid}$.
 An alternative method could be to use a monotonic counter in the circuit generation/evaluation routines which is increased by one for each gate.
 As in previous work, security and correctness of the \acrshort{gc} garbling/evaluation follow from the uniqueness of the tweak $T$ and the existing proofs of security and correctness are still valid for \gls{tinygarble} (see \cite{lindell2009proof, bellare2013efficient, zahur2015two}).
@@ -48,7 +48,7 @@ We denote Alice's and Bob's inputs as g\_input and e\_input respectively.
 
 In the SSCD format, we index wires according the following order: (1) g\_init (2) e\_init (3) g\_input (4) e\_input (5) gates' output.
 SSCD is stored in a human-readable ASCII format.
-A SSCD file consists of seven lines: (1) g\_init\_size, e\_init\_size, g\_input\_size, e\_input\_size, dff\_size, output\_size, terminate (an optional 1-bit output indicating that the circuit is done, see \sect{ssec:engine-term}), and number of gates. (2) gates' first input index. (3) gates' second input index. (4) gates' type. (5) outputs index. (6) Flip-Flops' D index. (7) Flip-Flops' I index (chosen from g\_init or e\_init).
+A SSCD file consists of seven lines: (1) g\_init\_size, e\_init\_size, g\_input\_size, e\_input\_size, dff\_size, output\_size, terminate (an optional 1-bit output indicating that the circuit is done, see \sect{sec:engine-term}), and number of gates. (2) gates' first input index. (3) gates' second input index. (4) gates' type. (5) outputs index. (6) Flip-Flops' D index. (7) Flip-Flops' I index (chosen from g\_init or e\_init).
 
 \section{Translating Verilog Netlist to SCD}\label{sec:engine-v2sscd}
 The output of \gls{tinygarble} synthesis flow is an optimized gate level Verilog code called netlist.
