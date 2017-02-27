@@ -265,7 +265,7 @@ We store 2 indices ($16$B) and one type ($8$B) for each gate in circuit descript
 We measured these values as the mean of 10,000 garbling trials.
 \end{itemize}
 
-The circuit size and timing evaluation for 1-NN search is reported in Table \ref{tab:1_nns} for different values of $w$ and $n$.
+The circuit size and timing evaluation for 1-NN search is reported in \tab{tab:1_nns} for different values of $w$ and $n$.
 For same $w$, the circuit size remains constant for sequential implementation.
 Therefore, the $\mathit{CSE}$ increases linearly with $n$.
 As can be seen, the garbling times are almost equal for both combinational and sequential circuits.
@@ -279,7 +279,7 @@ For example where $n=256,~w=31$, the time of garbling using combinational circui
 \includegraphics[width=\textwidth]{first_nns_result-crop.pdf}
 \end{table}
 
-The circuit size and timing evaluation for $k$-NN search is reported in Table \ref{tab:k_nns}.
+The circuit size and timing evaluation for $k$-NN search is reported in \tab{tab:k_nns}.
 Since its combinational evaluation is not practical, we do not compare it in the way we did for 1-NN.
 The $\mathit{CS}$ for the largest circuit in this work ($w=31, k=8$) is $41.8$KB which will fit easily in embedded systems.
 As an example where $n=128, w=31, k=8$, the garbling time would be $128k\times 173848\text{cc} = 22.8\times 10^9\text{cc}$ ($6.7\text{s}$).

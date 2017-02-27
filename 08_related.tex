@@ -1,24 +1,55 @@
 % !TEX root = 0_main.tex
 \chapter{Related Work}\label{chap:related}
-In this chapter, we review the related work in the literature.
-First, we classify the related work into compilers for \acrshort{gc}s (\sect{sect:GCCompiler}), libraries for \acrshort{gc}s (\sect{sect:GCLibs}), \acrshort{gc} implementations with hardware accelerators (\sect{sect:HWaccel}), and \acrshort{gc} implementations on mobile devices (\sect{sect:mobile}).
+In this chapter, we review the related work to this thesis in the literature.
+First, we classify the prior art for generating circuit for Yao's \acrfull{gc} protocol into custom compilers in \sect{sec:related-compiler}, optimized libraries in \sect{sec:related-library}, and garbled processor in \sect{sec:related-processor}.
+Next, we review the similar work on \acrshort{hdl} synthesis for other circuit-based \acrshort{sfe} protocol in \sect{sec:related-hdl}.
+We then discuss the work on \acrshort{gc} implementations with hardware accelerators in \sect{sec:related-hardware}, and \acrshort{gc} implementations on embedded devices in \sect{sec:related-mobile}.
+Lastly, we review the work on securing the \acrshort{gc} protocol against malicious adversary in \sect{sec:related-malicious}.
 
 \section{Compiler for Garbled Circuits}\label{sec:related-compiler}
-The following tools compile high level function descriptions into a Boolean circuit which can be used in \acrshort{gc}.
-The first realization of \acrshort{gc}s was Fairplay \cite{malkhi2004fairplay} which provides a custom high level procedural language called \acrfull{sfdl} that is compiled into a circuit description language, \acrfull{shdl}.
-Another compiler is TASTY \cite{henecka2010tasty} which allows to combine garbled circuits and homomorphic encryption.
-The compiler of \cite{kreuter2012billion} for the first time showed scalability to circuits consisting of billions of gates, e.g., a 4095x4095-bit edit distance circuit with almost 6 Billion gates.
-The compiler of \cite{franz2014cbmc} allows to use a subset of \acrshort{ansi}-\gls{c} as input language.
+The idea of designing a custom programming language to describe and efficiently compile functions for secure evaluation dates back to Fairplay, the first practical implementation of the \acrshort{gc} protocol \cite{malkhi2004fairplay}.
+Fairplay introduce a custom high-level procedural language called \acrfull{sfdl} that is compiled into a circuit description language, \acrfull{shdl}.
 
-The recent work of~\cite{mood2016frigate} studies the state-of-the-art compilers for performing secure function evaluation using high-level languages like \gls{c} or Java.
-They show that the majority of such compilers are not thoroughly validated and they reported the observed flaws in six commonly used platforms.
+Henecka et al., introduced TASTY compiler \cite{henecka2010tasty} which allows to combine garbled circuits and Homomorphic encryption.
+In TASTY, the user can develop a \acrshort{sfe} program in a new domain-specific language to be performed on private data.
+The compiler then translate the program into combination of the \acrshort{gc} protocol and Homomorphic encryption to securely evaluate the program.
+
+Mood et al, introduced a new Pseudo-Assembly Language (PAL) for \acrshort{gc} circuit generation \cite{mood2012memory}.
+They design a new compiler that translate program in the PAL into Fairplay \acrshort{sfdl} to generate circuits with limited memory budget.
+
+Kreuter et al., introduced a \acrshort{gc} compiler that for the first time addressed the scalability issue of generating and garbling large circuits under the malicious model~\cite{kreuter2012billion}.
+Their compiler is able generate circuits consisting of billions of gates, e.g., a 4095x4095-bit Edit Distance circuit with almost 6 Billion gates.
+
+The first \acrshort{gc} framework supporting a general-purpose language is presented in \cite{holzer2012secure}, which supports \acrshort{ansi}-\gls{c}.
+However, it supports only a subset of \acrshort{ansi}-\gls{c} that is not compatible with many important primitives and therefore, not compatible with legacy codes.
+The main drawback of~\cite{holzer2012secure} is compile-time loop unrolling that makes it unscalable with input size.
+
+To reduce the memory overhead for storing large circuits and hence increase scalability, \gls{pcf} \cite{kreuter2013pcf} introduced loops that, if given manually in the high level language, are kept until the \acrshort{gc} evaluation.
+In contrast to \gls{pcf}, \gls{tinygarble} allows to infer loops automatically and also allows to optimize across multiple sub-circuits.
+
+Franz et al. introduced CBMC-GC, a new \acrshort{gc} compiler in \cite{franz2014cbmc}.
+Their compiler allows to users to program in \gls{c} language and translate the programs into a Boolean circuit.
+The objective of their compiler is to reduce the number of non-XOR gates in the generated Boolean circuits.
+
+Rastogi et al. proposed WYSTERIA, a new high-level programming language for the \acrshort{gc} protocol in \cite{rastogi2014wysteria}.
+WYSTERIA, unlike previous work, allows combination of local and private computations on the data.
+WYSTERIA also introduces a new abstraction for secret shared data that support generic n-party secure computations.
+
+Liu et al., proposed ObliVM framework for secure computation in \cite{liu2015oblivm}.
+They proposes a new domain-specific language that is compiled in ObliVM into an efficient representation for secure computation.
+Most significantly, ObliVM allows users to benefit from sub-linear cost of oblivious array accesses in the \acrshort{gc} protocol using Circuit \acrfull{oram} scheme \cite{wang2015circuit}.
+
+Zahur et al., proposed a new compiler for \acrshort{gc} that is based on \gls{c} compiler \cite{zahur2015obliv}.
+Their compiler allows users to program in normal \gls{c} language.
+They also make their compiler compatible with Path \acrshort{oram} scheme \cite{stefanov2013path} which reduce the cost of oblivious access to arrays.
+
+Mood et al., provided a comprehensive study of the state-of-the-art compilers~\cite{mood2012memory,kreuter2012billion,kreuter2013pcf, franz2014cbmc,zahur2015obliv,liu2015oblivm} for performing secure function evaluation using high-level languages in~\cite{mood2016frigate} .
+They showed that the majority of such compilers are not thoroughly validated and they reported the observed flaws in six commonly used platforms.
 As they discuss in their paper, there are serious limitations for formal verification and due to its impracticality, they limit their analysis to validation by testing.
 This type of testing does not detect all possible flaws in the compilation process.
 
-The authors in~\cite{mood2016frigate} also introduce Frigate, a new \gls{c}-style language for \acrshort{sfe} and the corresponding compiler.
-Whereas in our work, we utilize \gls{c} language with standard \gls{arm} cross compiler.
-Our work also support any programming language and corresponding compiler.
-As of now, Frigate only supports three different types (\texttt{uint\_t} , \texttt{int\_t}, and \texttt{struct\_t}).
+Mood et al., also introduced Frigate, a new \gls{c}-style language for \acrshort{sfe} and the corresponding compiler in the same paper~\cite{mood2016frigate}.
+Frigate supports three different types (\texttt{uint\_t} , \texttt{int\_t}, and \texttt{struct\_t}).
 The user can add her own types but it requires a good understanding of the internal structure of the compiler.
 Since these three types have a specific bit length, the final computation is not bit-level efficient.
 For example for a 9-bit comparison, Frigate needs to do the comparison for a given bit length of \texttt{int\_t}.
@@ -28,36 +59,12 @@ In contrast, our \gls{arm} circuit is optimized globally using state-of-the-art 
 Therefore, our overall platform is based on very well-developed and debugged tools that have been used in industry for many years.
 Also, if any new update becomes available for these tools, they can effortlessly be incorporated into our framework.
 
-
-To reduce the memory overhead for storing large circuits and hence increase scalability, \gls{pcf} \cite{kreuter2013pcf} introduced loops that, if given manually in the high level language, are kept until the \acrshort{gc} evaluation.
-In contrast to \gls{pcf}, \gls{tinygarble} allows to infer loops automatically and also allows to optimize across multiple sub-circuits.
-
-The idea of designing a custom programming language to describe and efficiently compile functions for secure evaluation dates back to Fairplay, the first \acrshort{gc} compiler \cite{malkhi2004fairplay}.
-Fiarplay introduces a custom language created specifically to describe functions, namely the \acrfull{sfdl}.
-\acrshort{sfdl} was compiled to \acrfull{shdl}.
-More powerful languages and compilers were later presented \cite{henecka2010tasty, kreuter2012billion, rastogi2014wysteria}.
 Introduction of a custom programming language is neither user-friendly, nor versatile when compared with a conventional programming languages like \gls{c}.
-
-Another approach adopted in FastGC~\cite{huang2011faster, henecka2013faster}, VMCRYPT~\cite{malka2011vmcrypt}, and ABY~\cite{demmler2015aby} for \acrshort{gc} circuit generation is to design a library containing \acrshort{gc} optimized sub-circuits in a general purpose high-level language like Java.
-This method requires the user to have a thorough understanding of the circuit description of the secure function as the circuits and their decomposition into sub-circuits has to be specified manually.
-
-The first \acrshort{gc} implementation supporting a general purpose language is presented in~\cite{holzer2012secure}, which supports \acrshort{ansi}-\gls{c}.
-However, it supports only a subset of \acrshort{ansi}-\gls{c} that is not compatible with many important primitives and therefore, not compatible with legacy codes.
-The main drawback of~\cite{holzer2012secure} is compile-time loop unrolling that makes it unscalable with input size.
-To cope with this problem, \gls{pcf} compiler presented in~\cite{kreuter2013pcf} introduces loops that are specified manually within the code and not rolled out until the \acrshort{gc} evaluation.
-This compiler supports a more general version of \gls{c} language.
-However, in~\cite{holzer2012secure} and~\cite{kreuter2013pcf}, the code had to be compiled with their custom compiler.
-As a result, users cannot benefit from the optimizations provided by general purpose compilers.
-Moreover, these compilers are less scrutinized and therefore more prone to bugs.
+Moreover, using this methodology for generating Boolean circuits, the user has to compiler her code with a newly designed custom compiler.
+As a result, the user cannot benefit from the optimizations provided by general purpose compilers.
+Furthermore, these compilers are less scrutinized and therefore more prone to bugs.
 In contrast, the \gls{arm2gc} framework supports any general purpose \gls{arm} compiler and thus benefit from all the state-of-the-art optimizations, supports legacy codes, and is fully verified.
 
-The \gls{tinygarble} framework~\cite{songhori2015tinygarble} allows a user to describe the function with a \acrfull{hdl} like \gls{verilog} or \gls{vhdl}.
-It presents customized \acrshort{gc} optimized libraries which enable synthesis of the HDL code with standard logic synthesis tools, thus, benefiting from the standard hardware optimizations.
-\gls{tinygarble} also suggests sequential circuits to \acrshort{gc} to solve the unscalablity issue.
-Unlike~\cite{kreuter2013pcf}, it allows to infer loops automatically and to optimize across multiple sub-circuits.
-\gls{tinygarble} also limits the programmer to a hardware level language which is less user friendly than a high level compiler.
-Our work utilizes \gls{tinygarble}'s methodology to generate the most optimized Boolean circuit for the \gls{arm} processor.
-The big advantage of \gls{arm2gc} is that the function to be evaluated securely can be written in any programming language and compiled with any \gls{arm} compiler of choice.
 
 \section{Libraries for Garbled Circuits}\label{sec:related-library}
 Instead of compiling circuits, FastGC \cite{huang2011faster} proposed to use a library-based approach where circuits can be programmed and easily integrated into high-level applications.
@@ -67,13 +74,31 @@ Another library for secure computation is ABY that allows the efficient combinat
 
 In all these library-based approaches the circuits and their decomposition into sub-circuits has to be specified manually by the programmer, whereas we provide an automated approach.
 
-\section{\acrshort{hdl} Synthesis for Other \acrshort{sfe} Circuit-based Protocols} \label{sec:related-hdl}
+
+Another approach adopted in FastGC~\cite{huang2011faster, henecka2013faster}, VMCRYPT~\cite{malka2011vmcrypt}, and ABY~\cite{demmler2015aby} for \acrshort{gc} circuit generation is to design a library containing \acrshort{gc} optimized sub-circuits in a general purpose high-level language like Java.
+This method requires the user to have a thorough understanding of the circuit description of the secure function as the circuits and their decomposition into sub-circuits has to be specified manually.
+
+
+\section{Garbled Processor}\label{sec:related-processor}
+The work in~\cite{wang2016secure} accepts a function as a MIPS machine code, which allows the programmer to describe the function in a language of her choice and compile with a standard compiler.
+They design a MIPS emulator to securely execute the code.
+To avoid emulating the large number of instructions supported by the MIPS machine, they perform a data independent static analysis before execution of the program to build a small instruction bank and ALU circuit tailored for each processor cycle.
+In contrast, our approach performs this optimization with bit-precision instead of instruction-precision.
+Moreover, this is done in the runtime while the circuit remains the same for each cycle.
+To solve the problem of secure conditional branch, they propose to pad \texttt{nop} instruction to parallel branches so that their lengths become equal.
+This way when the code exits either of the branches, it ends up in the same instruction and the process can continue with less cost.
+However, this approach increases the cost for conditional branches.
+To mitigate this problem, we propose to use \gls{arm} processor which supports conditional execution and can replace these branches with conditional instructions (see \sect{ssec:arm}).
+In rare cases where the \gls{arm} compiler fails to replace the conditional branch, we adopted their approach in padding the parallel branches with \texttt{nop} instruction.
+Overall, our evaluation shows that \gls{arm2gc} outperforms their MIPS framework, for example by 4 orders of magnitudes for Hamming distance function, mostly thanks to the \gls{skipgate} algorithm and its bit-precision optimization.
+
+\section{HDL Synthesis for Other SFE Circuit-based Protocols} \label{sec:related-hdl}
 GMW
 
-\section{Securing \acrshort{gc} against Malicious Adversary}\label{sec:related-malicious}
+\section{Securing GC against Malicious Adversary}\label{sec:related-malicious}
 Generic ways of modifying \acrshort{gc}-based protocols such that they achieve security against stronger malicious adversaries have been proposed, e.g., \cite{lindell2007efficient, lindell2012secure, nielsen2009lego}.
 
-\section{\acrshort{gc} Implementations with Hardware Accelerators} \label{sec:related-hardware}
+\section{GC Implementations with Hardware Accelerators} \label{sec:related-hardware}
 The following works provide better performance by implementing garbled circuits in hardware, on \acrshort{gpu}s, or using \acrshort{aes-ni} available in recent \acrshort{cpu}s.
 These works can benefit from the compact representation generated by \gls{tinygarble}.
 
@@ -91,21 +116,8 @@ They show their implementation using \acrshort{aes-ni} can efficiently garble an
 
 Fang et al., \cite{fang2017secure}
 
-\section{\acrshort{gc} Implementations on Mobile Devices} \label{sec:related-mobile}
+\section{GC Implementations on Mobile Devices} \label{sec:related-mobile}
 Our approach for generating compact circuit representations is also beneficial when performing secure computation on resource constrained devices such as mobile devices which have a limited amount of main memory.
 Secure computation on mobile devices using garbled circuits was proposed in \cite{huang2011privacy}.
 Also the protocol described in \cite{demmler2014ad}, which uses a smartcard installed in the mobile device, can benefit from our more compact circuit representation.
 In \cite{carter2016secure, carter2014whitewash}, the mobiles no longer need to process circuits any more as \acrshort{gc} generation and evaluation is outsourced to cloud servers.
-
-\section{Garbled Processor}\label{sec:related-processor}
-The work in~\cite{wang2016secure} accepts a function as a MIPS machine code, which allows the programmer to describe the function in a language of her choice and compile with a standard compiler.
-They design a MIPS emulator to securely execute the code.
-To avoid emulating the large number of instructions supported by the MIPS machine, they perform a data independent static analysis before execution of the program to build a small instruction bank and ALU circuit tailored for each processor cycle.
-In contrast, our approach performs this optimization with bit-precision instead of instruction-precision.
-Moreover, this is done in the runtime while the circuit remains the same for each cycle.
-To solve the problem of secure conditional branch, they propose to pad \texttt{nop} instruction to parallel branches so that their lengths become equal.
-This way when the code exits either of the branches, it ends up in the same instruction and the process can continue with less cost.
-However, this approach increases the cost for conditional branches.
-To mitigate this problem, we propose to use \gls{arm} processor which supports conditional execution and can replace these branches with conditional instructions (see \sect{ssec:arm}).
-In rare cases where the \gls{arm} compiler fails to replace the conditional branch, we adopted their approach in padding the parallel branches with \texttt{nop} instruction.
-Overall, our evaluation shows that \gls{arm2gc} outperforms their MIPS framework, for example by 4 orders of magnitudes for Hamming distance function, mostly thanks to the \gls{skipgate} algorithm and its bit-precision optimization.

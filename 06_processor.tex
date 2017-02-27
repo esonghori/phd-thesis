@@ -59,7 +59,7 @@ For the sake of simplicity, we do not use \acrshort{oram} in this work.
 However, one can simply connect our implementation of \acrshort{pf-sfe} to an \acrshort{oram} to benefit from its lower amortized complexity.
 As another alternate, \cite{zahur2013circuit} showed that algorithms can sometimes be rewritten to use data structures such as stacks, queues, or associative maps for which they give compact circuit constructions of poly-logarithmic size.
 
-\section{Garbled Processor for \acrshort{pf-sfe}} \label{sec:processor-pro-pfsfe}
+\section{Garbled Processor for PF-SFE} \label{sec:processor-pro-pfsfe}
 \subsection{Global flow}\label{ssec:processor-mips-flow}
 We assume Alice provides the private function $f_{Alice}(\cdot)$ and Bob provides private data~$x_{Bob}$.
 At the end of the operation, only Bob learns the output $f_{Alice}(x_{Bob})$.
@@ -86,7 +86,7 @@ Because of secure evaluation using the \acrshort{gc} protocol in Step 4, no info
 Without knowing internal values in the processor circuit, none of the parties can distinguish instructions or memory access patterns.
 In the following, we demonstrate an implementation of a processor supporting the \gls{mips} \acrshort{isa}, as an example of a garbled processor for securely evaluating private functions.
 
-\subsection{\gls{mips}}\label{ssec:processor-mips}
+\subsection{MIPS}\label{ssec:processor-mips}
 \gls{mips} is a text-book \acrfull{risc} \acrshort{isa} \cite{kane1992mips}.
 The \acrshort{risc} \acrshort{isa} consists of a small set of simplified assembly instructions in contrast to \acrfull{cisc}, e.g., x86 \acrshort{isa}, which includes more complex multi-step instructions \cite{hennessy2012computer}.
 We choose a \acrshort{risc} \acrshort{isa} processor instead of \acrshort{cisc} for the following main reasons: (i) lower number of non-XOR gates, (ii) simple and straightforward implementation, and (iii) availability and diversity of open-source implementations.
@@ -126,7 +126,7 @@ The output of \acrshort{alu} will be either written back to the register file or
 The loaded data from \acrshort{dm} is written back to the register file.
 In each cycle, \acrshort{pc} is incremented by 4 to point to the next instruction in \acrshort{im} or is changed according to a branch or jump instruction.
 
-\section{Garbled Processor for \acrshort{sfe}}\label{sec:processor-mips-sfe}
+\section{Garbled Processor for SFE}\label{sec:processor-mips-sfe}
 In the previous section, we discuss the idea of garbling a processor as a solution for hiding the function in \acrshort{pf-sfe}.
 Besides enabling \acrshort{pf-sfe}, another advantage of a garbled processor is usability for non-expert users since it can be programmed using high-level languages, whereas other frameworks for the \acrshort{gc} protocol require tedious Boolean circuit construction.
 However, garbling and evaluating the entire processor incurs a tremendous cost compared to \acrshort{sfe} solutions due to stronger privacy requirements in \acrshort{pf-sfe}.
@@ -207,7 +207,7 @@ A wide range of scenarios are now feasible owing to our current hardware platfor
 Such extensions would incur additional area and performance overheads, but would allow upscaling of our implementation to support garbled processor circuits and benchmarks in the Gigabytes range.
 We emphasize that we provide in this work a proof-of-concept prototype to motivate further research in this direction to bring garbled processors some steps closer to the realm of feasible practical implementations.
 
-\section{\gls{arm2gc}: Garbled \gls{arm} for \acrshort{sfe}}
+\section{ARM2GC: Garbled ARM for SFE}
 In this section, we present \gls{arm2gc}, a \acrshort{gc} framework based on a garbled \gls{arm} processor and the \gls{skipgate} algorithm.
 The framework aims to simplify the development of privacy-preserving applications while keeping the garbling cost as low as the best optimized garbled circuits.
 We first describe the overview of \gls{arm2gc} and its \acrshort{api} for \acrshort{gc} development.
@@ -259,7 +259,7 @@ A larger $T$ would reduce this information leakage, but increase the garbling co
 \appx{chap:engine} provides more details about the support of the terminate signal in \gls{tinygarble} \acrshort{gc} engine.
 Eventually, when the function is executed, the parties reveal the content of the output memory to each other in order to learn output $c = g(a,b)$.
 
-\subsection{\gls{arm} as a Garbled Processor}\label{ssec:arm}
+\subsection{ARM as a Garbled Processor}\label{ssec:arm}
 In this thesis, I choose \gls{arm} as the garbled processor which is a more ubiquitous and sophisticated processor compared to \gls{mips}.
 \gls{arm} has two main advantages:
 (1) Pervasiveness: the compilers and tool-sets of \gls{arm} are under constant scrutiny, updating, and probably, more optimized as a result.
@@ -298,7 +298,7 @@ Thus, using \gls{arm} instead of \gls{mips} would incur even a higher cost.
 However, majority of the components of the \gls{arm} processor remain idle during  execution of an instruction.
 In the next section we describe how \gls{skipgate} utilizes this characteristic to minimize the cost of garbling the \gls{arm} processor.
 
-\subsection{How {\gls{skipgate}} Helps}
+\subsection{How {SkipGate} Helps}
 As explained above, the instruction memory of the \gls{arm} processor is initialized with public values.
 Therefore, if the program counter (the address of the next instruction) is public, the next instruction becomes public as well.
 As a result, the control path also becomes public and \gls{skipgate} can easily detect the idle components to mark them for skipping.
@@ -308,7 +308,7 @@ According to \gls{skipgate}'s notation, the \gls{arm} Boolean circuit is a 3-inp
 Therefore, the main garbling cost is paid only for the actual computation on the secret values.
 As explained in the previous section, \gls{skipgate} performs these optimizations at the gate-level, in contrast to instruction-level of the approaches in \sect{sec:processor-mips-sfe} and \cite{wang2016secure}.
 
-\subsection{Why not Sub-linear \acrshort{oram}?}
+\subsection{Why not Sub-linear ORAM?}
 As mentioned in \sect{ssec:arm-global}, we use an array of \acrshort{mux}s and flip-flops to implement the register file in \gls{arm} circuit.
 This means that the cost of accessing the register file, when performed obliviously, is linear with respect to its size.
 One natural question would be why we did not employ \acrfull{oram} that enables oblivious access to memories in the \acrshort{gc} protocol with sub-linear cost~\cite{wang2014scoram, zahur2016revisit}.

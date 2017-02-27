@@ -1,5 +1,5 @@
 % !TEX root = 0_main.tex
-\chapter{\gls{tinygarble} \acrshort{gc} Engine}\label{chap:engine}
+\chapter{Tinygarble GC Engine}\label{chap:engine}
 In this section, we explain \gls{tinygarble} \acrshort{gc} Engine, an implementation of the Yao's \acrshort{gc} protocol for sequential circuits.
 First, we explain JustGarble \cite{bellare2013efficient}, and earlier \acrshort{gc} engine which \gls{tinygarble} is built on. \TODO{Do we need this here?}
 Next, we describe Simple Sequential Circuit Description (SSCD), a format for storing and processing sequential Boolean circuits in our \acrshort{gc} Engine and how Verilog netlist is translated into SSCD.
@@ -7,7 +7,7 @@ The communication steps and pipelining of the \acrshort{gc} protocol for sequent
 We then introduce the terminate signal that helps user to identify when the circuit output is ready in oder to reduce the garbling cost.
 We implemented the \acrshort{gc} engine in C++ and its source code is available in \gls{tinygarble} repository\footnote{\url{https://github.com/esonghori/\gls{tinygarble}}}.
 
-\section{Yao's \acrshort{gc} Protocol Implementation for Sequential Circuits} \label{sec:engine-gc}
+\section{Yao's GC Protocol Implementation for Sequential Circuits} \label{sec:engine-gc}
 \gls{tinygarble} \acrshort{gc} engine is an implementation of Yao's protocol for garbling and evaluation of sequential circuits.
 It is built on JustGarble's implementation of the \acrshort{gc} protocol \cite{bellare2013efficient}.
 We choses JustGarble because it has a number of advantages over other available implementations: simplicity and efficiency (use of \acrshort{aes} block cipher and \acrshort{aes-ni} hardware accelerator).
@@ -125,7 +125,7 @@ $T=1$ reveals the exact number of cycles for the given inputs to finish the func
 Larger $T$ reveals less information and $T=c$ reveals no information about the inputs.
 Therefore, revealing terminate signal offers a trade-off between privacy and cost for garbling a sequential circuits.
 
-\section{{\gls{skipgate}} Implementation}\label{sec:engine-skipgate}
+\section{SkipGate Implementation}\label{sec:engine-skipgate}
 \gls{tinygarble} \acrshort{gc} engine supports the \gls{skipgate} algorithm on top of its implementation of the \acrshort{gc} protocol.
 The code of the engine is changed according to the \gls{skipgate} algorithm described in \chap{chap:skipgate}.
 Two new ports are allowed in the circuit for public input variables: (i) Public initial value (p\_init) that is connected to I input of \acrshort{ff}s and is read only at the first cycle. (ii) Public input (p\_input) that are directly connected to the gates of the circuit and is read every sequential cycles.

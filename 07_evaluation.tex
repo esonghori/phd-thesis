@@ -6,7 +6,7 @@ We next discuss the result of the \gls{skipgate} algorithm and its effect on the
 We then present the result of secure evaluation of \gls{mips} processor for \acrshort{pf-sfe} and \acrshort{sfe}.
 Finally, we reports the result of evaluating \gls{arm2gc} framework.
 
-\section{\gls{tinygarble} Synthesis}\label{sec:eval-tinygarble}
+\section{TinyGarble Synthesis}\label{sec:eval-tinygarble}
 We use a variety of benchmark functions to evaluate the performance and practicability of \gls{tinygarble} synthesis of combinational and sequential circuits.
 In this section, we first describe our experimental setup and metrics for quantifying the performance of \gls{tinygarble}.
 Next, we outline the performance comparison of \gls{tinygarble} (with \acrshort{hdl} synthesizer and our custom libraries) on combinational benchmark functions with \gls{pcf} \cite{kreuter2013pcf}, one of the best known earlier automated methodologies to generate circuits for garbling.
@@ -87,7 +87,7 @@ To show the performance gain of using our custom libraries, we compare \gls{tiny
 We choose \gls{pcf} because among the \emph{automated} \acrshort{gc} tools available at the time, it shows better results for most of the benchmarks.
 In some other work like FastGC \cite{huang2011faster}, a number of benchmark circuits have been more aggressively improved (compared to \gls{pcf}) using ad-hoc and mostly manual optimizations, but without a generalizable methodology.
 
-\begin{table}[]
+\begin{table}
 \centering
 \caption{Comparison of \gls{tinygarble} combinational circuits with \gls{pcf}.
 In case of \acrshort{aes} 128, the result is compared with FastGC.}
@@ -155,7 +155,7 @@ The ideal \acrshort{gtd} is $0\%$, which means that the total number of garbled 
 We also compare the number of garbled tables of sequential circuits with combinational circuits reported in \gls{pcf} (\acrshort{gtd}\textsuperscript{\gls{pcf}}) to show that even with the incurred overhead, the number of garbled tables for sequential circuits is still less than that of \gls{pcf} for most cases.
 
 
-\begin{table}[]
+\begin{table}
 \centering
 \caption{Comparison of \gls{tinygarble} sequential circuits with \gls{pcf} and \gls{tinygarble} combinational circuits.
 In case of \acrshort{aes} 128, the result is compared with Frigate \cite{mood2016frigate}.}
@@ -232,7 +232,7 @@ The design automation community has been working on tools that work with higher-
 While a host of commercial and academic \acrshort{hls} tools are available \cite{tool:Vivado, tool:PandA, decaluwe2004myhdl, Gupta2004}, we selected the Xilinx Vivado \acrshort{hls} for compiling \gls{c} code to \acrshort{hdl} which can then be synthesized using a conventional \acrshort{hdl} synthesis tool.
 The \acrshort{hls} engine in the Vivado suite is built upon the xPilot project \cite{Chapter:Zhang2008}.
 
-\begin{table}[]
+\begin{table}
 \centering
 \caption{Comparison of performance of the circuits generated using \gls{c} input to \acrshort{hls} and a direct Verilog input to the \acrshort{hdl} synthesizer.}
 \label{table:hls}
@@ -257,14 +257,14 @@ The \acrshort{hls} engine in the Vivado suite is built upon the xPilot project \
 As can be seen from the table, the resulting memory footprint could increase by a factor between 1 and 4, while the number of garbled tables varies in a range of 3 to 9 times.
 It is well known that writing the \acrshort{hdl} level code which contains the time information and more detailed structural/behavioral description would yield much more efficient circuits than the code written in a higher level language.
 
-\section{Evaluation of \gls{mips} for \acrshort{pf-sfe}} \label{sec:eval-mips-pf-sfe}
+\section{Evaluation of MIPS for PF-SFE} \label{sec:eval-mips-pf-sfe}
 We implement the general purpose processor for \acrshort{pf-sfe} using single-cycle \gls{mips}~I architecture where one user provide function description in assembly and the other provides the data.
 Support of sequential circuits in \gls{tinygarble} enables us to use the \gls{mips} circuit description in Plasma project \cite{rhoads2006plasma} without major modifications.
 In the following, we provide the result of \gls{mips} implementation and its number of non-XOR and total gates.
 Lastly, we present implementation of Hamming distance with variable input length as a benchmark of private function application on \gls{mips}.
 More benchmark functions are implemented and theri results are compared with \gls{mips} for \gls{sfe} in \sect{sec:eval-mips-sfe}
 
-\subsection{\gls{mips} Implementation}
+\subsection{MIPS Implementation}
 We used \gls{tinygarble} to generate the \gls{netlist} for the \gls{mips} sequential circuit.
 \tab{table:mipsres} shows the total number of gates and non-XOR gates for each module of the \gls{mips} processor with $64\times32$bit DM and IM.
 The sum of non-XORs for each module is $\numprint{14997}$.
@@ -272,7 +272,7 @@ However, when the modules are combined together to form the entire \gls{mips} pr
 The memory footprint for storing labels during garbling \gls{mips} is approximately the size of two labels times the total number of gates which is $2 \times 128 \times \numprint{31719}$bit $=991$~KB for label bit-width $k=128$.
 The communication load between parties for invocation of one instruction (one sequential cycle) is approximately the size of two labels times the number of non-XOR gates which is $2\times 128 \times \numprint{12755}$bit $=398$~KB with Half Gate optimization.
 
-\begin{table}[h!]
+\begin{table}
 \centering
 \caption{Number of total gates and non-XOR gates in the \gls{mips} implementation.
 The global optimization of \gls{tinygarble} reduces the overall number of gates compared to that of the sum of individual modules.}\label{table:mipsres}
@@ -302,14 +302,29 @@ It has only $16$ instructions and is stored in $16\times32$bit of the IM.
 The function requires that $l$, $A$, and $B$ are stored in addresses $0$, $[2:l+1]$, and $[l+2:2l+1]$ of \acrshort{dm} respectively.
 It will store the Hamming distance of $A$ and $B$ in address $1$.
 
-\begin{figure}
+
+\lstset{
+  language=[mips]Assembler,
+  escapechar=@, % include LaTeX code between `@' characters
+  keepspaces,   % needed to preserve spacing with lstinline
+  basicstyle=\footnotesize\ttfamily\bfseries,
+  commentstyle=\color{CommentColor},
+  stringstyle=\color{cyan},
+  showstringspaces=false,
+  keywordstyle=[1]\color{blue},    % instructions
+  keywordstyle=[2]\color{magenta}, % directives
+  keywordstyle=[3]\color{red},     % registers
+}
+
+\begin{figure}[ht]
+\centering
 \resizebox{!}{0.45\textheight}{%
 \lstinputlisting{Hamming.s}
 }
 \caption{Hamming distance assembly code.}\label{figure:hamminassembly}
 \end{figure}
 
-\section{Evaluation Setup of \gls{mips} for \acrshort{sfe}} \label{sec:eval-mips-sfe}
+\section{Evaluation Setup of MIPS for SFE} \label{sec:eval-mips-sfe}
 We create different instances of a single-cycle \gls{mips} architecture with specific, restricted, and full \acrshort{isa} to support a trade-off between efficiency and privacy.
 The result of full \acrshort{isa} \gls{mips} is presented in previous section (\sect{sec:eval-mips-pf-sfe}) and is used here for comparison.
 The different \gls{mips} instances are synthesized using \gls{synopsys-dc} H-2013.03-SP4 to generate optimized sequential Boolean circuits.
@@ -348,13 +363,13 @@ Hamming Distance & $\numprint{128}$ & $\numprint{1674}$\\
 \end{tabular}
 \end{table}
 
-\section{Synthesis of \gls{mips} for Various \acrshort{isa}s}
+\section{Synthesis of MIPS for Various ISAs}
 We synthesize the \gls{mips} architecture, shown in~\fig{figure:mips}, with \gls{synopsys-dc} for different \acrshort{isa}s and memory sizes: 32 to 512 32-bit words for instruction and data memories.
 Generating these Boolean circuits is a one-time process and the circuits can be re-used without incurring further compilation costs.
 \tab{tab:synres-app} shows the synthesis time and number of non-XOR gates of the hamming distance-, \acrshort{psi}-, and \acrshort{aes}-specific \acrshort{isa} with different sizes of memories.
 \tab{tab:synres-res-full} illustrates the result for restricted and full \acrshort{isa} with different sizes of memories.
 
-\begin{table}[]
+\begin{table}
 \caption{Synthesis results of application-specific \acrshort{isa}}\label{tab:synres-app}
 \centering
 \begin{tabular}{l|r|r|r}
@@ -394,7 +409,7 @@ Generating these Boolean circuits is a one-time process and the circuits can be 
 \end{tabular}
 \end{table}
 
-\begin{table}[]
+\begin{table}
 \caption{Synthesis results of restricted and full \acrshort{isa}}\label{tab:synres-res-full}
 \centering
 \begin{tabular}{l|r|r|r}
@@ -455,14 +470,14 @@ Generating these Boolean circuits is a one-time process and the circuits can be 
 	functions:} This variant is an extension to the result reported in \sect{sec:eval-mips-pf-sfe} for different memory sizes.
 \end{itemize}
 
-\subsection{Performance of the hardware \acrshort{gc} evaluator}
+\subsection{Performance of the hardware GC evaluator}
 \subsubsection{Area}
 \tab{table:resource} shows the resource allocation and utilization of our hardware \acrshort{gc} evaluator on a Xilinx Virtex-7 \acrshort{fpga}.
 Note that the \acrshort{fpga} utilization does not vary for different memory sizes and instances of the \gls{mips} processor since the evaluator logic remains unaltered.
 For different memory sizes and \acrshort{isa} instances, only the non-XOR gate count varies.
 This only impacts the garbled labels and tables memory which significantly affects the off-chip memory utilized for storing the garbled tables, and the \acrfull{bram} resources utilization only to a small extent.
 
-\begin{table}[]
+\begin{table}
 \centering
 \caption{Resource allocation and utilization of our hardware \acrshort{gc} evaluator on a Xilinx Virtex-7 \acrshort{fpga}.}
 \label{table:resource}
@@ -483,7 +498,7 @@ Our \acrshort{gc} evaluator operates at $100\textrm{MHz}$ on the \acrshort{fpga}
 This is used to compute an average evaluation runtime of 1.1 clock cycles per gate for our pipelined \acrshort{gc} evaluator which translates to an average of $11\textrm{ns}$ per gate in our \acrshort{fpga} implementation.
 The reported runtime can be further improved by providing tighter timing constraints.
 
-\begin{table}[]
+\begin{table}
 \centering
 \caption{Performance of evaluating \acrshort{mips} for application-specific \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-app}
 \begin{tabular}{l|r|r|r|r|r}
@@ -506,7 +521,7 @@ Avg. Time per gate (cc)  & -&- &- & $\numprint{1.11}$      & $\numprint{1.11}$ \
 \end{tabular}
 \end{table}
 
-\begin{table}[]
+\begin{table}
 \centering
 \caption{Performance of evaluating \acrshort{mips} for restricted and full \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-res-full}
 \begin{tabular}{l|r|r|r|r|r}
@@ -532,7 +547,7 @@ Avg. Time per gate (cc)  & $\numprint{1.12}$     & $\numprint{1.11}$   & $\numpr
 \end{tabular}
 \end{table}
 
-\subsubsection{Comparison of our hardware \acrshort{gc} evaluator with prior art}
+\subsubsection{Comparison of our hardware GC evaluator with prior art}
 \tab{tab:comp} shows a comparison with other \acrshort{gc} evaluator implementations \cite{jarvinen2010garbled, bellare2013efficient}.
 However, for fairness, we are leveraging \acrshort{gc} optimizations that were not available at the time for \cite{jarvinen2010garbled}.
 We compare with our two implementations, the 21-stage pipelined evaluator and un-pipelined variant to show the effect of pipelining in improving our performance by a factor of 7.8.
@@ -563,7 +578,7 @@ Our work w/ pipeline & $\numprint{18500}$ & $\numprint{1.1}$
 % In terms of throughput, our approach can evaluate 90.8M gates and Wang et al.'s solution can evaluate 776K gates which makes ours 117 times faster owing to our hardware implementation.
 % However, this speedup assumes on-chip memory and is likely to be much smaller when utilizing off-chip memory.
 
-\subsection{Evaluation of \gls{arm2gc}}\label{sec:eval-arm2gc}
+\subsection{Evaluation of ARM2GC}\label{sec:eval-arm2gc}
 In this section, we present the evaluation result of the \gls{skipgate} algorithm and the \gls{arm2gc} framework.
 First, we explain the experimental setup of the evaluation.
 Next, the effect of the \gls{skipgate} algorithm on removing sequential overhead from the benchmark function is reported.
@@ -584,7 +599,7 @@ We modified the header assembly code to change the addresses of stack, code, and
 We do not apply any optimization on the binary code.
 Thus, similar to a normal software compilation, it takes less than a few seconds to compile a function into an \gls{arm} binary code.
 
-\subsection{Effect of {\gls{skipgate}} on Sequential \acrshort{gc}}
+\subsection{Effect of {SkipGate} on Sequential GC}
 As described in \chap{chap:skipgate}, the \gls{skipgate} algorithm avoids redundant garbling/evaluation of gates in sequential circuits with public wires.
 In the sequential benchmark circuits reported in \sect{ssec:eval-tinygarble-seq} for \gls{tinygarble} sequential synthesis, the flip-flops were initialized with known values but their output wires were treated as secret.
 We applied \gls{skipgate} to the same benchmark functions to demonstrate the cost reduction even for small number of public values.
@@ -625,7 +640,7 @@ MatrixMult8x8 32 & 492,032 & 490,048 & 1,984 & 0.4\% \\ \hline
 \footnotesize{{$\dagger$}The missing key expansion module to \acrshort{aes} 128 of \tab{table:result-seq} in \sect{ssec:eval-tinygarble-seq} is added here.}
 \end{table}
 
-\subsection{\gls{arm2gc} vs \acrshort{hdl} Synthesis}
+\subsection{ARM2GC vs HDL Synthesis}
 \tab{table:hw_vs_frwk} compares the cost of garbling of functions devised in Verilog \acrshort{hdl} and constructed by the hardware synthesis technique of \gls{tinygarble} synthesis flow (see \chap{chap:syn}) with functions developed in \gls{c} and constructed by the \gls{arm2gc} framework.
 The results of \gls{tinygarble} synthesis flow are repeated here from \tab{table:result-comb} in \sect{ssec:eval-tinygarble-comb} for comparison.
 As expected, \gls{arm2gc} incurs only a small overhead (at most 6.2\% for MatrixMult8x8) compared to  hardware synthesis method.
@@ -655,7 +670,7 @@ MatrixMult8x8 32 & 492,032 & 522,304 & 6.2\% \\ \hline
 \footnotesize{{$\dagger$}The missing key expansion module to \acrshort{aes} 128 of \tab{table:result-comb} in \sect{ssec:eval-tinygarble-comb} is added here.}
 \end{table}
 
-\subsection{\gls{arm2gc} vs \acrshort{gc} Frameworks Supporting High-level Languages}
+\subsection{ARM2GC vs GC Frameworks Supporting High-level Languages}
 \tab{table:other_compiler_vs_frwk} reports the cost of garbling for the benchmark functions constructed by the prior-art \acrshort{gc} frameworks including (\gls{tinygarble} \acrshort{hls} synthesis in \chap{chap:syn} and \cite{holzer2012secure, mood2016frigate}).
 \tab{table:other_processor_vs_frwk} reports the comparison with previous work on garbled processors approaches (\gls{mips} for \acrshort{pf-sfe} in \sect{sec:processor-pfsfe} and for \acrshort{sfe} in \sect{sec:processor-mips-sfe} and \cite{wang2016secure}).
 The corresponding programming language is shown between parentheses.
@@ -664,7 +679,7 @@ In all cases, \gls{arm2gc} outperforms the earlier frameworks in terms of garbli
 For example, \gls{arm2gc} results $12.2\times$,  $5.1\times$, $74,000\times$, $57,000\times$, and $2.9\times$ less number of non-XOR gates for 160-bit Hamming distance compared to \acrshort{ansi}-\gls{c}~\cite{holzer2012secure}, \gls{tinygarble} \acrshort{hls} approach (\sect{ssec:eval-tinygarble-high}), \acrshort{pf-sfe} \gls{mips} (\sect{sec:eval-mips-pf-sfe}), \acrshort{sfe} \gls{mips} (\sect{sec:eval-mips-sfe} and \cite{wang2016secure}), and \gls{frigate}~\cite{mood2016frigate} respectively.
 \gls{arm2gc} also results in $38.3\%$ less non-XOR gates compared to \gls{frigate}~\cite{mood2016frigate} for \acrshort{aes} function.
 
-\begin{table}[]
+\begin{table}
 \centering
 \caption{Number of garbled non-XOR gates for the benchmark functions.
 Comparing \gls{arm2gc} with previous high-level custom compiler methods and \gls{tinygarble} \acrshort{hls} approach.}
@@ -687,7 +702,7 @@ MatrixMult8x8 32 & 905,728                                              & -     
 \end{tabular}
 \end{table}
 
-\begin{table}[]
+\begin{table}
 \centering
 \caption{Number of garbled non-XOR gates for the benchmark functions.
 Comparing \gls{arm2gc} with the previous garbled processor approaches.}
@@ -710,7 +725,7 @@ MatrixMult8x8 32 & -                                                         & -
 \end{tabular}
 \end{table}
 
-\subsection{Effect of {\gls{skipgate}} on \gls{arm}}
+\subsection{Effect of {SkipGate} on ARM}
 \tab{tab:sys_improvment_frwk} shows the cost of garbling an \gls{arm} processor for the benchmark functions using conventional \acrshort{gc} compared to \acrshort{gc} with the \gls{skipgate} algorithm.
 Since the instruction memory is known to both parties in \gls{arm}, \gls{skipgate} omits a significant number of non-XOR gates in the circuits.
 The circuit of \gls{arm} has 126,755 non-XOR gates and for computing a function, for example Hamming 160, it takes 1,909 clock cycles.
@@ -772,7 +787,7 @@ This function receives a list of 32 32-bit integers, sorts the list using Merge 
 \subsubsection{Dijkstra}
 This function receives the adjacency matrix of a directed graph with 64 weighted edges (described as 32-bit integer), finds the shortest path between a source and other nodes using Dijkstra algorithm, and then writes the corresponding distances in the output memory.
 
-\subsubsection{\acrshort{cordic}}
+\subsubsection{CORDIC}
 \acrfull{cordic} function receives a degree and a 2D vector described as 32-bit fixed-point (2-bit decimal and 30-bit fraction), computes trigonometric, hyperbolic or exponential functions according to Universal \acrshort{cordic} algorithm~\cite{volder1959cordic}, and then writes the final 2D vector on the output memory.
 The output vector in \acrshort{cordic} algorithm converges one bit per iteration thus, it requires 32 iterations in our case.
 The only required operations are addition, shift, and non-oblivious table lookup.
