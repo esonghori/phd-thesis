@@ -7,7 +7,7 @@ Then, we discuss the limitation of \acrshort{hdl} synthesis techniques and tools
 \section{Background on \acrshort{hdl} Synthesis}\label{sec:syn-back}
 \acrshort{hdl} synthesis refers to the process of translating an abstract form of  function (circuit) presentation to the gate-level logic implementation using a series of sophisticated optimizations, transformations, and mapping \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
 An \acrshort{hdl} synthesis tool is a computer program which typically accepts the input circuit in some algorithmic form, logic equation, or even a table, and outputs an implementation suitable for the target hardware platform.
-Classic commercial/open-source \acrshort{hdl} synthesis tools accept the input functions in the \acrshort{hdl} format, e.g., Verilog or \gls{vhdl} \cite{tool:DesignCompiler,tool:ABC,tool:Encounter,tool:HDLdesigner,tool:PandA,decaluwe2004myhdl} but newer ones also accept high level format, e.g., C/C++ \cite{Gupta2004, tool:Vivado}.
+Classic commercial/open-source \acrshort{hdl} synthesis tools accept the input functions in the \acrshort{hdl} format, e.g., Verilog or \gls{vhdl} \cite{tool:DesignCompiler,tool:ABC,tool:Encounter,tool:HDLdesigner,tool:PandA,decaluwe2004myhdl} but newer ones also accept high level format, e.g., \gls{c}/C++ \cite{Gupta2004, tool:Vivado}.
 The common target hardware platforms for the synthesized logic include \acrfull{fpga}, \acrfull{pal}, and \acrfull{asic}.
 
 Typical practical implementations of a logic function utilize a multi-level network of logic elements.
@@ -20,7 +20,7 @@ Logic optimization takes this minimized format, further processes it, and eventu
 
 Mapping is limited by factors such as the available gates (logic functions or standard cells) in the technology library, as well as the drive sizes, delay, power, and area characteristics of each gate.
 
-Newer generations of synthesis programs, referred to as high level synthesis (\acrshort{hls}) tools, accept other forms of input in a higher level programming language \cite{Chapter:Zhang2008,chu1989hyper,corazao1996performance}, e.g., \acrshort{ansi} C, C++, SystemC, or Python.
+Newer generations of synthesis programs, referred to as high level synthesis (\acrshort{hls}) tools, accept other forms of input in a higher level programming language \cite{Chapter:Zhang2008,chu1989hyper,corazao1996performance}, e.g., \acrshort{ansi} \gls{c}, C++, SystemC, or Python.
 \acrshort{hls} tools are also available in both open-source and commercial forms, for example see \cite{tool:Vivado,decaluwe2004myhdl,tool:PandA}.
 The limitation of the higher level languages is that the behavior of the function is typically decoupled from the timing.
 The \acrshort{hls} tools handle the micro-architecture and transform the untimed or partially timed functional code into a fully timed \acrshort{hdl} implementation, which in turn can be compiled by a classic synthesis tool.
@@ -31,7 +31,7 @@ Therefore, the main driver for the development of \acrshort{hls} tools is user-f
 As explained in \sect{ssec:prelim-gc}, Yao's \acrshort{gc} protocol requires the underlying function to be represented as a Boolean circuit.
 Previous work like FairPlay \cite{malkhi2004fairplay} and WYSTERIA \cite{rastogi2014wysteria} used custom-made languages to describe a function and generate the circuit for \acrshort{gc} computation.
 In \gls{tinygarble} framework, the user may describe a function in a standard \acrshort{hdl} like Verilog or \gls{vhdl}.
-(She may also write the function in a high level language like C/C++ and convert it to \acrshort{hdl} using a \acrshort{hls} tool.)
+(She may also write the function in a high level language like \gls{c}/C++ and convert it to \acrshort{hdl} using a \acrshort{hls} tool.)
 \gls{tinygarble} uses existing \acrshort{hdl} synthesis tools to map an \acrshort{hdl} to a list of basic binary gates.
 In digital circuit theory, this list is called a \emph{netlist}.
 The netlist is generated based on various constraints and objectives such that it is functionally equivalent to the \acrshort{hdl}/\acrshort{hls} input function.
@@ -45,14 +45,14 @@ It consists of the following four steps:
 \centering
 \includegraphics[width=0.95\textwidth]{synthesis_flow-crop.pdf}
 \caption{\gls{tinygarble} \acrshort{gc} synthesis flow.
-  The inputs can be either a C/C++ program (translatable to \acrshort{hdl} via a standard \acrshort{hls} tool) or a direct \acrshort{hdl} description.
+  The inputs can be either a \gls{c}/C++ program (translatable to \acrshort{hdl} via a standard \acrshort{hls} tool) or a direct \acrshort{hdl} description.
   The output is a scheduled circuit description ready to be garbled/evaluated.}
 \label{fig:synthesis-flow}
 \end{figure}
 
 \begin{enumerate}
 \item The input to \gls{tinygarble} \acrshort{gc} synthesis is a file that describes a function written in an \acrshort{hdl} like Verilog or \gls{vhdl}.
-      The function can also be written in a high level language like C/C++ and automatically translated to \acrshort{hdl} using an \acrshort{hls} tool.
+      The function can also be written in a high level language like \gls{c}/C++ and automatically translated to \acrshort{hdl} using an \acrshort{hls} tool.
 
 \item A standard \acrshort{hdl} synthesis tool compiles the \acrshort{hdl} to generate the netlist file.
       The synthesis tool optimizes the netlist based on the user defined objectives/constraints and customized library.
@@ -70,7 +70,7 @@ It consists of the following four steps:
 \end{figure}
 
 \fig{fig:globalflow_sample} shows examples of files at different steps of \gls{tinygarble} \acrshort{gc} synthesis flow for Hamming distance function.
-The \textsl{hamming.c} file contains the description of the function in the C language.
+The \textsl{hamming.c} file contains the description of the function in the \gls{c} language.
 The user inputs this function to a \acrshort{hls} tool to generate the corresponding description in Verilog.
 The resulting Verilog file is functionally similar to the \textsl{hamming.v} file shown in the figure, but it may look more complicated and be less efficient as it is generated by an automated tool.
 A user can also write the description directly in Verilog to have more control on the circuit and therefore a more efficient netlist.

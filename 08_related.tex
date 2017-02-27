@@ -7,7 +7,7 @@ The following tools compile high level function descriptions into a Boolean circ
 The first realization of \acrshort{gc}s was Fairplay \cite{malkhi2004fairplay} which provides a custom high level procedural language called \acrfull{sfdl} that is compiled into a circuit description language, \acrfull{shdl}.
 Another compiler is TASTY \cite{henecka2010tasty} which allows to combine garbled circuits and homomorphic encryption.
 The compiler of \cite{kreuter2012billion} for the first time showed scalability to circuits consisting of billions of gates, e.g., a 4095x4095-bit edit distance circuit with almost 6 Billion gates.
-The compiler of \cite{franz2014cbmc} allows to use a subset of \acrshort{ansi} C as input language.
+The compiler of \cite{franz2014cbmc} allows to use a subset of \acrshort{ansi}-\gls{c} as input language.
 
 To reduce the memory overhead for storing large circuits and hence increase scalability, \gls{pcf} \cite{kreuter2013pcf} introduced loops that, if given manually in the high level language, are kept until the \acrshort{gc} evaluation.
 In contrast to \gls{pcf}, \gls{tinygarble} allows to infer loops automatically and also allows to optimize across multiple sub-circuits.
@@ -52,16 +52,16 @@ The idea of designing a custom programming language to describe and efficiently 
 Fiarplay introduces a custom language created specifically to describe functions, namely the \acrfull{sfdl}.
 \acrshort{sfdl} was compiled to \acrfull{shdl}.
 More powerful languages and compilers were later presented \cite{henecka2010tasty, kreuter2012billion, rastogi2014wysteria}.
-Introduction of a custom programming language is neither user-friendly, nor versatile when compared with a conventional programming languages like C.
+Introduction of a custom programming language is neither user-friendly, nor versatile when compared with a conventional programming languages like \gls{c}.
 
 Another approach adopted in FastGC~\cite{huang2011faster, henecka2013faster}, VMCRYPT~\cite{malka2011vmcrypt}, and ABY~\cite{demmler2015aby} for \acrshort{gc} circuit generation is to design a library containing \acrshort{gc} optimized sub-circuits in a general purpose high-level language like Java.
 This method requires the user to have a thorough understanding of the circuit description of the secure function as the circuits and their decomposition into sub-circuits has to be specified manually.
 
-The first \acrshort{gc} implementation supporting a general purpose language is presented in~\cite{holzer2012secure}, which supports ANSI-C.
-However, it supports only a subset of ANSI-C that is not compatible with many important primitives and therefore, not compatible with legacy codes.
+The first \acrshort{gc} implementation supporting a general purpose language is presented in~\cite{holzer2012secure}, which supports \acrshort{ansi}-\gls{c}.
+However, it supports only a subset of \acrshort{ansi}-\gls{c} that is not compatible with many important primitives and therefore, not compatible with legacy codes.
 The main drawback of~\cite{holzer2012secure} is compile-time loop unrolling that makes it unscalable with input size.
 To cope with this problem, \gls{pcf} compiler presented in~\cite{kreuter2013pcf} introduces loops that are specified manually within the code and not rolled out until the \acrshort{gc} evaluation.
-This compiler supports a more general version of C language.
+This compiler supports a more general version of \gls{c} language.
 However, in~\cite{holzer2012secure} and~\cite{kreuter2013pcf}, the code had to be compiled with their custom compiler.
 As a result, users cannot benefit from the optimizations provided by general purpose compilers.
 Moreover, these compilers are less scrutinized and therefore more prone to bugs.
@@ -87,13 +87,13 @@ To mitigate this problem, we propose to use \gls{arm} processor which supports c
 In rare cases where the \gls{arm} compiler fails to replace the conditional branch, we adopted their approach in padding the parallel branches with \texttt{nop} instruction.
 Overall, our evaluation shows that \gls{arm2gc} outperforms their MIPS framework, for example by 4 orders of magnitudes for Hamming distance function, mostly thanks to the \gls{skipgate} algorithm and its bit-precision optimization.
 
-The recent work of~\cite{mood2016frigate} studies the state-of-the-art compilers for performing secure function evaluation using high-level languages like C or Java.
+The recent work of~\cite{mood2016frigate} studies the state-of-the-art compilers for performing secure function evaluation using high-level languages like \gls{c} or Java.
 They show that the majority of such compilers are not thoroughly validated and they reported the observed flaws in six commonly used platforms.
 As they discuss in their paper, there are serious limitations for formal verification and due to its impracticality, they limit their analysis to validation by testing.
 This type of testing does not detect all possible flaws in the compilation process.
 
-The authors in~\cite{mood2016frigate} also introduce Frigate, a new C-style language for \acrshort{sfe} and the corresponding compiler.
-Whereas in our work, we utilize C language with standard \gls{arm} cross compiler.
+The authors in~\cite{mood2016frigate} also introduce Frigate, a new \gls{c}-style language for \acrshort{sfe} and the corresponding compiler.
+Whereas in our work, we utilize \gls{c} language with standard \gls{arm} cross compiler.
 Our work also support any programming language and corresponding compiler.
 As of now, Frigate only supports three different types (\texttt{uint\_t} , \texttt{int\_t}, and \texttt{struct\_t}).
 The user can add her own types but it requires a good understanding of the internal structure of the compiler.

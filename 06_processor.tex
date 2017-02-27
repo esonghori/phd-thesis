@@ -110,7 +110,7 @@ It is based on the Plasma project in opencores \cite{rhoads2006plasma}.
 We modified the circuit such that the \acrshort{im} and the \acrshort{dm} are separated.
 The original Plasma processor supports all the \gls{mips}~I \acrshort{isa} except unaligned memory access.
 In our implementation, we also omit division instructions because of their large overhead.
-Any arbitrary C/C++ function can be easily compiled to \gls{mips}~I assembly code using a cross-platform compiler e.g., GNU gcc.
+Any arbitrary \gls{c}/C++ function can be easily compiled to \gls{mips}~I assembly code using a cross-platform compiler e.g., GNU gcc.
 
 In 32-bit \gls{mips}, the \acrfull{pc} is a 32-bit register (array of \acrshort{ff}s) that points to the instruction being executed at the current cycle.
 The instruction is fetched from \acrshort{im} based on the current \acrshort{pc} value.
@@ -213,7 +213,7 @@ Next, the effect of \gls{skipgate} in reducing the garbling cost is discussed.
 Finally, we discuss why we do not employ \acrshort{oram} for \gls{arm2gc}.
 
 \subsection{Global Flow}\label{ssec:arm-global}
-The \gls{arm2gc} framework allows users to write two-party \acrshort{sfe} program in C/C++ (or any language that can be compiled to \gls{arm} binary code).
+The \gls{arm2gc} framework allows users to write two-party \acrshort{sfe} program in \gls{c}/C++ (or any language that can be compiled to \gls{arm} binary code).
 \fig{fig:frwk_overview} shows the overview of the framework.
 The framework benefits from the \gls{skipgate} algorithm to reduce the cost of garbling the \gls{arm} processor.
 As described in \chap{chap:skipgate}, the \gls{skipgate} algorithm supports secure evaluation of circuits in the form of $f(a,b,p)$ where $a$ and $b$ are Alice's and Bob's inputs and $p$ is a public input known to both parties.
@@ -232,7 +232,7 @@ The \gls{arm} circuit computes the function $g(\cdot,\cdot)$ on the private inpu
 \caption{Overview of the \gls{arm2gc} framework.}\label{fig:frwk_overview}
 \end{figure}
 
-The \gls{arm2gc} framework supports the following \acrshort{api} for the user's function $c = g(a,b)$:
+The \gls{arm2gc} framework supports the following \acrshort{api} in \gls{c} language for the user's function $c = g(a,b)$:
 \begin{lstlisting}[language=C,basicstyle=\ttfamily,keywordstyle=\color{blue}\ttfamily,stringstyle=\color{red}\ttfamily,commentstyle=\color{CommentColor}\ttfamily]
 void gc_main(
   const int *a,// Alice's input
