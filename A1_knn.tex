@@ -276,8 +276,23 @@ For example where $n=256,~w=31$, the time of garbling using combinational circui
 \centering
 \caption{Circuit size and timing evaluation for 1-NN search.}
 \label{tab:1_nns}
-\includegraphics[width=\textwidth]{first_nns_result-crop.pdf}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l||l||rrr||rr||rr}
+\multicolumn{2}{c||}{W}                       & \multicolumn{3}{c||}{7}     & \multicolumn{2}{c||}{15}   & \multicolumn{2}{c}{31}   \\ \hline \hline
+\multicolumn{2}{c||}{N}                       & 128    & 256     & 512     & 128          & 256        & 128          & 256       \\ \hline \hline
+\multirow{4}{*}{Combinational} & Total Gates & 9044   & 18128   & 36304   & 19637        & 39349      & 40981        & 82069     \\
+                               & Non-XOR     & 2160   & 4336    & 8688    & 4325         & 8677       & 8530         & 17106     \\
+                               & CS(B)       & 217056 & 435072  & 871296  & 471288       & 944376     & 983544       & 1969656   \\
+                               & T(cc)       & 781048 & 1566208 & 3137024 & 1658644      & 3324692    & 3410882      & 6833090   \\ \hline \hline
+\multirow{4}{*}{Sequential}    & Total Gates & \multicolumn{3}{c||}{62}    & \multicolumn{2}{c||}{136}  & \multicolumn{2}{c}{283}  \\
+                               & Non-XOR     & \multicolumn{3}{c||}{17}    & \multicolumn{2}{c||}{34}   & \multicolumn{2}{c}{67}   \\
+                               & CS(B)       & \multicolumn{3}{c||}{1488}  & \multicolumn{2}{c||}{3264} & \multicolumn{2}{c}{6792} \\
+                               & T(cc)       & 713984 & 1427968 & 2855936 & 1523200      & 3046400    & 3120640      & 6241280   \\ \hline \hline
+Comparison                     & CSE         & 145.9  & 292.4   & 585.5   & 144.4        & 289.3      & 144.8        & 290
+\end{tabular}
+}
 \end{table}
+
 
 The circuit size and timing evaluation for $k$-NN search is reported in \tab{tab:k_nns}.
 Since its combinational evaluation is not practical, we do not compare it in the way we did for 1-NN.
@@ -288,7 +303,16 @@ As an example where $n=128, w=31, k=8$, the garbling time would be $128k\times 1
 \centering
 \caption{Circuit size and timing evaluation for $k$-NN search.}
 \label{tab:k_nns}
-\includegraphics[width=\textwidth]{k_nns_result-crop.pdf}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{l||rrr||rrr||rrr}
+W           & \multicolumn{3}{c||}{7} & \multicolumn{3}{c||}{15} & \multicolumn{3}{c}{31} \\ \hline \hline
+K           & 2      & 4     & 8     & 2      & 4      & 8     & 2      & 4     & 8      \\ \hline \hline
+Total Gates & 146    & 270   & 518   & 288    & 511    & 963   & 555    & 968   & 1784   \\
+Non-XOR     & 44     & 92    & 188   & 81     & 167    & 339   & 150    & 308   & 620    \\
+CS(B)       & 3504   & 6480  & 12432 & 6912   & 12264  & 23112 & 13320  & 23232 & 42816  \\
+T(cc)       & 13540  & 26124 & 51292 & 26118  & 48716  & 94284 & 49710  & 91432 & 173848
+\end{tabular}%
+}
 \end{table}
 
 \section{Conclusion}\label{sec:knn-conc}

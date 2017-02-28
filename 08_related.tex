@@ -48,13 +48,13 @@ They showed that the majority of such compilers are not thoroughly validated and
 As they discuss in their paper, there are serious limitations for formal verification and due to its impracticality, they limit their analysis to validation by testing.
 This type of testing does not detect all possible flaws in the compilation process.
 
-Mood et al., also introduced Frigate, a new \gls{c}-style language for \acrshort{sfe} and the corresponding compiler in the same paper~\cite{mood2016frigate}.
-Frigate supports three different types (\texttt{uint\_t} , \texttt{int\_t}, and \texttt{struct\_t}).
+Mood et al., also introduced \gls{frigate}, a new \gls{c}-style language for \acrshort{sfe} and the corresponding compiler in the same paper~\cite{mood2016frigate}.
+\gls{frigate} supports three different types (\texttt{uint\_t} , \texttt{int\_t}, and \texttt{struct\_t}).
 The user can add her own types but it requires a good understanding of the internal structure of the compiler.
 Since these three types have a specific bit length, the final computation is not bit-level efficient.
-For example for a 9-bit comparison, Frigate needs to do the comparison for a given bit length of \texttt{int\_t}.
+For example for a 9-bit comparison, \gls{frigate} needs to do the comparison for a given bit length of \texttt{int\_t}.
 On the contrary, the \gls{arm2gc} framework eliminates unnecessary gates and evaluates the circuit only up to the number of bits needed.
-Frigate divides the program into different functions and creates the circuit by calling the corresponding functions and as a result prohibits the overall circuit optimization.
+\gls{frigate} divides the program into different functions and creates the circuit by calling the corresponding functions and as a result prohibits the overall circuit optimization.
 In contrast, our \gls{arm} circuit is optimized globally using state-of-the-art hardware synthesis techniques.
 Therefore, our overall platform is based on very well-developed and debugged tools that have been used in industry for many years.
 Also, if any new update becomes available for these tools, they can effortlessly be incorporated into our framework.
