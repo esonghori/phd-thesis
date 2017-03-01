@@ -11,28 +11,28 @@ A version of \sect{ssec:processor-mips-sfe-public} of this chapter has been publ
 
 
 \section{Private Function Evaluation}\label{sec:processor-pfsfe}
-Two-party \acrfull{pf-sfe} allows secure computation of a function $f_{Alice}(\cdot)$ held by one party (Alice) operating on another party's data $x_{Bob}$ (Bob) while both the data and the function are kept private.
+Two-party \acrfull{pf-sfe} allows secure computation of a function $g_{Alice}(\cdot)$ held by one party (Alice) operating on another party's data $a_{Bob}$ (Bob) while both the data and the function are kept private.
 This is in contrast to the usual setting of \acrshort{sfe} where the function is known by both parties.
 \acrshort{pf-sfe} is especially useful when the function is proprietary or classified.
 
 It is well known that \acrshort{pf-sfe} can be reduced to regular \acrshort{sfe} by securely evaluating a Universal Circuit (\acrshort{uc}) \cite{sander1999non}.
-\acrshort{uc} is a Boolean circuit capable of simulating any Boolean circuit (function) $f(\cdot)$ given the description of $f(\cdot)$ as input \cite{valiant1976universal,kolesnikov2008practical}:
-$$\acrshort{uc}(f_{Alice}(\cdot),x_{Bob}) = f_{Alice}(x_{Bob}).$$
+\acrshort{uc} is a Boolean circuit capable of simulating any Boolean circuit (function) $g(\cdot)$ given the description of $g(\cdot)$ as input \cite{valiant1976universal,kolesnikov2008practical}:
+$$\acrshort{uc}(g_{Alice}(\cdot),a_{Bob}) = g_{Alice}(a_{Bob}).$$
 Secure evaluation of \acrshort{uc} completely hides the functionality of Boolean circuit of $f(\cdot)$, including its topology.
 Subsequent works have shown how to allow \acrshort{pf-sfe} while avoiding the overhead of \acrshort{uc}s \cite{katz2011constant, mohassel2013hide}.
 
-A \acrshort{uc} is similar to a \acrfull{utm} \cite{turing1936computable,herken1995universal} that receives a Turing machine description $f_{Alice}(\cdot)$ and applies it to the input data ($x_{Bob}$) on its tape \cite{davis2001engines}.
+A \acrshort{uc} is similar to a \acrfull{utm} \cite{turing1936computable,herken1995universal} that receives a Turing machine description $f_{Alice}(\cdot)$ and applies it to the input data ($a_{Bob}$) on its tape \cite{davis2001engines}.
 One party provides the machine description and the other one provides the initial data.
-The output $f_{Alice}(x_{Bob})$ resides on the tape after the operation is completed.
+The output $g_{Alice}(a_{Bob})$ resides on the tape after the operation is completed.
 A general purpose processor is a special realization of a \acrshort{utm}.
-It receives a list of \emph{instructions} $f_{Alice}(\cdot)$ (the compiled binary code of $f_{Alice}(\cdot)$) and applies them to the input data $x_{Bob}$.
+It receives a list of \emph{instructions} $g_{Alice}(\cdot)$ (the compiled binary code of $g_{Alice}(\cdot)$) and applies them to the input data $a_{Bob}$.
 
 \subsection{Arithmetic Logic Unit}\label{ssec:processor-alu}
 The core of conventional processors is the Arithmetic Logic Unit (\acrshort{alu}) which receives two \emph{operands} and an \emph{opcode} indicating the desired operation.
 \acrshort{alu} supports an operation set consisting of operations like addition, multiplication, XOR, etc.
 The \acrshort{alu} circuit consists of multiple sub-circuits for these operations and a \acrshort{mux} which selects one of their outputs.
 Secure evaluation of an \acrshort{alu}, where the opcode comes from one party and operands come from the other party, keeps the operations private.
-Thus, \acrshort{alu} can be thought of as an emulator of a simple \acrshort{uc} in which the input function $f_{Alice}(\cdot)$ is limited to a single operation.
+Thus, \acrshort{alu} can be thought of as an emulator of a simple \acrshort{uc} in which the input function $g_{Alice}(\cdot)$ is limited to a single operation.
 
 One can combine a number of \acrshort{alu}s to make a more comprehensive \acrshort{uc} that can support functions consisting of multiple operations.
 Unfortunately, this approach is not practical as the complexity of the circuit grows linearly with the number of operations.
@@ -61,8 +61,8 @@ As another alternate, \cite{zahur2013circuit} showed that algorithms can sometim
 
 \section{Garbled Processor for PF-SFE} \label{sec:processor-pro-pfsfe}
 \subsection{Global flow}\label{ssec:processor-mips-flow}
-We assume Alice provides the private function $f_{Alice}(\cdot)$ and Bob provides private data~$x_{Bob}$.
-At the end of the operation, only Bob learns the output $f_{Alice}(x_{Bob})$.
+We assume Alice provides the private function $g_{Alice}(\cdot)$ and Bob provides private data $a_{Bob}$.
+At the end of the operation, only Bob learns the output $g_{Alice}(a_{Bob})$.
 Note that we are not considering the case where both parties learn the output as that would allow Alice to learn Bob's private data with an identity function ($f\equiv I$).
 The protocol is as follows:
 
@@ -70,7 +70,7 @@ The protocol is as follows:
 \item
   Alice and Bob agree on an instruction set architecture (\acrshort{isa}), its implementation (i.e., the processor circuit), the maximum number of sequential cycles, and the configuration of data $x_{Bob}$ in the memory.
 \item
-  Alice compiles the function $f_{Alice}(\cdot)$ according to the \acrshort{isa}.
+  Alice compiles the function $g_{Alice}(\cdot)$ according to the \acrshort{isa}.
   Her input is the compiled binary of the function.
 \item
   Bob prepares his input based on the agreed configuration to initialize the processor memory.
@@ -78,7 +78,7 @@ The protocol is as follows:
   Using any secure \acrshort{gc} framework, Alice garbles the processor circuit for the maximum number of sequential cycles and Bob, after receiving his inputs with \acrshort{ot}, evaluates the garbled processor circuit for the same number of cycles.
 
 \item
-  Alice reveals the output types such that Bob learns the value of the output $f_{Alice}(x_{Bob})$ stored in memory.
+  Alice reveals the output types such that Bob learns the value of the output $g_{Alice}(a_{Bob})$ stored in memory.
   This needs to be done only for agreed memory locations containing the outputs such that Bob does not learn intermediate values in the memory.
 \end{enumerate}
 
@@ -157,8 +157,8 @@ For example, multiplying two 32-bit numbers with the MULT instruction in \gls{mi
 We call this mode ``semi-private'' since it only reveals partial information about instructions used in the program (that the program does not use division/multiplication) and increases the probability of guessing an instruction by reducing the subset of possible instructions (restricted \acrshort{isa}).
 
 \subsection{Garbled Processor for Private Functions} \label{ssec:processor-mips-sfe-private}
-In the standard 2-party \acrshort{pf-sfe}, Alice provides the function $f_{Alice}(\cdot)$ and Bob provides the input data $x_{Bob}$ and the output is $f_{Alice}(x_{Bob})$.
-Similar to \sect{sec:processor-pro-pfsfe}, the garbled processor receives a list of \emph{instructions} of compiled $f_{Alice}(\cdot)$ and applies them to the input data $x_{Bob}$ in memory and the output will be written back to the memory.
+In the standard 2-party \acrshort{pf-sfe}, Alice provides the function $g_{Alice}(\cdot)$ and Bob provides the input data $g_{Bob}$ and the output is $g_{Alice}(a_{Bob})$.
+Similar to \sect{sec:processor-pro-pfsfe}, the garbled processor receives a list of \emph{instructions} of compiled $g_{Alice}(\cdot)$ and applies them to the input data $a_{Bob}$ in memory and the output will be written back to the memory.
 To avoid information leakage about the private function, we use a general-purpose processor with its entire \acrshort{isa} (full \acrshort{isa}).
 
 \subsection{Hardware Implementation of Garbled Processor} \label{ssec:processor-hardware}
@@ -227,7 +227,7 @@ The high-level code of $g(\cdot,\cdot)$ is compiled using an \gls{arm} cross-com
 The compiled binary code of $g(\cdot,\cdot)$ is then passed to the \gls{arm} circuit as the public input $p$.
 The parties' private inputs ($a$ and $b$) are passed directly to \gls{arm} circuit: $f(a,b,p)$.
 The \gls{skipgate} algorithm then securely evaluate $f(a,b,p)$ by reducing the circuit into the simpler circuit of $f_{p}(a,b) = f(a,b,p)$.
-The \gls{arm} circuit computes the function $g(\cdot,\cdot)$ on the private inputs and returns its output: $c = f(a,b,p) = g(a,b)$.
+The \gls{arm} circuit computes the function $g(\cdot,\cdot)$ on the private inputs and returns its output: $o = f(a,b,p) = g(a,b)$.
 
 \begin{figure}
 \centering
@@ -235,7 +235,7 @@ The \gls{arm} circuit computes the function $g(\cdot,\cdot)$ on the private inpu
 \caption{Overview of the \gls{arm2gc} framework.}\label{fig:frwk_overview}
 \end{figure}
 
-The \gls{arm2gc} framework supports the following \acrshort{api} in \gls{c} language for the user's function $c = g(a,b)$:
+The \gls{arm2gc} framework supports the following \acrshort{api} in \gls{c} language for the user's function $o = g(a,b)$:
 \begin{lstlisting}[language=C,basicstyle=\ttfamily,keywordstyle=\color{blue}\ttfamily,stringstyle=\color{red}\ttfamily,commentstyle=\color{CommentColor}\ttfamily]
 void gc_main(
   const int *a,// Alice's input
@@ -257,7 +257,7 @@ The signal can be revealed to the parties once in $T$ cycles (predetermined by p
 For $T=1$, the parties instantly identify the termination, but the exact number of cycles the function evaluated for the given inputs is revealed.
 A larger $T$ would reduce this information leakage, but increase the garbling cost.
 \appx{chap:engine} provides more details about the support of the terminate signal in \gls{tinygarble} \acrshort{gc} engine.
-Eventually, when the function is executed, the parties reveal the content of the output memory to each other in order to learn output $c = g(a,b)$.
+Eventually, when the function is executed, the parties reveal the content of the output memory to each other in order to learn output $o = g(a,b)$.
 
 \subsection{ARM as a Garbled Processor}\label{ssec:arm}
 In this thesis, I choose \gls{arm} as the garbled processor which is a more ubiquitous and sophisticated processor compared to \gls{mips}.
@@ -303,8 +303,8 @@ As explained above, the instruction memory of the \gls{arm} processor is initial
 Therefore, if the program counter (the address of the next instruction) is public, the next instruction becomes public as well.
 As a result, the control path also becomes public and \gls{skipgate} can easily detect the idle components to mark them for skipping.
 Moreover, due to \gls{skipgate}, the gates of the active components that are only transporting data between memory, register file, and \acrshort{alu} act as wires and do not incur any cost.
-According to \gls{skipgate}'s notation, the \gls{arm} Boolean circuit is a 3-input function $c = f(a,b,p)$ where $p$ is equal to the compiled binary code of $g(a,b)$ and $a$ and $b$ are the parties' private inputs.
-\gls{skipgate} reduces the \gls{arm} circuit into a smaller circuit of $c = f_p(a,b)$ where $f_p$ is able to perform the exact operation required in the function $g(\cdot,\cdot)$.
+According to \gls{skipgate}'s notation, the \gls{arm} Boolean circuit is a 3-input function $o = f(a,b,p)$ where $p$ is equal to the compiled binary code of $g(a,b)$ and $a$ and $b$ are the parties' private inputs.
+\gls{skipgate} reduces the \gls{arm} circuit into a smaller circuit of $o = f_p(a,b)$ where $f_p$ is able to perform the exact operation required in the function $g(\cdot,\cdot)$.
 Therefore, the main garbling cost is paid only for the actual computation on the secret values.
 As explained in the previous section, \gls{skipgate} performs these optimizations at the gate-level, in contrast to instruction-level of the approaches in \sect{sec:processor-mips-sfe} and \cite{wang2016secure}.
 

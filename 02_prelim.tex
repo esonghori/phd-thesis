@@ -77,7 +77,7 @@ The steps of Yao's protocol are described below.
 \item The function $f$ to be computed is represented as a Boolean circuit, called \textit{netlist}, consisting of 2-input 1-output logic gates (a four entry truth table).
 \item For each wire $w$ in the netlist, Alice assigns two $k$-bit random strings, called \textit{labels}, $X_w^{0}$ and $X_w^{1}$ respectively corresponding to 0 and 1 Boolean values.
       $k$ is the security parameter -- typically $k=128$ is sufficient~\cite{bellare2013efficient}.
-\item For each gate, she encrypts the output label in each row of the truth table with the corresponding input labels.
+\item For each gate, she encrypts the output label in each on of the four rows of the truth table with the corresponding input labels.
       The resulting table of ciphertexts is then randomly rearranged and called the \textit{garbled table}.
 \item She then sends the garbled tables along with the labels corresponding to her input values to Bob.
       Bob obtains the labels corresponding to his input values obliviously through 1-out-of-2 \acrshort{ot} protocol.
@@ -99,7 +99,7 @@ With this convention, the label for the output of an XOR gate with inputs $a$, $
 Thus it does not need computation or transfer of the garbled tables and the XOR gate becomes \textit{free}.
 
 \subsubsection{Row Reduction}\label{sssec:prelim-row}
-Row Reduction optimization reduces the size of the tables for the non-XOR gates by $25\%$~\cite{naor1999privacy}.
+Row Reduction optimization reduces the size of the tables for the non-XOR gates by $25\%$, i.e., three rows of garbled table are needed to transfered between the parties~\cite{naor1999privacy}.
 Here, instead of generating a label for the output wire of a gate randomly, the output label is produced as a function of the labels of the inputs.
 Alice generates the output label such that the first entry of the garbled table becomes all $0$ and no longer needs to be sent.
 
@@ -109,8 +109,9 @@ In this garbling scheme which is compatible with the Free XOR and Row Reduction 
 A comprehensive proof of security for this method is provided in~\cite{bellare2013efficient}.
 
 \subsubsection{Half Gate}\label{sssec:prelim-half}
-The Half Gate method utilizes both free-XOR and row reduction and reduces the cost of non-XOR gates by an additional $25\%$~\cite{zahur2015two}.
-Thus, XOR gates remain free and only two rows of a garbled table are required to be communicated between parties for non-XOR gates.
+Zahur et al., proposed the Half Gate technique that utilizes reduces the cost of non-XOR gates by an additional $25\%$, i.e., two rows of garbled tables are needed to transfered between parties\cite{zahur2015two}.
+They also prove that this two rows is the lowest cost possible with symmetric encryption, e.g, \acrshort{aes}.
+Fewer than two row may only be possible using costly asymmetric encryption.
 
 \section{Boolean Circuits}\label{sec:prelim-circuit}
 In \acrshort{sfe}, the parties are able to evaluate an arbitrary function on their private attributes.
