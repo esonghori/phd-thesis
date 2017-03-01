@@ -3,30 +3,32 @@
 %what are SFE and GC
 \acrfull{sfe} allows two or more mutually suspicious parties to evaluate an arbitrary function on their private data.
 The parties learn the output of the function without revealing any information about their private data.
-An important special case of \acrshort{sfe} is when two parties, Alice and Bob, want to find $f(a, b)$ where $a$ and $b$ are Alice's and Bob's private inputs respectively and $f(., .)$ is a pre-determined arbitrary function.
-By far the most promising and efficient solution for two-party \acrshort{sfe} is Yao's \acrfull{gc} protocol that was proposed by Andrew C. Yao in his seminal work \cite{yao1986generate}.
-The \acrshort{gc} protocol requires the function $f(., .)$ to be represented in a Boolean circuits consisting of binary gates (e.g., AND, OR, and XOR).
-Succinctly in the \acrshort{gc} protocol, Alice encrypts the Boolean circuit and sends it to Bob and then Bob decrypts it to learn the output of the circuit.
-The input and intermediate values in the circuit are masked such that no party can gain any information about the private inputs.
+An important special case of \acrshort{sfe} is its two-party version.
+Formally in two-party \acrshort{sfe}, \textit{Alice} and \textit{Bob} wish to find the output of $f(a, b)$ where $a$ is Alice's private input, $b$ is Bob's, and $f(\cdot,\cdot)$ is an arbitrary function.
+By far the most promising and efficient solution for two-party \acrshort{sfe} is \acrfull{gc} protocol proposed by Andrew C. Yao \cite{yao1986generate}.
+In Yao's \acrshort{gc} protocol, the function $f(\cdot,\cdot)$ is represented as a Boolean circuit consisting of binary gates (e.g., AND, OR, XOR, etc.).
+In this protocol, Alice encrypts (garbles) the Boolean circuit, sends it to Bob, and then Bob decrypts (evaluates) the circuit to learn the output.
+The intermediate values along with the inputs are encrypted such that the parties' inputs remain private.
 Secure evaluating of a Boolean circuit can also be generalized to multi-party \acrshort{sfe} \cite{goldreich1987play, ben2008fairplaymp}.
 
 %What has been done?
 A host of privacy preserving and security critical applications can directly benefit from a practical and efficient realization of \acrshort{sfe}, including but not limited to: biometrics matching, face recognition, image/data classification, electronic auctions and voting, remote diagnosis, secure search, and stable matching \cite{riazi2017toward, zhang2016robust, bringer2013privacy, evans2011efficient, barni2009secure, naor1999privacy, brickell2007privacy, jha2008towards}.
 
 \section{Challenges}
-While \acrshort{gc} was considered to be prohibitively expensive and practically infeasible a decade ago, today we are witnessing a surge of theoretical, algorithmic, and tool developments that have significantly improved the efficiency and practicality of the GC protocol, see \cite{malkhi2004fairplay, kolesnikov2008improved, pinkas2009secure, huang2011faster, bellare2013efficient, zahur2015two, zahur2015obliv, liu2015oblivm}.
-However, there are three main challenges have yet to be addressed for prevalent adoption of the \acrshort{gc} protocol: efficiency, scalability, and ease-of-use.
+While the \acrshort{gc} protocol was considered to be prohibitively expensive and practically infeasible a decade ago, today we are witnessing a surge of theoretical, algorithmic, and tool developments that have significantly improved the efficiency and practicality of this protocol, see \cite{malkhi2004fairplay, kolesnikov2008improved, pinkas2009secure, huang2011faster, bellare2013efficient, zahur2015two, zahur2015obliv, liu2015oblivm}.
+However, three main challenges have yet to be addressed for a wide adoption of the \acrshort{gc} protocol: efficiency, scalability, and ease-of-use.
 
 \subsection{Efficiency}
-The large communication load of gc was one of the main reasons that it was believed to be impractical for many years.
-Although the \acrshort{gc} protocol has a constant round complexity which makes it superior to other \acrshort{sfe} solutions, \acrshort{gc} is still communication-intensive (i.e., a large quantity of encrypted data has to be transfered between parties).
-In the gc protocol, the communication is mainly originated from sending encrypted (garbled) gates from Alice to Bob.
-It has been suggested that gc's performance bottleneck is the cost of its communication \cite{gueron2015fast}.
-Thus for increasing the efficiency of secure evaluation of a function using gc, we have reduce the communication incurs for the function.
+Although the \acrshort{gc} protocol has a constant round complexity which makes it superior to other \acrshort{sfe} solutions, \acrshort{gc} is still considered communication-intensive (i.e., a large quantity of data has to be transfered between parties).
+It has been shown that the cost of communication is \acrshort{gc}'s performance bottleneck \cite{}.
+In \acrshort{gc}, the communication is mainly originated from transferring encrypted (garbled) gates of the Boolean circuit from Alice to Bob.
+To improve the efficiency of a function's secure computation, the communication has to be decreased.
+This can be achieved through reducing either the communication cost of a gate, or total number of gates in the function's Boolean circuit.
 
 The research on the efficiency of the \acrshort{gc} protocol can be roughly classified into two categories:
-(i) Optimizations of cryptographic constructs and protocols such as \cite{kolesnikov2008improved,pinkas2009secure,bellare2012foundations,bellare2013efficient,kolesnikov2014flexor,zahur2015two}.
-Out of them two are the most prominent: Free-XOR \cite{kolesnikov2008improved} that showed XOR gates in the circuit can be computed free of communication cost and Half Gate \cite{zahur2015two} that improve the communication requirement for non-XOR (non-free) gates and showed that it is the lower bound possible using symmetric encryption.
+(i) Optimizations of cryptographic constructs and protocols such as \cite{kolesnikov2008improved,pinkas2009secure,bellare2012foundations,bellare2013efficient,kolesnikov2014flexor,zahur2015two}, out of which, the two most prominent are: Free-XOR \cite{kolesnikov2008improved} and Half Gate \cite{zahur2015two}.
+Free-XOR shows that XOR gates in the circuit do not need to be communicated.
+Half Gate reduces the communication cost of non-XOR (non-free) gates and provides the minimum cost that can be achieved using symmetric encryption.
 (ii) Engineering techniques including but not limited to \cite{henecka2010tasty,huang2011faster,henecka2013faster,kreuter2013pcf,franz2014cbmc,mood2016frigate}.
 The main objective of such work was, given a function, generating a Boolean circuit with minimum number of gates which translates directly into minimum communication for secure evaluation of that function.
 They either employ library-based \cite{huang2011faster,malka2011vmcrypt,henecka2013faster} or compiler-based approaches \cite{malkhi2004fairplay,kreuter2012billion,kreuter2013pcf,franz2014cbmc}.
