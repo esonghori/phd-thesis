@@ -5,14 +5,14 @@ Next, we introduce an important special case of two-party \acrshort{sfe} problem
 Then, we explain basics about combinational and sequential Boolean circuits that are used in the \acrshort{gc} protocol to describe functions.
 
 \section{Secure Multi-party Computation}\label{sec:prelim-smc}
-In a secure multi-party computation problem, mutually suspicious parties with private attributes wish to compute a joint function on their attributes.
-For example, a group of people wish to find their average salary while keeping their own salary private.
-The parties have to use some sort of distributed protocol to evaluate and learn the output of the function.
-Besides the information that can be deduced form the output, no other information should leak about the private attributes through the computation.
+In a secure multi-party computation problem, a number of mutually suspicious parties wish to compute a joint function of their private attributes.
+For example, a group of people wants to find their average salary while keeping their salary secret.
+The parties have to use some distributed protocols to evaluate and learn the output of the function.
+Besides the information that parties can deduce from the output, no other information should leak about the private attributes through the computation.
 
-If there was a third party that all the involving parties trust, they could send their attributes to her and she computes the function and then she returns the result to the parties.
+If there was a third party that all the involving parties trust, they could send their attributes to her, and she computes the function and then returns the result to the parties.
 This model is called the ideal model for secure multi-party computation.
-Of course such a trusted party cannot be found in real scenarios of distributed systems.
+Of course, such a trusted party is not available in real scenarios of distributed systems.
 Thus at best, the trusted third party can be emulated using a cryptographic protocol (the real model)~\cite{goldreich2013general}.
 \fig{fig:multi-party-model} illustrates the idea model with a trusted third party and its emulation in the real model using a secure multi-party computation protocol.
 
@@ -31,13 +31,13 @@ Thus at best, the trusted third party can be emulated using a cryptographic prot
 \end{figure}
 
 \subsection{Secure Function Evaluation}\label{ssec:prelim-sfe}
-Secure Function Evaluation (\acrshort{sfe}) is generic formulation of secure multi-party computation in which parties are able to evaluate any arbitrary function on their attributes.
-Formally in \acrshort{sfe}, there are $p$ parties that are able to securely communicate to each other.
+Secure Function Evaluation (\acrshort{sfe}) is a generic formulation of secure multi-party computation in which parties can evaluate any arbitrary function on their attributes.
+Formally in \acrshort{sfe}, there are $p$ parties that have access to secure communication channels between each other.
 Each party has an attribute denoted by $i_k$ where $k$ is party identifier.
 The parties are interested to collectively compute function $o = f(i_1, i_2, ..., i_p)$ where $f$ is an arbitrary function and $o$ is a tuple $(o_1, o_2, ..., o_p)$ such that $o_k$ belongs to the $k^{\text{th}}$ party.
 After the computation of $f$, the parties should gain no information about other parties' attribute, other than the one they can deduce from the output.
 
-The function $f$ can also be described as a tuple of functions $f = (f_1, f_2, ...,  f_p)$ where the output of $o_k = f_k(i_1, i_2, .. i_p)$ belongs to $k^{\text{th}}$ party.
+We can also  describe the function $f$ as a tuple of functions $f = (f_1, f_2, ...,  f_p)$ where the output of $o_k = f_k(i_1, i_2, .. i_p)$ belongs to $k^{\text{th}}$ party.
 A common special case is where $f = f_1 = f_2 = ... = f_p$, meaning all parties receive the same output.
 For example in case of the average of salaries, the result of the average function is evaluated and shared with all the participating parties.
 
@@ -88,8 +88,8 @@ The steps of Yao's protocol are described below.
 \end{enumerate}
 
 \subsection{Recent Improvements on the GC Protocol}\label{ssec:prelim-imp}
-Throughout the last decade, the \acrshort{gc} protocol has gone through a number of theoretical improvements that reduce its computation and communication.
-We describe the most important of these improvements here.
+Throughout the last decade, the cryptographic scheme of the \acrshort{gc} protocol has gone through numerous developments.
+We describe the most consequential of these improvements here.
 
 \subsubsection{Free XOR}\label{sssec:prelim-freexor}
 The most significant optimization to \acrshort{gc} so far is Free XOR proposed in~\cite{kolesnikov2008improved}.
