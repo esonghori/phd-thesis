@@ -14,32 +14,34 @@ A host of privacy-preserving and security critical applications can directly ben
 
 \section{Challenges}
 While the \acrshort{gc} protocol was considered to be prohibitively expensive and practically infeasible a decade ago, today we are witnessing a surge of theoretical, algorithmic, and tool developments that have significantly improved the efficiency and practicality of this protocol, see \cite{malkhi2004fairplay, kolesnikov2008improved, pinkas2009secure, huang2011faster, bellare2013efficient, zahur2015two, zahur2015obliv, liu2015oblivm}.
-However, three main challenges have yet to be addressed for a wide adoption of the \acrshort{gc} protocol in the digital sphere: efficiency, scalability, and ease-of-use.
+However, three main challenges have yet to be addressed for a wide adoption of the \acrshort{gc} protocol in the digital world: efficiency, scalability, and ease-of-use.
 
 \subsection{Efficiency}
 Although the \acrshort{gc} protocol has a constant complexity for communication rounds that makes it superior to other \acrshort{sfe} protocols, \acrshort{gc} is still considered a communication-intensive protocol.
-That means the cost of transferring encrypted data between the parties far exceeds the cost of encryption/decryption (computation) \cite{}.
-In \acrshort{gc}, the communication is mainly originated from transferring encrypted (garbled) gates in the Boolean circuit from Alice to Bob.
-Thus, to improve the efficiency of a function's secure computation, the communication has to be decreased.
+That means the cost of transferring encrypted data between the parties far exceeds the cost of \acrshort{gc}'s encryption/decryption (computation)  \cite{gueron2015fast}.
+In \acrshort{gc}, the communication is mainly originated from transferring encrypted (garbled) gates of the Boolean circuit from Alice to Bob.
+To improve the efficiency of a function's secure computation, this communication has to be decreased.
 This can be achieved through reducing either the communication cost of a gate, or total number of gates in the function's Boolean circuit.
 
 The research on the efficiency of the \acrshort{gc} protocol can be roughly classified into two categories:
-(i) Optimizations of cryptographic constructs and protocols such as \cite{kolesnikov2008improved,pinkas2009secure,bellare2012foundations,bellare2013efficient,kolesnikov2014flexor,zahur2015two}; out of which, the two most prominent are: Free-XOR \cite{kolesnikov2008improved} and Half Gate \cite{zahur2015two}.
-Free-XOR shows that XOR gates in the circuit do not need to be communicated.
-And the Half Gate technique reduces the communication cost of non-XOR (non-free) gates to the minimum cost achievable using symmetric encryption (
-More communication reduction may only achieve using more costly asymmetric encryption).
+(i) Optimizations of cryptographic constructs and protocols such as \cite{kolesnikov2008improved,pinkas2009secure,bellare2012foundations,bellare2013efficient,kolesnikov2014flexor,zahur2015two}; out of which, the two most prominent are Free XOR \cite{kolesnikov2008improved} and Half Gate \cite{zahur2015two}.
+Free XOR shows that XOR gates in the circuit do not need to be communicated.
+And the Half Gate technique reduces the communication cost of non-free (non-XOR) gates to the minimum possible cost using symmetric encryption. (Further communication reduction may only be achieved using more costly asymmetric encryptions.)
 (ii) Engineering techniques including but not limited to \cite{henecka2010tasty,huang2011faster,henecka2013faster,kreuter2013pcf,franz2014cbmc,mood2016frigate}.
-The main objective of such work was to create a framework that, given a function, generates an \textit{optimized} Boolean circuit that has minimum number of non-free gates.
+The main objective of these techniques was to create a framework that, given a function, generates an \textit{optimized} Boolean circuit that has minimum number of non-free gates.
 They either employ library-based or compiler-based approaches.
 
-The library-based approaches are based on building a library for a general purpose programming language such as Java along with routines for emitting the circuit, e.g., \cite{huang2011faster,malka2011vmcrypt,henecka2013faster}.
-For better usability, their libraries typically include the manually optimized sub-circuits of frequently used operations such as adders and multipliers.
-One of the drawbacks of the library-based approaches is that they do not perform global circuit optimization.
+The library-based approaches are based on building a library for a general purpose programming language such as Java along with routines for emitting the optimized sub-circuits, e.g., \cite{huang2011faster,malka2011vmcrypt,henecka2013faster}.
+For better usability, their libraries typically include the manually optimized sub-circuits of frequently used operations such as adder and multiplier.
+One of the drawbacks of the library-based approaches is that they do not perform optimization global circuit.
 
-The compiler-based approaches provide users with a new domain-specific language to describe the function.
-A new custom compiler is also introduced to translate the function description into the Boolean logic, e.g., \cite{malkhi2004fairplay,kreuter2012billion,kreuter2013pcf,franz2014cbmc}.
+The compiler-based approaches provide users with a new domain-specific programming language to describe the function.
+Along with the language, a new custom compiler is introduced to translate the described function into a Boolean circuit, e.g., \cite{malkhi2004fairplay,kreuter2012billion,kreuter2013pcf,franz2014cbmc}.
 
 \subsection{Scalability}
+
+For executing the \acrshort{gc} protocol, the parties have to store the encrypted input and intermediate values in their memory.
+The size of this data increases linearly with the number of gates in the Boolean circuit.
 Both library-based and compiler-based approaches suffer from complicated memory-management when the number of gates is large, thereby affecting their performance and scalability \cite{henecka2013faster, kreuter2013pcf}.
 A number of frameworks have been recently proposed to address the scalability problem of previous methods such as \cite{malka2011vmcrypt, mood2012memory, kreuter2012billion, kreuter2013pcf}.
 Unfortunately, they do not provide a generic solution that addresses both efficiency and scalability at once.
@@ -47,20 +49,20 @@ Unfortunately, they do not provide a generic solution that addresses both effici
 \subsection{Ease-of-use}
 As mentioned earlier, \acrshort{gc} requires the function to be represented as a Boolean circuit.
 Usually, users find it cumbersome to describe a fairly simple function by connecting Boolean gates to make the circuit.
-To facilitate circuit generation, the library-based frameworks provide a library of optimized sub-circuits, so users can manually connect them together to make the circuit.
-However, for creating an optimized circuit, users need deep understanding about the low-level structure of the circuit and generally digital design.
+To facilitate the circuit generation, the library-based frameworks provide libraries of optimized sub-circuits, so users can manually connect them together to make the circuit.
+However, for creating an optimized circuit, users need to have through knowledge about digital design and the low-level structure of the circuit.
 
-To further simplify developing application for \acrshort{sfe}, a number of compiler-based frameworks provide user with a new high-level language to develop the function \cite{mood2012memory,kreuter2012billion,kreuter2013pcf,liu2015oblivm}.
-Recently, a few frameworks support standard high-level language like \gls{c} as well \cite{holzer2012secure, franz2014cbmc, zahur2015obliv, mood2016frigate}, however they do not exhibit the efficiency comparable to low-level approaches.
+To further simplify developing application for \acrshort{sfe}, a number of compiler-based frameworks provide user with high-level languages to develop the function \cite{mood2012memory,kreuter2012billion,kreuter2013pcf,liu2015oblivm}.
+Recently, a few frameworks support standard high-level languages like \gls{c} as well \cite{holzer2012secure, franz2014cbmc, zahur2015obliv, mood2016frigate}, however they do not exhibit the efficiency comparable to competitor approaches.
 
-Despite numerous efforts in improving efficiency, scalability, and simplicity of the \acrshort{gc} protocol, none of the existing approaches holistically addressed these three challenges.
+Despite numerous efforts in improving efficiency, scalability, and simplicity of the \acrshort{gc} protocol, none of the existing approaches addressed these three challenges at once.
 
 \section{Our Approach}
-We proposed a holistic solution to enhance the efficiency, scalability, and simplicity of the \acrshort{gc} protocol.
+We proposed a holistic solution to enhance the efficiency, scalability, and simplicity of the \acrshort{gc} protocol in this thesis.
 Our approach has three main pillars to address these major challenges: \acrlong{gc} synthesis, sequential \acrlong{gc} and garbled processor.
 
 \subsection{Garbled Circuit Synthesis}
-Our \acrfull{gc} synthesis solution simply views the circuit generation for \acrshort{gc} as an atypical logic synthesis task that, if properly defined, can still be addressed by conventional hardware synthesis tools.
+Our \acrfull{gc} synthesis solution simply views the optimized circuit generation for \acrshort{gc} as an atypical logic synthesis task that, if properly defined, can still be addressed by conventional hardware synthesis tools.
 By posing the circuit generation for Yao's protocol as a hardware synthesis problem, we naturally benefits from the elegant algorithms and powerful techniques already incorporated in existing logic synthesis solutions, see, \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
 This view provides a radically different perspective on this important problem in contrast to the earlier work in this area that attempted to generate circuits by building new libraries for general purpose languages such as Java \cite{huang2011faster,malka2011vmcrypt}, custom compilers such as \cite{kreuter2013pcf,franz2014cbmc}, or introduction of new programming languages such as \cite{malkhi2004fairplay,rastogi2014wysteria}.
 
@@ -68,7 +70,6 @@ We introduce new techniques for minimizing the number of non-XOR gates which dir
 We do so by integrating the cost function in the new custom libraries that we design and use within our logic synthesis flow.
 This way, we are able to gain up to $80\%$ improvement in the number of non-XOR gates for benchmark circuits compared to \gls{pcf} \cite{kreuter2013pcf}.
 Our methodology is automated, i.e., the savings can be achieved for many functions synthesized by our method, regardless of their sophistication.
-In \appx{chap:library}, we provide a library of optimized circuits for complex mathematical/logical operations made by our \acrshort{gc} synthesis approach.
 
 Our logic synthesis method can also be applied to other circuit-based \acrshort{sfe} protocols with different cost functions, e.g., \acrfull{gmw}~\cite{goldreich1987play}, and \acrfull{bmr}~\cite{beaver1990round}.
 For example, Demmler et al, showed how our \acrshort{gc} synthesis approach can be adopted and applied for the \acrshort{gmw} protocol where the cost depends on both the depth and size of the circuit~\cite{demmler2015automated}.
@@ -102,8 +103,8 @@ In \appx{chap:knn}, we implement a scalable solution for private nearest neighbo
 The sequential representation enables, for the first time, implementation of a universal processor for private function evaluation where the function is known only to one party.
 We reduce \acrfull{pf-sfe} to general \acrshort{sfe} by secure evaluation of a general-purpose processor like \gls{mips}.
 \acrshort{pf-sfe} is useful for scenarios where the function is proprietary or classified, e.g., credit checking or private database queries.
-Formally, the processor ($f(\cdot,\cdot)$) accepts a binary code of Alice' private function ($g_{Alice}(\cdot)$) along with Bob's private input ($b$).
-The processor then computes the private function given the private input: $o = f(b, g_{Alice}(\cdot)) = g(b)$.
+Formally, the processor ($f(\cdot,\cdot)$) accepts a binary code of Alice' private function ($g_{Alice}(\cdot)$) along with Bob's private input ($b_{Bob}$).
+The processor then computes the private function given the private input: $o = f(b_{Bob}, g_{Alice}(\cdot)) = g_{Alice}(b_{Bob})$.
 The private function $g_{Alice}(\cdot)$ can be written in a high-level language and compiled using standard compiler into the binary code.
 Since a processor is inherently a sequential circuit, the garbled processor was infeasible to be realized with previous \acrshort{gc} frameworks.
 
@@ -126,7 +127,7 @@ The looser privacy of the function results in less number of non-XOR gates in th
 The function $g(\cdot,\cdot)$ is described in a high-level language, e.g., \gls{c} and compiled into a binary code of \acrshort{mips}.
 Next, the \gls{mips} processor $f(\cdot, \cdot, \cdot)$ is garbled/evaluated given the parties' private inputs $a$ and $b$ and the compiled binary code of $g(\cdot,\cdot)$ to compute the output $o = f(a, b, g(\cdot,\cdot)) = g(a,b)$.
 
-\subsubsection{ARM2GC}
+\subsubsection{ARM for SFE}
 We also introduce a methodology to perform fine-grain (gate-level) optimization on garbled processor such that only the gates associated to the private inputs incur garbling cost.
 Our key observation is that the gates whose outputs are independent of the private data (and thus known to both parties) can either be computed without communication or simply skipped.
 This observation gives birth to the novel \gls{skipgate} algorithm.
@@ -146,7 +147,7 @@ The latter simplifies the framework by reducing conditional branches and making 
 \subsection{TinyGarble}
 We combined our \acrshort{gc} synthesis and sequential \acrshort{gc} approaches into a framework called \gls{tinygarble}.
 \gls{tinygarble} accepts inputs in two different formats: a standard \acrfull{hdl}, or a higher-level language as long as it is compatible with the existing \acrfull{hls} tools, e.g., \gls{c} for  SPARK \cite{Gupta2004} and Xilinx Vivado \cite{tool:Vivado}, or Python for PandA \cite{tool:PandA}, that converts the high level language to an \acrshort{hdl}.
-Beside user's manual optimization, \gls{tinygarble} performs various optimizations through standard \acrshort{hdl} synthesis tools to generate an optimized \emph{netlist}, i.e., list of gates, which is then transformed to \acrfull{sscd} format to be used in our implementation of the \acrshort{gc} protocol.
+Beside user's manual optimization, \gls{tinygarble} performs various optimizations through standard logic synthesis tools to generate an optimized \emph{netlist}, i.e., list of gates, which is then transformed to \acrfull{sscd} format to be used in our implementation of the \acrshort{gc} protocol.
 
 The global flow of \gls{tinygarble} framework is shown in \fig{fig:tinygarbel-global-flow}.
 The framework consists of two main part (i) \acrshort{gc} synthesis flow and (ii) \acrshort{gc} engine.
@@ -193,7 +194,7 @@ At the end, they will receive the output of $f(a,b,p) = g(a,b)$
 In brief, the main contributions of this thesis are as follows:
 \begin{itemize}
   \item
-  We address the efficiency challenge of the gc protocol by introducing \acrshort{gc} synthesis that adapts the established \acrshort{hdl} synthesis techniques to compile a function into an optimize Boolean circuit.
+  We address the efficiency challenge of the gc protocol by introducing \acrshort{gc} synthesis that adapts the established logic synthesis techniques to compile a function into an optimize Boolean circuit.
 
   \item
   We address the scalability challenge of the \acrshort{gc} protocol by introducing sequential \acrshort{gc} that allows us to achieve an unprecedented compactness in function representation and memory footprint at the same time benefiting from \acrshort{gc} synthesis optimization.

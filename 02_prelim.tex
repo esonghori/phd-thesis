@@ -103,7 +103,7 @@ Row Reduction optimization reduces the size of the tables for the non-XOR gates 
 Here, instead of generating a label for the output wire of a gate randomly, the output label is produced as a function of the labels of the inputs.
 Alice generates the output label such that the first entry of the garbled table becomes all $0$ and no longer needs to be sent.
 
-\subsubsection{Garbling With a Fixed-key Block Cipher}\label{sssec:prelim-aes}
+\subsubsection{Garbling with a Fixed-key Block Cipher}\label{sssec:prelim-aes}
 This method allows to efficiently garble and evaluate non-XOR gates using fixed-key \acrshort{aes}~\cite{bellare2013efficient}.
 In this garbling scheme which is compatible with the Free XOR and Row Reduction techniques, the output label $X_{o}$ is encrypted with the input label $X_{a}$ and $X_{b}$ using the encryption function $E(X_a,X_b,T,X_o) = \pi(K) \oplus K \oplus X_o$, where $K=2X_a\oplus4X_b\oplus T$, $\pi$ is a fixed-key block cipher (e.g., instantiated with \acrshort{aes}), and $T$ is a unique-per-gate number (e.g., gate identifier) called \emph{tweak}.
 A comprehensive proof of security for this method is provided in~\cite{bellare2013efficient}.

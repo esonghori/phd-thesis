@@ -1,8 +1,8 @@
 % !TEX root = 0_main.tex
 \chapter{{SkipGate}: Reducing Sequential Overhead}\label{chap:skipgate}
 \gls{skipgate} is developed to work with the \acrshort{gc} protocol to reduce the overhead of sequential circuits.
-It allows secure evaluation of functions in the form of $c = f(a, b, p)$ where $p$ is the public input known to both parties and $a$ and $b$ are the private inputs.
-The goal of \gls{skipgate} is to reduce the circuit of $f(a, b, p)$ into a simpler circuit of $c = f_p(a,b)$ with the same logic for a given public input $p$.
+It allows secure evaluation of functions in the form of $o = f(a, b, p)$ where $p$ is the public input known to both parties and $a$ and $b$ are the private inputs.
+The goal of \gls{skipgate} is to reduce the circuit of $f(a, b, p)$ into a simpler circuit of $o = f_p(a,b)$ with the same logic for a given public input $p$.
 Secure evaluation of $f_p(a,b)$ costs less than that of $f(a, b, p)$ using the conventional \acrshort{gc} protocol where $p$ is treated as a private input.
 For doing so, \gls{skipgate} removes communication cost of garbling for a gate when its output can either be computed independently by Alice and Bob or has no effect on the final output.
 In other words, \gls{skipgate} reduces the communication between the parties when it can be replaced by less costly local computation.
@@ -69,7 +69,7 @@ The \gls{skipgate} algorithm classifies the gates into four categories in terms 
 \begin{algorithm}
 \caption{\gls{skipgate}, Alice's side.}\label{alg:alice}
 \textbf{Inputs:} Sequential \texttt{circuit} of $f(a,b,p)$, Alice's input $a$, public input $p$, number of clock cycles $cc$.\\
-\textbf{Outputs:} Pairs of output labels $X^0_c$ and $X^1_c$.\\
+\textbf{Outputs:} $o = f(a,b,p)$.\\
 \begin{algorithmic}[1]
 \STATE{\bf{SkipGate\_alice\ (circuit, a, p, cc)}:}
 \STATE{($X^0_a,X^1_a,X^0_b,X^1_a$) = generate\_random\_labels()}
@@ -86,14 +86,13 @@ The \gls{skipgate} algorithm classifies the gates into four categories in terms 
 \ENDFOR
 \STATE{($X^0_c,X^1_c$) = circuit.get\_output\_label()}
 \STATE{$X_c$ = receive\_bob\_output\_label()}
-\STATE{$c$=get\_output\_value($X^0_c,X^1_c,X_c$)}
+\STATE{$o$=get\_output\_value($X^0_o,X^1_o,X_o$)}
 \end{algorithmic}
 \end{algorithm}
 
 \begin{algorithm}
 \caption{\gls{skipgate}, Bob's side.}\label{alg:bob}
 \textbf{Inputs:} Sequential \texttt{circuit} of $f(a,b,p)$, Bob's input $b$, public input $p$, number of clock cycles $cc$.\\
-\textbf{Outputs:} Output label $X_c$.\\
 \begin{algorithmic}[1]
 \STATE{\bf{SkipGate\_bob(circuit, b, p, cc)}:}
 \STATE{$X_a$ = receive\_alice\_labels()}
@@ -108,7 +107,7 @@ The \gls{skipgate} algorithm classifies the gates into four categories in terms 
   \STATE{circuit.transfer\_flip\_flops\_labels()}
 \ENDFOR
 \STATE{$X_c$ = circuit.get\_output\_label()}
-\STATE{send\_output\_label($X_c$)}% \textit{//send the output label to Alice}
+\STATE{send\_output\_label($X_o$)}
 \end{algorithmic}
 \end{algorithm}
 
@@ -120,7 +119,7 @@ In Phase 2, the gates with private inputs (Categories iii-iv) are  garbled/evalu
 For each round of sequential cycle, Alice executes Phase 1 and 2 of \gls{skipgate} and sends the generated garbled tables to Bob.
 Bob receives the tables and executes two phases in order to evaluate the gates.
 In Line 12 of \alg{alg:alice} and Line 11 of \alg{alg:bob}, the labels associated to the input of flip-flops are transfered to their output for the next cycles as required by sequential \acrshort{gc} protocol (see \sect{sec:seq-seq}).
-Similar to conventional \acrshort{gc}, at the end, Alice learns pairs of labels for each output wire and Bob has one of the pairs; they share this information to learn the output $c$.
+Similar to conventional \acrshort{gc}, at the end, Alice learns pairs of labels for each output wire and Bob has one of the pairs; they share this information to learn the output $o$.
 For example, in the case where Alice intends to learn the final output, she receives the Bob's output label and together with her input labels finds the real output value (Line 15-16 of \alg{alg:alice} and Line 14 of \alg{alg:bob}).
 
 In \gls{skipgate}, an integer called \texttt{label\_fanout} is associated with each gate and indicates the number of times the gate's output label is used (either as a circuit's output or an input to other gates).
@@ -332,7 +331,7 @@ As such, we conclude that the algorithm with \acrshort{gc} protocol results in a
 
 \section{Security Proof}\label{sec:skipgate-security}
 The \acrshort{gc} protocol is proved to be secure under honest-but-curious adversary model for any two-input Boolean function $f(a, b)$ where $a$ and $b$ are private inputs from Alice and Bob respectively \cite{lindell2009proof, bellare2013efficient}.
-In this work, we extend the function to the form of $f(a, b, p)$ to include a public input $p$ that is known to both parties.
+In this thesis, we extend the function to the form of $f(a, b, p)$ to include a public input $p$ that is known to both parties.
 The \gls{skipgate} algorithm reduces the Boolean circuit of $f(a, b, p)$ to a two-input circuit of $f_p(a, b)$ where, for a given $p$, $f_p(a, b) = f(a, b, p)$ for any $a$ and $b$.
 $f_p(a, b)$ consists of the gates in Category iv with non-zero \textit{label\_fanout} evaluated by the \acrshort{gc} protocol.
 The process of skipping gates from $f(a, b, p)$ only utilizes the public input $p$ which is already known to both parties.

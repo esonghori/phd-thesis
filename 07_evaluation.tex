@@ -1,18 +1,18 @@
 % !TEX root = 0_main.tex
 \chapter{Evaluation}\label{chap:eval}
 This chapter is dedicated to the evaluation of the proposed frameworks and algorithms in the thesis.
-We fist discuss the evaluation of \gls{tinygarble} GC synthesis flow for combinational and sequential circuits by comparing its result with that of the prior art (\chap{chap:syn} and \chap{chap:seq}).
+We fist discuss the evaluation of \gls{tinygarble} \acrshort{gc} synthesis flow for combinational and sequential circuits by comparing its result with that of the prior art (\chap{chap:syn} and \chap{chap:seq}).
 We next discuss the result of the \gls{skipgate} algorithm and its effect on the sequential circuits.
 We then present the result of secure evaluation of \gls{mips} processor for \acrshort{pf-sfe} and \acrshort{sfe}.
 Finally, we reports the result of evaluating \gls{arm2gc} framework.
 
-\section{TinyGarble Synthesis}\label{sec:eval-tinygarble}
-We use a variety of benchmark functions to evaluate the performance and practicability of \gls{tinygarble} synthesis of combinational and sequential circuits.
+\section{TinyGarble GC Synthesis}\label{sec:eval-tinygarble}
+We use a variety of benchmark functions to evaluate the performance and practicability of \gls{tinygarble} \acrshort{gc} synthesis of combinational and sequential circuits.
 In this section, we first describe our experimental setup and metrics for quantifying the performance of \gls{tinygarble}.
-Next, we outline the performance comparison of \gls{tinygarble} (with \acrshort{hdl} synthesizer and our custom libraries) on combinational benchmark functions with \gls{pcf} \cite{kreuter2013pcf}, one of the best known earlier automated methodologies to generate circuits for garbling.
-We next demonstrate \gls{tinygarble}'s performance in generating sequential circuits for benchmark functions using a standard \acrshort{hdl} synthesis tool.
+Next, we outline the performance comparison of \gls{tinygarble} (with a logic synthesis tool and our custom libraries) on combinational benchmark functions with \gls{pcf} \cite{kreuter2013pcf}, one of the best known earlier automated methodologies to generate circuits for garbling.
+We next demonstrate \gls{tinygarble}'s performance in generating sequential circuits for benchmark functions using a standard logic synthesis tool.
 Next, we report the \acrshort{cpu} time for various numbers of sequential cycles which demonstrates the effect of memory footprint reduction in garbling time.
-Lastly, we discuss the difference between \gls{tinygarble}'s performance using an \acrshort{hls} tool (input written in \gls{c}) and using a conventional \acrshort{hdl} synthesis tool (input given in \gls{verilog}).
+Lastly, we discuss the difference between \gls{tinygarble}'s performance using an \acrshort{hls} tool (input written in \gls{c}) and using a conventional logic synthesis tool (input given in \gls{verilog}).
 
 We also compare the performance of the commercial logic synthesis tool with an academic open-source tool in \appx{chap:open-source}.
 We show that in most cases, the performance of the open-source tool is comparable to the commercial tool.
@@ -21,11 +21,11 @@ We show that in most cases, the performance of the open-source tool is comparabl
 The circuit generations in this section are done on a system with Linux RedHat Server 5.6, 8~GB of memory, and Intel Xeon X5450 CPU @ 3~GHz.
 We use another system with Ubuntu 14.10 Desktop, 12.0~GB of memory, and Intel Core i7-2600 CPU @ 3.4GHz to assess the timing performance of the sequential garbling scheme in \sect{ssec:eval-tinygarble-timing}.
 
-Two sets of \acrshort{hdl} synthesis tool chains are used in our experiments: one commercial and one open-source (\appx{chap:open-source}).
-Our commercial \acrshort{hdl} level synthesis tool is \gls{synopsys-dc} 2010.03-SP4 \cite{tool:DesignCompiler}.
+Two sets of logic synthesis tool chains are used in our experiments: one commercial and one open-source (\appx{chap:open-source}).
+Our commercial logic synthesis tool is \gls{synopsys-dc} 2010.03-SP4 \cite{tool:DesignCompiler}.
 We also use the Synopsys Library Compiler from the DC package to interpret our custom technology library.
 In \sect{ssec:eval-tinygarble-high}, we utilize Xilinx Vivado \acrshort{hls} \cite{tool:Vivado}, a commercially available \acrshort{hls} tool whose inputs are written in the \gls{c}/C++ programming language.
-We emphasize that \gls{tinygarble} can operate with any commercial or open-source sequential \acrshort{hdl}-level (or \acrshort{hls}) synthesizer, as long as the synthesizer is capable of performing state-of-the-art logic optimization and mapping algorithms.
+We emphasize that \gls{tinygarble} can operate with any commercial or open-source logic synthesis tool, as long as it is capable of performing state-of-the-art logic optimization and mapping algorithms.
 
 \subsection{Performance Metrics}\label{ssec:eval-tinygarble-metric}
 We use the following metrics to measure the efficiency of \gls{tinygarble} for generating garbled circuits:
@@ -36,7 +36,7 @@ We use the following metrics to measure the efficiency of \gls{tinygarble} for g
 		Thus, the total number of gates is approximately proportional to the memory footprint.
 
 \item \textit{\acrfull{ngt}}: $$\mathit{\#GT} = \#nonXOR\times cc,$$ where $\#nonXOR$ is the number of non-XOR gates in a circuit and $cc$ is the number of sequential cycles that the circuit needs to be garbled/evaluated.
-		In free XOR-based \acrshort{gc} schemes, each non-XOR gate requires a garbled table to be generated by the garbler and sent to the evaluator at each sequential cycle.
+		In Free XOR-based \acrshort{gc} schemes, each non-XOR gate requires a garbled table to be generated by the garbler and sent to the evaluator at each sequential cycle.
 		This metric encompasses both the cost of computation (encrypting/decrypting garbled tables) and the cost of communication (transferring garbled tables) in the \acrshort{gc} protocol \cite{kolesnikov2008improved}.
 
 \item \textit{\acrfull{gtd}} (\%): $$\mathit{GTD} = \dfrac{\mathit{\#GT} - \mathit{\#GT}_{0}}{\mathit{\#GT}_{0}} \times 100,$$ where $\mathit{\#GT}_{0}$ is the total number of garbled tables for the reference circuit and \acrshort{ngt} is the total number of garbled tables for the circuit under evaluation.
@@ -122,7 +122,7 @@ We compute the garbled tables difference \acrshort{gtd} (see \sect{ssec:eval-tin
 It can be seen that the combinational circuits generated by \gls{tinygarble} have non-positive \acrshort{gtd}\textsuperscript{\gls{pcf}} which means that the number of garbled tables are less than or equal to that of \gls{pcf} circuits.
 We also compare the memory footprint by computing the memory footprint efficiency \acrshort{mfe} with \gls{pcf} as reference (\acrshort{mfe}\textsuperscript{\gls{pcf}}).
 We observe that \acrshort{mfe}\textsuperscript{\gls{pcf}} is larger than 1 (up to 9.3).
-This means that even without using sequential circuits, the memory footprint can be reduced by almost an order of magnitude by using \gls{tinygarble} custom libraries and standard \acrshort{hdl} synthesis.
+This means that even without using sequential circuits, the memory footprint can be reduced by almost an order of magnitude by using \gls{tinygarble} custom libraries and standard logic synthesis.
 
 In case of Hamming distance, \gls{tinygarble} shows, on average, $80\%$ improvement in number of garbled tables.
 Another automated tool CBMC-\acrshort{gc} \cite{franz2014cbmc} reports better result compared to \gls{pcf} for Hamming 160 (non-XOR $\numprint{4738}$, total gates $\numprint{20356}$).
@@ -229,12 +229,12 @@ The \acrshort{cpu} time in number of cycles and the approximate memory footprint
 
 \subsection{High Level Synthesis Tools}\label{ssec:eval-tinygarble-high}
 The design automation community has been working on tools that work with higher-level languages and abstractions than \acrshort{hdl}.
-While a host of commercial and academic \acrshort{hls} tools are available \cite{tool:Vivado, tool:PandA, decaluwe2004myhdl, Gupta2004}, we selected the Xilinx Vivado \acrshort{hls} for compiling \gls{c} code to \acrshort{hdl} which can then be synthesized using a conventional \acrshort{hdl} synthesis tool.
+While a host of commercial and academic \acrshort{hls} tools are available \cite{tool:Vivado, tool:PandA, decaluwe2004myhdl, Gupta2004}, we selected the Xilinx Vivado \acrshort{hls} for compiling \gls{c} code to \acrshort{hdl} which can then be synthesized using a conventional logic synthesis tool.
 The \acrshort{hls} engine in the Vivado suite is built upon the xPilot project \cite{Chapter:Zhang2008}.
 
 \begin{table}
 \centering
-\caption{Comparison of performance of the circuits generated using \gls{c} input to \acrshort{hls} and a direct Verilog input to the \acrshort{hdl} synthesizer.}
+\caption{Comparison of performance of the circuits generated using \gls{c} input to \acrshort{hls} and a direct \gls{verilog} input to the logic synthesis tool.}
 \label{table:hls}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{l|r||rr||rr||rr}
@@ -588,7 +588,7 @@ Our work w/ pipeline & $\numprint{18500}$ & $\numprint{1.1}$
 In this section, we present the evaluation result of the \gls{skipgate} algorithm and the \gls{arm2gc} framework.
 First, we explain the experimental setup of the evaluation.
 Next, the effect of the \gls{skipgate} algorithm on removing sequential overhead from the benchmark function is reported.
-We then compare the result of the \gls{arm2gc} framework and that of \gls{tinygarble} \acrshort{hdl} synthesis and high-level custom compiler approaches of the previous work.
+We then compare the result of the \gls{arm2gc} framework and that of \gls{tinygarble} \acrshort{gc} synthesis and high-level custom compiler approaches of the previous work.
 The effect of the \gls{skipgate} algorithm on the \gls{arm} circuit is illustrated next.
 Lastly, we provide a number of complex functions that has been implemented using the \gls{arm2gc} framework.
 
@@ -646,18 +646,18 @@ MatrixMult8x8 32 & 492,032 & 490,048 & 1,984 & 0.4\% \\ \hline
 \footnotesize{{$\dagger$}The missing key expansion module to \acrshort{aes} 128 of \tab{table:result-seq} in \sect{ssec:eval-tinygarble-seq} is added here.}
 \end{table}
 
-\subsection{ARM2GC vs HDL Synthesis}
-\tab{table:hw_vs_frwk} compares the cost of garbling of functions devised in Verilog \acrshort{hdl} and constructed by the hardware synthesis technique of \gls{tinygarble} synthesis flow (see \chap{chap:syn}) with functions developed in \gls{c} and constructed by the \gls{arm2gc} framework.
-The results of \gls{tinygarble} synthesis flow are repeated here from \tab{table:result-comb} in \sect{ssec:eval-tinygarble-comb} for comparison.
+\subsection{ARM2GC vs Logic Synthesis}
+\tab{table:hw_vs_frwk} compares the cost of garbling of functions devised in \gls{verilog} \acrshort{hdl} and constructed by the hardware synthesis technique of \gls{tinygarble} \acrshort{gc} synthesis (see \chap{chap:syn}) with functions developed in \gls{c} and constructed by the \gls{arm2gc} framework.
+The results of \gls{tinygarble} \acrshort{gc} synthesis are repeated here from \tab{table:result-comb} in \sect{ssec:eval-tinygarble-comb} for comparison.
 As expected, \gls{arm2gc} incurs only a small overhead (at most 6.2\% for MatrixMult8x8) compared to  hardware synthesis method.
 In case of Hamming distance function, \gls{arm2gc} results in even less number of non-XOR gates (up to $78\%$ improvement).
 Note that we use an efficient binary tree-based method~\cite{huang2011faster} for Hamming distance realization in \gls{c}.
 
 \begin{table}
 \centering
-\caption{The number of garbled non-XOR gates for the benchmark functions. Comparing \gls{arm2gc} to \gls{tinygarble}'s hardware synthesis~\cite{songhori2015tinygarble}.}\label{table:hw_vs_frwk}
+\caption{The number of garbled non-XOR gates for the benchmark functions. Comparing \gls{arm2gc} to \gls{tinygarble}'s \acrshort{gc} synthesis (\chap{chap:syn}).}\label{table:hw_vs_frwk}
 \begin{tabular}{l||r|r||r}
-Function (bit) & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}\gls{tinygarble}\\ (Verilog)~(\sect{ssec:eval-tinygarble-comb})\end{tabular}} & \multicolumn{1}{c||}{\begin{tabular}[c]{@{}c@{}}\gls{arm2gc}\\ (\gls{c})\end{tabular}} & \multicolumn{1}{c}{Overhead} \\ \hline \hline
+Function (bit) & \multicolumn{1}{c|}{\begin{tabular}[c]{@{}c@{}}\gls{tinygarble}\\ (\gls{verilog})~(\sect{ssec:eval-tinygarble-comb})\end{tabular}} & \multicolumn{1}{c||}{\begin{tabular}[c]{@{}c@{}}\gls{arm2gc}\\ (\gls{c})\end{tabular}} & \multicolumn{1}{c}{Overhead} \\ \hline \hline
 Sum 32 & 31 & 31 & 0.0\% \\
 Sum 1024 & 1,023 & 1,023 & 0.0\% \\ \hline
 Compare 32 & 32 & 32 & 0.0\% \\

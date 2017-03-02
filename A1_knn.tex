@@ -1,9 +1,9 @@
 % !TEX root = 0_main.tex
 \chapter{Compacting Privacy-Preserving k-Nearest Neighbor Search using Logic Synthesis}\label{chap:knn}
 In this appendix, we discuss solving privacy-preserving $k$-nearest neighbor ($k$-NN) search using Yao's \acrshort{gc} protocol.
-We use the \gls{tinygarble} \acrshort{hdl} synthesis method to implement $k$-NN in optimized and compact circuits for \acrshort{gc}.
+We use the \gls{tinygarble} \acrshort{gc} synthesis method to implement $k$-NN in optimized and compact circuits for \acrshort{gc}.
 
-In this appendix, we first introduce the problem of privacy-preserving $k$-NN and the challange of solving it using Yao's \acrshort{gc} protocol.
+In this appendix, we first introduce the problem of privacy-preserving $k$-NN and the challenge of solving it using Yao's \acrshort{gc} protocol.
 Next, we provide the related work in the literature about privacy-preserving $k$-NN and methods for generating optimized and compact circuits for $k$-NN.
 We then explain our approach that is based on \gls{tinygarble} sequential circuit synthesis (see \chap{chap:seq}).
 Lastly, we provide the evaluation results and conclude the appendix.
@@ -30,7 +30,7 @@ Since the first fully homomorphic encryption was proposed about 5 years ago \cit
 Even so, the implementations are still rather inefficient and impracticable for real applications.
 
 %Yao's GC
-This paper suggests the first efficient and scalable methodology for privacy-preserving $k$-NN search that is implementable on embedded processors.
+In this appendix, we suggest the first efficient and scalable methodology for privacy-preserving $k$-NN search that is implementable on embedded processors.
 In contrast to the existing literature that assumes private datasets and known query, we assume a more general case of both private dataset and private query.
 Our methodology for providing a \acrshort{sfe} is based on Yao's \acrfull{gc} that is currently considered the most effective way to preserve privacy \cite{huang2012private,brenner2011hcrypt}.
 Note that the use of \acrshort{gc} for the generic problem of privacy preserving data mining has been proposed, but not implemented \cite{agrawal2000privacy}.
@@ -95,12 +95,11 @@ In the area of mapping and optimizing functions into Boolean logic for \acrshort
 
 Following the introduction of the first compiler for \acrshort{gc}, called Fairplay \cite{malkhi2004fairplay}, a number of researchers have focused on providing a custom compiler to interpret high level procedural language and map it to a circuit description language \cite{henecka2010tasty,holzer2012secure}.
 The most scalable existing compiler is \gls{pcf}, which introduces loops that, if given manually in the high level language, are kept until the \acrshort{gc} evaluation \cite{kreuter2013pcf}.
-Our sequential description of the $k$-NN function that we input in the HDL format is much more compact than the high-level (software) loop embracing in \gls{pcf}.
+Our sequential description of the $k$-NN function that we input in the \acrshort{hdl} format is much more compact than the high-level (software) loop embracing in \gls{pcf}.
 Note that \gls{pcf} is also based upon a combinational description.
 
 Another class of proposed \acrshort{gc} compilation methods leverage a library-based technique along with conventional software compilers.
 Some examples include FastGC \cite{huang2011faster}, VMCRYPT \cite{malka2011vmcrypt}, and FastGC extension to re-usable sub-circuits \cite{henecka2013faster}.
-Our work is inspired by \gls{tinygarble} methodology \cite{songhori2015tinygarble}.
 We are the first to adapt a hardware description language and conventional logic synthesis for the important problem of privacy preserving of $k$-NN.
 Our method is automated, while it also benefits from custom logic-level libraries.
 
@@ -109,7 +108,7 @@ Our work is orthogonal to this domain and can benefit from building accelerators
 
 Using the \acrshort{gc} for secure computing on resource constrained devices such as mobile/embedded platforms was suggested in \cite{huang2011privacy}.
 A recent work in this area described a protocol for \acrshort{gc} that relies on a smartcard embedded in the mobile device \cite{demmler2014ad}.
-These implementations can greatly benefit from the scalable and efficient $k$-NN methodology introduced in this work.
+These implementations can greatly benefit from the scalable and efficient $k$-NN methodology introduced in this thesis.
 To overcome the limitations of resource-constrained devices, a set of relevant work in this area suggested outsourcing the \acrshort{gc} generation and evaluation to cloud servers \cite{carter2016secure,carter2014whitewash}.
 Our work demonstrates the feasibility of on-device \acrshort{gc} implementation.
 
@@ -123,11 +122,10 @@ Without any loss of generality, we assume the distance function for finding the 
 
 \subsection{Circuit Generation}\label{ssec:knn-circuitgen}
 We customize the flow of the standard logic synthesis tools to generate circuits optimized for \acrshort{gc} protocol.
-As mentioned in \chap{chap:prelim} for \acrshort{gc} with free-XOR optimization, there is a need to minimize the number of non-XOR gates in the Boolean representation.
+As mentioned in \chap{chap:prelim} for \acrshort{gc} with Free XOR optimization, there is a need to minimize the number of non-XOR gates in the Boolean representation.
 We perform two major customization in the synthesis flow.
 First, we create a new \emph{synthesis library} to aid the conversion of the arithmetic and conditional operations to \acrshort{gc}-optimized logical modules.
 Second, we develop a \emph{technology library} to guide the mapping of the logic to the circuit netlist.
-
 
 \subsubsection{Synthesis Library}
 To realize the $k$-NN search, a set of basic arithmetic and conditional operations consisting of comparator, multiplexer, and Hamming distance are required.
@@ -136,7 +134,6 @@ A $w$-bit comparator ($\mathit{COMP}_w$) is implemented using only $w$ non-XOR g
 A $w$-bit multiplexer ($\mathit{\acrshort{mux}}_w$) is realized using $w$ non-XOR gates \cite{kolesnikov2008improved}.
 A $w$-bit Hamming distance ($\mathit{HAMMING}_w$) is devised using $w-\lceil \log _2(w) \rceil$ non-XOR gates where $w=2^k-1, k \in \mathbb{N}$ \cite{boyar2006concrete}.
 In all these modules, the total number of gates is $\BigO{w}$.
-
 
 \subsubsection{Technology Library}
 The technology library includes logical descriptions of basic units and their parameters like delay and area.
@@ -296,7 +293,7 @@ Comparison                     & CSE         & 145.9  & 292.4   & 585.5   & 144.
 
 The circuit size and timing evaluation for $k$-NN search is reported in \tab{tab:k_nns}.
 Since its combinational evaluation is not practical, we do not compare it in the way we did for 1-NN.
-The $\mathit{CS}$ for the largest circuit in this work ($w=31, k=8$) is $41.8$KB which will fit easily in embedded systems.
+The $\mathit{CS}$ for the largest circuit in this thesis ($w=31, k=8$) is $41.8$KB which will fit easily in embedded systems.
 As an example where $n=128, w=31, k=8$, the garbling time would be $128k\times 173848\text{cc} = 22.8\times 10^9\text{cc}$ ($6.7\text{s}$).
 
 \begin{table}
@@ -316,7 +313,7 @@ T(cc)       & 13540  & 26124 & 51292 & 26118  & 48716  & 94284 & 49710  & 91432 
 \end{table}
 
 \section{Conclusion}\label{sec:knn-conc}
-This paper presents an methodology for generation of highly compact and scalable privacy-preserving $k$-nearest neighbor ($k$-NN) search using \acrshort{gc}.
+In this appendix, we present an methodology for generation of highly compact and scalable privacy-preserving $k$-nearest neighbor ($k$-NN) search using \acrshort{gc}.
 We are the first to suggest a sequential description of $k$-NN, which enables generation of a compact Boolean \acrshort{gc}.
 Our newly created custom libraries allow us to leverage the established powerful logic synthesis tools to optimize the ($k$-NN) Boolean expressions for \acrshort{gc}.
 We introduce transformations that make the $k$-NN sequential expressions transparent to the available garbling schemes that are based on the combinational description.

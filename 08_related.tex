@@ -2,7 +2,7 @@
 \chapter{Related Work}\label{chap:related}
 In this chapter, we review the related work to this thesis in the literature.
 First, we classify the prior art for generating circuit for Yao's \acrfull{gc} protocol into custom compilers in \sect{sec:related-compiler}, optimized libraries in \sect{sec:related-library}, and garbled processor in \sect{sec:related-processor}.
-Next, we review the similar work on \acrshort{hdl} synthesis for other circuit-based \acrshort{sfe} protocol in \sect{sec:related-hdl}.
+Next, we review the similar work on logic synthesis for other circuit-based \acrshort{sfe} protocol in \sect{sec:related-logic}.
 We then discuss the work on \acrshort{gc} implementations with hardware accelerators in \sect{sec:related-hardware}, and \acrshort{gc} implementations on embedded devices in \sect{sec:related-embedded}.
 Lastly, we review the work on securing the \acrshort{gc} protocol against malicious adversary in \sect{sec:related-malicious}.
 
@@ -97,12 +97,12 @@ To mitigate this problem, we propose to use \gls{arm} processor which supports c
 In rare cases where the \gls{arm} compiler fails to replace the conditional branch, we adopted their approach in padding the parallel branches with \texttt{nop} instruction.
 Overall, our evaluation shows that \gls{arm2gc} outperforms their MIPS framework, for example by 4 orders of magnitudes for Hamming distance function, mostly thanks to the \gls{skipgate} algorithm and its bit-precision optimization.
 
-\section{HDL Synthesis for Other SFE Circuit-based Protocols} \label{sec:related-hdl}
-Inspired by \gls{tinygarble}'s methodology, Demmler et al., proposed a method to use industrial \acrshort{hdl} synthesis tools to optimize both size of and depth of Boolean circuits used in secure computation \cite{demmler2015automated}.
+\section{Logic Synthesis for Other SFE Circuit-based Protocols} \label{sec:related-logic}
+Inspired by \gls{tinygarble}'s methodology, Demmler et al., proposed a method to use industrial logic synthesis tools to optimize both size of and depth of Boolean circuits used in secure computation \cite{demmler2015automated}.
 The depth of circuit is a crucial factor in the performance of the circuit-based \acrfull{gmw} protocol \cite{goldreich1987play}.
 The round complexity of \acrshort{gmw} depends on the number of non-XOR gates in the longest path from input to output.
 In \acrshort{gmw} for each layer of non-XOR gates, an \acrshort{ot} needs to executed between the parties.
-Demmler et al., proposed using timing optimization of \acrshort{hdl} synthesis tools to reduce the depth of the circuit \cite{demmler2015automated}.
+Demmler et al., proposed using timing optimization of logic synthesis tools to reduce the depth of the circuit \cite{demmler2015automated}.
 They set the area and timing delay of non-XOR gates to a large non-zero value, and those of XOR gates to zero and then force the synthesis tool to reduce the overall delay and area of the circuit.
 This results in a small and shallow circuit in term of non-XOR gates that in turn, reduces the cost of secure evaluation of the circuit in the \acrshort{gmw} protocol.
 The authors also extend their library of the ABY framework \cite{demmler2015aby} with the new optimized circuits including floating-point operations for the \acrshort{gmw} protocol.

@@ -11,21 +11,21 @@ A version of \sect{ssec:processor-mips-sfe-public} of this chapter has been publ
 
 
 \section{Private Function Evaluation}\label{sec:processor-pfsfe}
-Two-party \acrfull{pf-sfe} allows secure computation of a function $g_{Alice}(\cdot)$ held by one party (Alice) operating on another party's data $a_{Bob}$ (Bob) while both the data and the function are kept private.
+Two-party \acrfull{pf-sfe} allows secure computation of a function $g_{Alice}(\cdot)$ held by one party (Alice) operating on another party's data $b_{Bob}$ (Bob) while both the data and the function are kept private.
 This is in contrast to the usual setting of \acrshort{sfe} where the function is known by both parties.
 \acrshort{pf-sfe} is especially useful when the function is proprietary or classified.
 
 It is well known that \acrshort{pf-sfe} can be reduced to regular \acrshort{sfe} by securely evaluating a Universal Circuit (\acrshort{uc}) \cite{sander1999non}.
 \acrshort{uc} is a Boolean circuit capable of simulating any Boolean circuit (function) $g(\cdot)$ given the description of $g(\cdot)$ as input \cite{valiant1976universal,kolesnikov2008practical}:
-$$\acrshort{uc}(g_{Alice}(\cdot),a_{Bob}) = g_{Alice}(a_{Bob}).$$
-Secure evaluation of \acrshort{uc} completely hides the functionality of Boolean circuit of $f(\cdot)$, including its topology.
+$$\acrshort{uc}(b_{Bob},g_{Alice}(\cdot)) = g_{Alice}(b_{Bob}).$$
+Secure evaluation of \acrshort{uc} completely hides the functionality of Boolean circuit of $g_{Alice}(\cdot)$, including its topology.
 Subsequent works have shown how to allow \acrshort{pf-sfe} while avoiding the overhead of \acrshort{uc}s \cite{katz2011constant, mohassel2013hide}.
 
-A \acrshort{uc} is similar to a \acrfull{utm} \cite{turing1936computable,herken1995universal} that receives a Turing machine description $f_{Alice}(\cdot)$ and applies it to the input data ($a_{Bob}$) on its tape \cite{davis2001engines}.
+A \acrshort{uc} is similar to a \acrfull{utm} \cite{turing1936computable,herken1995universal} that receives a Turing machine description $g_{Alice}(\cdot)$ and applies it to the input data ($b_{Bob}$) on its tape \cite{davis2001engines}.
 One party provides the machine description and the other one provides the initial data.
-The output $g_{Alice}(a_{Bob})$ resides on the tape after the operation is completed.
+The output $g_{Alice}(b_{Bob})$ resides on the tape after the operation is completed.
 A general purpose processor is a special realization of a \acrshort{utm}.
-It receives a list of \emph{instructions} $g_{Alice}(\cdot)$ (the compiled binary code of $g_{Alice}(\cdot)$) and applies them to the input data $a_{Bob}$.
+It receives a list of \emph{instructions} $g_{Alice}(\cdot)$ (the compiled binary code of $g_{Alice}(\cdot)$) and applies them to the input data $b_{Bob}$.
 
 \subsection{Arithmetic Logic Unit}\label{ssec:processor-alu}
 The core of conventional processors is the Arithmetic Logic Unit (\acrshort{alu}) which receives two \emph{operands} and an \emph{opcode} indicating the desired operation.
@@ -55,20 +55,20 @@ Thus, it can be included in the processor circuit to be evaluated securely using
 However, inclusion of \acrshort{mux}s and \acrshort{ff}s increases the operation time and communication linearly with respect to the memory size.
 
 One alternative approach for hiding memory access patterns is the use of Oblivious Random-Access Machine (\acrshort{oram}) protocols \cite{goldreich1996software} which allows oblivious load/store operations with amortized poly-logarithmic overhead at the expense of increasing the round complexity of the \acrshort{gc} protocol \cite{gordon2012secure,liu2014automating,lu2013garble,gentry2014garbled}.
-For the sake of simplicity, we do not use \acrshort{oram} in this work.
+For the sake of simplicity, we do not use \acrshort{oram} in this thesis.
 However, one can simply connect our implementation of \acrshort{pf-sfe} to an \acrshort{oram} to benefit from its lower amortized complexity.
 As another alternate, \cite{zahur2013circuit} showed that algorithms can sometimes be rewritten to use data structures such as stacks, queues, or associative maps for which they give compact circuit constructions of poly-logarithmic size.
 
 \section{Garbled Processor for PF-SFE} \label{sec:processor-pro-pfsfe}
 \subsection{Global flow}\label{ssec:processor-mips-flow}
-We assume Alice provides the private function $g_{Alice}(\cdot)$ and Bob provides private data $a_{Bob}$.
-At the end of the operation, only Bob learns the output $g_{Alice}(a_{Bob})$.
-Note that we are not considering the case where both parties learn the output as that would allow Alice to learn Bob's private data with an identity function ($f\equiv I$).
+We assume Alice provides the private function $g_{Alice}(\cdot)$ and Bob provides private data $b_{Bob}$.
+At the end of the operation, only Bob learns the output $g_{Alice}(b_{Bob})$.
+Note that we are not considering the case where both parties learn the output as that would allow Alice to learn Bob's private data with an identity function ($g\equiv I$).
 The protocol is as follows:
 
 \begin{enumerate}
 \item
-  Alice and Bob agree on an instruction set architecture (\acrshort{isa}), its implementation (i.e., the processor circuit), the maximum number of sequential cycles, and the configuration of data $x_{Bob}$ in the memory.
+  Alice and Bob agree on an \acrfull{isa}, its implementation (i.e., the processor circuit), the maximum number of sequential cycles, and the configuration of data $b_{Bob}$ in the memory.
 \item
   Alice compiles the function $g_{Alice}(\cdot)$ according to the \acrshort{isa}.
   Her input is the compiled binary of the function.
@@ -78,7 +78,7 @@ The protocol is as follows:
   Using any secure \acrshort{gc} framework, Alice garbles the processor circuit for the maximum number of sequential cycles and Bob, after receiving his inputs with \acrshort{ot}, evaluates the garbled processor circuit for the same number of cycles.
 
 \item
-  Alice reveals the output types such that Bob learns the value of the output $g_{Alice}(a_{Bob})$ stored in memory.
+  Alice reveals the output types such that Bob learns the value of the output $g_{Alice}(b_{Bob})$ stored in memory.
   This needs to be done only for agreed memory locations containing the outputs such that Bob does not learn intermediate values in the memory.
 \end{enumerate}
 
@@ -113,7 +113,7 @@ It is based on the Plasma project in opencores \cite{rhoads2006plasma}.
 We modified the circuit such that the \acrshort{im} and the \acrshort{dm} are separated.
 The original Plasma processor supports all the \gls{mips}~I \acrshort{isa} except unaligned memory access.
 In our implementation, we also omit division instructions because of their large overhead.
-Any arbitrary \gls{c}/C++ function can be easily compiled to \gls{mips}~I assembly code using a cross-platform compiler e.g., GNU gcc.
+Any arbitrary function described in \gls{c} language can be easily compiled to \gls{mips}~I assembly code using a cross-platform compiler e.g., GNU gcc.
 
 In 32-bit \gls{mips}, the \acrfull{pc} is a 32-bit register (array of \acrshort{ff}s) that points to the instruction being executed at the current cycle.
 The instruction is fetched from \acrshort{im} based on the current \acrshort{pc} value.
@@ -153,12 +153,12 @@ The main cost for garbling a processor with its entire \acrshort{isa} results fr
 Most compilers are able to avoid these costly instructions and replace them with cheaper loops of shifts, addition, and subtraction instructions.
 This would eliminate the need for the Mult/Div unit in the processor and reduce the cost of garbling per instruction on one hand.
 However on the other hand, one expensive instruction will be replaced with multiple cheap instructions, thus increasing the total number of instructions.
-For example, multiplying two 32-bit numbers with the MULT instruction in \gls{mips} requires \numprint{15} cycles and a circuit of \numprint{13257} non-XOR gates\footnote{XOR gates are evaluated freely in \acrshort{gc} according to the free-XOR optimization of \cite{kolesnikov2008improved}.}, while it requires at least \numprint{31} cycles and a circuit of \numprint{9,676} non-XOR gates when using a conditional loop over an ADD instruction.
+For example, multiplying two 32-bit numbers with the MULT instruction in \gls{mips} requires \numprint{15} cycles and a circuit of \numprint{13257} non-XOR gates\footnote{XOR gates are evaluated free of cost in \acrshort{gc} according to Free XOR \cite{kolesnikov2008improved}.}, while it requires at least \numprint{31} cycles and a circuit of \numprint{9,676} non-XOR gates when using a conditional loop over an ADD instruction.
 We call this mode ``semi-private'' since it only reveals partial information about instructions used in the program (that the program does not use division/multiplication) and increases the probability of guessing an instruction by reducing the subset of possible instructions (restricted \acrshort{isa}).
 
 \subsection{Garbled Processor for Private Functions} \label{ssec:processor-mips-sfe-private}
-In the standard 2-party \acrshort{pf-sfe}, Alice provides the function $g_{Alice}(\cdot)$ and Bob provides the input data $g_{Bob}$ and the output is $g_{Alice}(a_{Bob})$.
-Similar to \sect{sec:processor-pro-pfsfe}, the garbled processor receives a list of \emph{instructions} of compiled $g_{Alice}(\cdot)$ and applies them to the input data $a_{Bob}$ in memory and the output will be written back to the memory.
+In the standard 2-party \acrshort{pf-sfe}, Alice provides the function $g_{Alice}(\cdot)$ and Bob provides the input data $b_{Bob}$ and the output is $g_{Alice}(b_{Bob})$.
+Similar to \sect{sec:processor-pro-pfsfe}, the garbled processor receives a list of \emph{instructions} of compiled $g_{Alice}(\cdot)$ and applies them to the input data $b_{Bob}$ in memory and the output will be written back to the memory.
 To avoid information leakage about the private function, we use a general-purpose processor with its entire \acrshort{isa} (full \acrshort{isa}).
 
 \subsection{Hardware Implementation of Garbled Processor} \label{ssec:processor-hardware}
@@ -191,7 +191,7 @@ To maximize the performance of our hardware \acrshort{gc} evaluator, we use a 20
 It increases the throughput of the module by increasing the maximum operating clock frequency of the engine.
 We also add one stage for the rest of the \acrshort{gc} evaluation functionality.
 
-Due to the Free XOR technique \cite{kolesnikov2008improved}, evaluating an XOR gate requires only XORing the input labels while evaluating a non-XOR gate requires two \acrshort{aes} encryptions \cite{zahur2015two}.
+Due to Free XOR \cite{kolesnikov2008improved}, evaluating an XOR gate requires only XORing the input labels while evaluating a non-XOR gate requires two \acrshort{aes} encryptions \cite{zahur2015two}.
 Therefore, evaluation of an XOR gate can be done in one clock cycle of the pipeline.
 Different timing for XOR and non-XOR gates introduces a challenge for handling dependencies of gates' inputs and output.
 A gate cannot enter the evaluation pipeline if its inputs are another gate's output which is not yet evaluated.
@@ -205,7 +205,7 @@ It can also interface with another \acrshort{fpga} emulator of the garbler which
 A wide range of scenarios are now feasible owing to our current hardware platform and state-of-the-art optimized \acrshort{gc} evaluator.
 
 Such extensions would incur additional area and performance overheads, but would allow upscaling of our implementation to support garbled processor circuits and benchmarks in the Gigabytes range.
-We emphasize that we provide in this work a proof-of-concept prototype to motivate further research in this direction to bring garbled processors some steps closer to the realm of feasible practical implementations.
+We emphasize that we provide in this thesis a proof-of-concept prototype to motivate further research in this direction to bring garbled processors some steps closer to the realm of feasible practical implementations.
 
 \section{ARM2GC: Garbled ARM for SFE}\label{sec:processor-arm}
 In this section, we present \gls{arm2gc}, a \acrshort{gc} framework based on a garbled \gls{arm} processor and the \gls{skipgate} algorithm.
@@ -253,9 +253,9 @@ The other \acrshort{ff}s in the stack, output, pipeline registers, and the regis
 The \gls{arm} circuit is garbled using sequential garbling process of \gls{tinygarble} \acrshort{gc} engine (see \appx{chap:engine}) for a pre-specified number of sequential cycles $cc$.
 
 A signal called \textit{terminate} is produced by the \gls{arm} circuit that indicates if \texttt{gc\_main} function is returned.
-The signal can be revealed to the parties once in $T$ cycles (predetermined by parties) to reduce the total number of cycles of garbling the \gls{arm} circuit.
-For $T=1$, the parties instantly identify the termination, but the exact number of cycles the function evaluated for the given inputs is revealed.
-A larger $T$ would reduce this information leakage, but increase the garbling cost.
+The signal can be revealed to the parties once in $K$ cycles (predetermined by parties) to reduce the total number of cycles of garbling the \gls{arm} circuit.
+For $K=1$, the parties instantly identify the termination, but the exact number of cycles the function evaluated for the given inputs is revealed.
+A larger $K$ would reduce this information leakage, but increase the garbling cost.
 \appx{chap:engine} provides more details about the support of the terminate signal in \gls{tinygarble} \acrshort{gc} engine.
 Eventually, when the function is executed, the parties reveal the content of the output memory to each other in order to learn output $o = g(a,b)$.
 
