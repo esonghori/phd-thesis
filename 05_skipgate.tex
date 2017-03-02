@@ -22,8 +22,8 @@ Each wire either carries a Boolean value known to both parties independently (\t
 
 \section{Motivational Example}\label{sec:skipgate-motiv}
 \fig{fig:mux} illustrates a sequential circuit that has a control path with a 2-to-1 \acrshort{mux} whose inputs come from two sub-circuits f$_0$ and f$_1$ connecting to \acrshort{mux} input 0 and 1 respectively.
-At a certain clock cycle, if the select wire of the \acrshort{mux} ($x$) is public, say equal to 1, both parties know that the gates in the sub-circuit f$_0$ do not need to be garbled/evaluated since they have no effect on the final output.
-The gates in the \acrshort{mux} itself act as wires and pass the output of f$_1$ to the \acrshort{mux} output, thus the gates in the control path do not need to be garbled/evaluated in that clock cycle either.
+At a certain sequential cycle, if the select wire of the \acrshort{mux} ($x$) is public, say equal to 1, both parties know that the gates in the sub-circuit f$_0$ do not need to be garbled/evaluated since they have no effect on the final output.
+The gates in the \acrshort{mux} itself act as wires and pass the output of f$_1$ to the \acrshort{mux} output, thus the gates in the control path do not need to be garbled/evaluated in that sequential cycle either.
 However in the conventional \acrshort{gc} protocol where public wire $x$ was teared as a secret value, the entire circuit had to be garbled/evaluated.
 In the following subsection, we explain how the \gls{skipgate} algorithm identifies such gates to reduce the garbling cost in circuits with public wires.
 
@@ -34,7 +34,7 @@ In the following subsection, we explain how the \gls{skipgate} algorithm identif
 \label{fig:mux}
 \end{figure}
 
-It is worth noting that in a sequential garbled circuit presented in \chap{chap:seq}, the Boolean value of a wire can change at every clock cycle.
+It is worth noting that in a sequential garbled circuit presented in \chap{chap:seq}, the Boolean value of a wire can change at every sequential cycle.
 A wire may also alter between being secret and public.
 The \gls{skipgate} algorithm is executed once for each sequential cycle.
 \gls{skipgate}'s decision on each gate (locally computing, garbling/evaluating, or skipping) depends on the status of the gate's inputs (public or secret) on that cycle.
@@ -68,7 +68,7 @@ The \gls{skipgate} algorithm classifies the gates into four categories in terms 
 
 \begin{algorithm}
 \caption{\gls{skipgate}, Alice's side.}\label{alg:alice}
-\textbf{Inputs:} Sequential \texttt{circuit} of $f(a,b,p)$, Alice's input $a$, public input $p$, number of clock cycles $cc$.\\
+\textbf{Inputs:} Sequential \texttt{circuit} of $f(a,b,p)$, Alice's input $a$, public input $p$, number of sequential cycles $cc$.\\
 \textbf{Outputs:} $o = f(a,b,p)$.\\
 \begin{algorithmic}[1]
 \STATE{\bf{SkipGate\_alice\ (circuit, a, p, cc)}:}
@@ -92,7 +92,7 @@ The \gls{skipgate} algorithm classifies the gates into four categories in terms 
 
 \begin{algorithm}
 \caption{\gls{skipgate}, Bob's side.}\label{alg:bob}
-\textbf{Inputs:} Sequential \texttt{circuit} of $f(a,b,p)$, Bob's input $b$, public input $p$, number of clock cycles $cc$.\\
+\textbf{Inputs:} Sequential \texttt{circuit} of $f(a,b,p)$, Bob's input $b$, public input $p$, number of sequential cycles $cc$.\\
 \begin{algorithmic}[1]
 \STATE{\bf{SkipGate\_bob(circuit, b, p, cc)}:}
 \STATE{$X_a$ = receive\_alice\_labels()}

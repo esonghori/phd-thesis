@@ -53,7 +53,7 @@ In the following, we introduce our benchmark and explain how we fold them into a
 The sum function is implemented in $N$ steps of one bit sums by keeping the carry bit.
 Thus, it can be folded up to $N$ times without any significant overhead in \acrfull{ngt}.
 
-\textit{Hamming Distance.} This function receives two $N$-bit inputs and outputs the $\log_2(N)$-bit Hamming distance between them.
+\textit{Hamming distance.} This function receives two $N$-bit inputs and outputs the $\log_2(N)$-bit Hamming distance between them.
 The Hamming distance between two numbers is the number of positions at which the corresponding bits are different.
 A possible combinational implementation of the $N$-bit Hamming distance uses a binary tree of adders that sums all $1$-bit values from the bit differences to a final Hamming distance consisting of $\log_2(N)$ bits \cite{boyar2006concrete}.
 This implementation cannot be folded easily.
@@ -203,7 +203,7 @@ Because of the \gls{tinygarble} superior scalability, we are able to implement f
 \subsection{Effect of Folding on Garbling Time} \label{ssec:eval-tinygarble-timing}
 So far, we have only reported the overhead in terms of garbled tables (\acrshort{gtd}) that is a function of the number of non-XOR gates.
 As explained in \cite{bellare2013efficient}, if we see garbling as a cryptographic primitive, its computation time (without considering communication) will also be interesting.
-In practice, smaller circuits which can fit entirely in the processor cache result in fewer cache misses and therefore, consume less \acrshort{cpu} cycles for garbling.
+In practice, smaller circuits which can fit entirely in the processor cache result in fewer cache misses and therefore, consume less \acrshort{cpu} clock cycles for garbling.
 To better observe the impact of cache speed-up for the compact circuits resulting from \gls{tinygarble}, \fig{fig:cpu_time} depicts the \acrshort{cpu} Time (left y-axis) and the memory footprint of wire tokens (right y-axis) versus $cc$ (x-axis) for the $\numprint{32768}$-bit Sum function.
 As mentioned earlier, the memory footprint is directly proportional to the total number of gates in the sequential circuit.
 
@@ -353,13 +353,13 @@ For \acrshort{aes}, we assume that one party holds a 128-bit message and the oth
 \multicolumn{1}{c||}{Function} & \multicolumn{1}{c|}{Input Size} &  \multicolumn{1}{c}{\# of required cycles} \\
 \hline
 \hline
-Hamming Distance & $\numprint{16}$ & $\numprint{218}$\\
+Hamming distance & $\numprint{16}$ & $\numprint{218}$\\
 \hline
- Hamming Distance & $\numprint{32}$ & $\numprint{426}$\\
+ Hamming distance & $\numprint{32}$ & $\numprint{426}$\\
 \hline
-Hamming Distance & $\numprint{64}$ & $\numprint{842}$\\
+Hamming distance & $\numprint{64}$ & $\numprint{842}$\\
 \hline
-Hamming Distance & $\numprint{128}$ & $\numprint{1674}$\\
+Hamming distance & $\numprint{128}$ & $\numprint{1674}$\\
 \hline
 \acrshort{psi} & $\numprint{64}$ &$\numprint{7267}$\\
 \hline
@@ -383,7 +383,7 @@ Generating these Boolean circuits is a one-time process and the circuits can be 
 \multicolumn{1}{c|}{(words)} & \multicolumn{1}{c|}{seconds (s)} &  \multicolumn{1}{c|}{non-XOR gates} & \multicolumn{1}{c}{gates} \\
 \hline
 \hline
-\multicolumn{4} {c}{Hamming Distance-specific \acrshort{isa}}\\
+\multicolumn{4} {c}{Hamming distance-specific \acrshort{isa}}\\
 \hline
 \acrshort{dm}, \acrshort{im} = 32 & $\numprint{19.648}$~$s$ & $\numprint{6715}$ & $\numprint{2021}$ \\
 \hline
@@ -498,10 +498,10 @@ BUFG & $\numprint{2}$ & $\numprint{6.25}$
 \end{table}
 
 \subsubsection{Performance}
-\tab{table:performance-app} presents the runtime required to evaluate \acrshort{mips} for one instruction in terms of clock cycles and $\mu\textrm{s}$ for application-specific \acrshort{isa}s.
+\tab{table:performance-app} presents the runtime required to evaluate \acrshort{mips} for one instruction in terms of \acrshort{fpga} clock cycles and $\mu\textrm{s}$ for application-specific \acrshort{isa}s.
 \tab{table:performance-res-full} repots the same results for restricted and full \acrshort{isa}s.
 Our \acrshort{gc} evaluator operates at $100\textrm{MHz}$ on the \acrshort{fpga}.
-This is used to compute an average evaluation runtime of 1.1 clock cycles per gate for our pipelined \acrshort{gc} evaluator which translates to an average of $11\textrm{ns}$ per gate in our \acrshort{fpga} implementation.
+This is used to compute an average evaluation runtime of 1.1 \acrshort{fpga} clock cycles per gate for our pipelined \acrshort{gc} evaluator which translates to an average of $11\textrm{ns}$ per gate in our \acrshort{fpga} implementation.
 The reported runtime can be further improved by providing tighter timing constraints.
 
 \begin{table}
@@ -509,7 +509,7 @@ The reported runtime can be further improved by providing tighter timing constra
 \caption{Performance of evaluating \acrshort{mips} for application-specific \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-app}
 \begin{tabular}{l|r|r|r|r|r}
 \multicolumn{1}{c|}{Memory Size (words)} & \multicolumn{1}{c|}{$\numprint{32}$ } &  \multicolumn{1}{c|}{$\numprint{64}$ } & \multicolumn{1}{c|}{$\numprint{128}$ } & \multicolumn{1}{c|}{$\numprint{256}$ } & \multicolumn{1}{c}{$\numprint{512}$ }  \\ \hline \hline
-\multicolumn{6} {c}{Hamming Distance-\acrshort{isa}}\\ \hline
+\multicolumn{6} {c}{Hamming distance-\acrshort{isa}}\\ \hline
 \# of non-XOR gates       & $\numprint{6715}$    & $\numprint{9830}$   & $\numprint{16062}$ & $\numprint{28493}$ & $\numprint{53374}$\\ \hline
 Time per inst. (cc)       & $\numprint{7118}$    & $\numprint{10813}$ & $\numprint{17829}$ & $\numprint{30773}$  & $\numprint{57644}$\\ \hline
 Time per inst. ($\mu s$) & $\numprint{71.18}$  & $\numprint{108.13}$  & $\numprint{178.29}$  & $\numprint{307.72}$  & $\numprint{576.44}$\\ \hline
@@ -734,7 +734,7 @@ MatrixMult8x8 32 & -                                                         & -
 \subsection{Effect of {SkipGate} on ARM}
 \tab{tab:sys_improvment_frwk} shows the cost of garbling an \gls{arm} processor for the benchmark functions using conventional \acrshort{gc} compared to \acrshort{gc} with the \gls{skipgate} algorithm.
 Since the instruction memory is known to both parties in \gls{arm}, \gls{skipgate} omits a significant number of non-XOR gates in the circuits.
-The circuit of \gls{arm} has 126,755 non-XOR gates and for computing a function, for example Hamming 160, it takes 1,909 clock cycles.
+The circuit of \gls{arm} has 126,755 non-XOR gates and for computing a function, for example Hamming 160, it takes 1,909 sequential cycles.
 It means with the conventional \acrshort{gc} protocol, garbling/evaluation of $1,909\times126,755=241,975,295$ non-XORs is required.
 While \gls{skipgate} reduces the circuit into a smaller circuit with only 247 non-XORs (almost 7 orders of magnitude less).
 In the case of \acrshort{aes}, we achieve more than {\it six orders of magnitude} improvement over the conventional \acrshort{gc} without the \gls{skipgate} algorithm.

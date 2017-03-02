@@ -56,7 +56,7 @@ The inputs/outputs of the unrolled circuit are the inputs/outputs of the combina
 The present states at each cycle $\textrm{cid}$, where $0 \le \textrm{cid} < cc$, are equal to the next states at the previous cycle ($\textrm{cid}-1$).
 The present states at $\textrm{cid}=0$ are equal to the input initial value.
 
-In digital hardware, at edge of a cycle, the value of D of an \acrshort{ff} is latched and then transfered to the Q in the next clock cycle.
+In digital hardware, at edge of a cycle, the value of D of an \acrshort{ff} is latched and then transfered to the Q in the next sequential cycle.
 In garbling/evaluating of a sequential circuit, an \acrshort{ff} operates as a simple wire connection between the the unrolled combinational circuit in two consecutive cycles.
 Thus, it can be dealt with latching the labels from the flip-Flop input D in $\textrm{cid}$ to output Q in $\textrm{cid}+1$.
 Signal clk and rst of \acrshort{ff} can be ignored in sequential \acrshort{gc}.
