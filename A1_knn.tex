@@ -125,7 +125,7 @@ We customize the flow of the standard logic synthesis tools to generate circuits
 As mentioned in \chap{chap:prelim} for \acrshort{gc} with Free XOR optimization, there is a need to minimize the number of non-XOR gates in the Boolean representation.
 We perform two major customization in the synthesis flow.
 First, we create a new \emph{synthesis library} to aid the conversion of the arithmetic and conditional operations to \acrshort{gc}-optimized logical modules.
-Second, we develop a \emph{technology library} to guide the mapping of the logic to the circuit netlist.
+Second, we develop a \emph{technology library} to guide the mapping of the logic to the circuit \gls{netlist}.
 
 \subsubsection{Synthesis Library}
 To realize the $k$-NN search, a set of basic arithmetic and conditional operations consisting of comparator, multiplexer, and Hamming distance are required.

@@ -1,13 +1,20 @@
 % !TEX root = 0_main.tex
 \chapter{Conclusion}\label{chap:conclusion}
-We present \gls{tinygarble}, an automated tool that can generate highly compact and scalable circuits for Yao's garbled circuit (\acrshort{gc}) protocol.
-We are the first to define the circuit generation for \acrshort{gc} as a sequential synthesis problem, and to leverage the powerful and established logic synthesis techniques with our custom-libraries and objectives.
+We present \gls{tinygarble}, an automated tool that can generate optimized and compact circuits for Yao's \acrfull{gc} protocol.
+We are the first to define the circuit generation for \acrshort{gc} as a logic synthesis problem, and to leverage the powerful and established logic synthesis techniques with our custom objectives.
 We improve the results of one of the best automatic tools for \acrshort{gc} generation, \gls{pcf} \cite{kreuter2013pcf}, by several orders of magnitude: for instance \gls{tinygarble} compacts the $\numprint{1024}$-bit multiplication by $\numprint{2504}$ times, while decreasing the number of non-XOR gates by 80\%; we compress the $\numprint{16000}$-bit Hamming distance by a factor of $\numprint{7345}$ times and with 47\% less non-XOR gates.
 Further, \gls{tinygarble} is able to implement functions that have never been reported before, such as \acrshort{sha}-3.
 We perform extensive benchmarking with both commercial and open source hardware synthesis tools and compare the results.
-Our approach strongly improves the existing results towards practical secure computation with many exciting applications.
+
+We introduce gabled processor a scalable solution for private function evaluation (\acrshort{pf-sfe}).
+The garbled processor is based on the \gls{mips} architecture and the private function can be compiled using ubiquitous tool, e.g., gcc.
+We also introduce \gls{arm2gc}, a simple-to-use and efficient garbled processor framework based on \gls{arm} and \gls{tinygarble}.
+Users can develop secure functions in high-level languages and compile them using standard fully verified \gls{arm} cross-compilers.
+Evaluations on a host of benchmark functions show that the \gls{arm2gc} framework achieves efficiency close to that of \gls{tinygarble} \acrshort{gc} synthesis.
+The low cost of \gls{arm2gc} is made possible by \gls{skipgate}, a novel algorithm for the sequential \acrshort{gc}.
+\gls{skipgate} omits the communication cost for gates with outputs independent of private data and also the gates not affecting the final output.
+As a result of \gls{skipgate}, only the gates associated with private data in the massive \gls{arm} circuit incur communication cost.
+
+Our \gls{tinygarble} and \gls{arm2gc} frameworks strongly improve the existing results towards a practical, scalable, and simple-to-use secure computation with many exciting applications.
 For instance, \gls{tinygarble} is an enabling technology for performing \acrshort{gc} operations on mobile platforms, which is prohibitively expensive using the prior techniques.
-Moreover, we introduce a scalable secure processor for private function evaluation (\acrshort{pf-sfe}).
-The processor is based on the \gls{mips} architecture and the private function can be compiled using ubiquitous tool, e.g., gcc.
-In future work we will investigate the possibility of connecting \acrfull{oram} to our secure processor to benefit from its lower amortized complexity for memory access.
-We are also working on interfacing \gls{tinygarble} with other \acrshort{gc} schemes, e.g., the recently proposed Half Gates method \cite{zahur2015two}.
+And \gls{arm2gc} enables users with no or limited knowledge about the \acrshort{gc} protocol or Boolean circuit to develop privacy-preserving applications in high-level languages.

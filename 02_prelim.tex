@@ -74,8 +74,8 @@ In the end, Alice learns $o_{Alice}$ and Bob learns $o_{Bob}$.
 The steps of Yao's protocol are described below.
 
 \begin{enumerate}[label=\roman*.]
-\item The function $f$ to be computed is represented as a Boolean circuit, called \textit{netlist}, consisting of 2-input 1-output logic gates (a four entry truth table).
-\item For each wire $w$ in the netlist, Alice assigns two $k$-bit random strings, called \textit{labels}, $X_w^{0}$ and $X_w^{1}$ respectively corresponding to 0 and 1 Boolean values.
+\item The function $f$ to be computed is represented as a Boolean circuit, called \textit{\gls{netlist}}, consisting of 2-input 1-output logic gates (a four entry truth table).
+\item For each wire $w$ in the \gls{netlist}, Alice assigns two $k$-bit random strings, called \textit{labels}, $X_w^{0}$ and $X_w^{1}$ respectively corresponding to 0 and 1 Boolean values.
       $k$ is the security parameter -- typically $k=128$ is sufficient~\cite{bellare2013efficient}.
 \item For each gate, she encrypts the output label in each on of the four rows of the truth table with the corresponding input labels.
       The resulting table of ciphertexts is then randomly rearranged and called the \textit{garbled table}.

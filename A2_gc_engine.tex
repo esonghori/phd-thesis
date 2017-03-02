@@ -2,7 +2,7 @@
 \chapter{Tinygarble GC Engine}\label{chap:engine}
 In this section, we explain \gls{tinygarble} \acrshort{gc} Engine, an implementation of the Yao's \acrshort{gc} protocol for sequential circuits.
 First, we explain implementation of seqeuntial \acrshort{gc} protocol in \gls{tinygarble} \acrshort{gc} engine.
-Next, we describe \acrfull{sscd}, a format for storing and processing sequential Boolean circuits in our \acrshort{gc} engine and how \gls{verilog} netlist is translated into \acrshort{sscd}.
+Next, we describe \acrfull{sscd}, a format for storing and processing sequential Boolean circuits in our \acrshort{gc} engine and how \gls{verilog} \gls{netlist} is translated into \acrshort{sscd}.
 The communication steps and pipelining of the \acrshort{gc} protocol for sequential circuits are also described.
 We then introduce the terminate signal that helps user to identify when the circuit output is ready in oder to reduce the garbling cost.
 We implemented the \acrshort{gc} engine in C++ and its source code is available in \gls{tinygarble} repository\footnote{\url{https://github.com/esonghori/\gls{tinygarble}}}.
@@ -50,12 +50,12 @@ In the \acrshort{sscd} format, we index wires according the following order: (1)
 A \acrshort{sscd} file consists of seven lines: (1) g\_init\_size, e\_init\_size, g\_input\_size, e\_input\_size, dff\_size, output\_size, terminate (an optional 1-bit output indicating that the circuit is done, see \sect{sec:engine-term}), and number of gates. (2) gates' first input index. (3) gates' second input index. (4) gates' type. (5) outputs index. (6) Flip-Flops' D index. (7) Flip-Flops' I index (chosen from g\_init or e\_init).
 
 \section{Translating Verilog Netlist to SSCD}\label{sec:engine-v2sscd}
-The output of \gls{tinygarble} synthesis flow is an optimized gate level \gls{verilog} code called netlist.
-The netlist format needs to be translated into \acrshort{sscd} format to be readable by \gls{tinygarble} \acrshort{gc} engine.
-We developed a tool called V2SCD that translates a \gls{verilog} netlist into a SCD file.
-V2SCD first parses the netlist file and detect the gates and their ports.
+The output of \gls{tinygarble} synthesis flow is an optimized gate level \gls{verilog} code called \gls{netlist}.
+The \gls{netlist} format needs to be translated into \acrshort{sscd} format to be readable by \gls{tinygarble} \acrshort{gc} engine.
+We developed a tool called V2SCD that translates a \gls{verilog} \gls{netlist} into a \acrshort{sscd} file.
+V2SCD first parses the \gls{netlist} file and detect the gates and their ports.
 Next, it topologically sorts the gates based on their dependencies through wire connections.
-Finally it creats a human-readable \acrshort{sscd} file.
+Finally it creates a human-readable \acrshort{sscd} file.
 
 \section{Communication}\label{sec:engine-comm}
 JustGarble's implementation of the \acrshort{gc} protocol lacks the communication features required by the \acrshort{gc} protocol.
