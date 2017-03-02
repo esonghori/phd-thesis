@@ -14,7 +14,7 @@ Henecka et al., introduced TASTY compiler \cite{henecka2010tasty} which allows t
 In TASTY, the user can develop a \acrshort{sfe} program in a new domain-specific language to be performed on private data.
 The compiler then translate the program into combination of the \acrshort{gc} protocol and Homomorphic encryption to securely evaluate the program.
 
-Mood et al, introduced a new Pseudo-Assembly Language (PAL) for \acrshort{gc} circuit generation \cite{mood2012memory}.
+Mood et al., introduced a new Pseudo-Assembly Language (PAL) for \acrshort{gc} circuit generation \cite{mood2012memory}.
 They design a new compiler that translate program in the PAL into Fairplay \acrshort{sfdl} to generate circuits with limited memory budget.
 
 Kreuter et al., introduced a \acrshort{gc} compiler that for the first time addressed the scalability issue of generating and garbling large circuits under the malicious model~\cite{kreuter2012billion}.
@@ -24,14 +24,14 @@ The first \acrshort{gc} framework supporting a general-purpose language is prese
 However, it supports only a subset of \acrshort{ansi}-\gls{c} that is not compatible with many important primitives and therefore, not compatible with legacy codes.
 The main drawback of~\cite{holzer2012secure} is compile-time loop unrolling that makes it unscalable with input size.
 
-To reduce the memory overhead for storing large circuits and hence increase scalability, \gls{pcf} \cite{kreuter2013pcf} introduced loops that, if given manually in the high level language, are kept until the \acrshort{gc} evaluation.
+To reduce the memory overhead for storing large circuits and hence increase scalability, \gls{pcf} \cite{kreuter2013pcf} introduced loops that, if given manually in the high-level language, are kept until the \acrshort{gc} evaluation.
 In contrast to \gls{pcf}, \gls{tinygarble} allows to infer loops automatically and also allows to optimize across multiple sub-circuits.
 
-Franz et al. introduced CBMC-GC, a new \acrshort{gc} compiler in \cite{franz2014cbmc}.
+Franz et al., introduced CBMC-GC, a new \acrshort{gc} compiler in \cite{franz2014cbmc}.
 Their compiler allows to users to program in \gls{c} language and translate the programs into a Boolean circuit.
 The objective of their compiler is to reduce the number of non-XOR gates in the generated Boolean circuits.
 
-Rastogi et al. proposed WYSTERIA, a new high-level programming language for the \acrshort{gc} protocol in \cite{rastogi2014wysteria}.
+Rastogi et al., proposed WYSTERIA, a new high-level programming language for the \acrshort{gc} protocol in \cite{rastogi2014wysteria}.
 WYSTERIA, unlike previous work, allows combination of local and private computations on the data.
 WYSTERIA also introduces a new abstraction for secret shared data that support generic n-party secure computations.
 

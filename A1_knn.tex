@@ -93,8 +93,8 @@ Therefore, we only describe the related work in the area of compiler/software te
 
 In the area of mapping and optimizing functions into Boolean logic for \acrshort{gc}, the related literature has suggested developing custom compilers \cite{malkhi2004fairplay,henecka2010tasty,holzer2012secure,kreuter2013pcf}, custom libraries for conventional high-level compilers \cite{huang2011faster,malka2011vmcrypt,henecka2013faster}, hardware accelerators\cite{pu2013computing,jarvinen2010garbled,bellare2013efficient}, and mobile device implementation \cite{mood2012memory}.
 
-Following the introduction of the first compiler for \acrshort{gc}, called Fairplay \cite{malkhi2004fairplay}, a number of researchers have focused on providing a custom compiler to interpret high level procedural language and map it to a circuit description language \cite{henecka2010tasty,holzer2012secure}.
-The most scalable existing compiler is \gls{pcf}, which introduces loops that, if given manually in the high level language, are kept until the \acrshort{gc} evaluation \cite{kreuter2013pcf}.
+Following the introduction of the first compiler for \acrshort{gc}, called Fairplay \cite{malkhi2004fairplay}, a number of researchers have focused on providing a custom compiler to interpret high-level procedural language and map it to a circuit description language \cite{henecka2010tasty,holzer2012secure}.
+The most scalable existing compiler is \gls{pcf}, which introduces loops that, if given manually in the high-level language, are kept until the \acrshort{gc} evaluation \cite{kreuter2013pcf}.
 Our sequential description of the $k$-NN function that we input in the \acrshort{hdl} format is much more compact than the high-level (software) loop embracing in \gls{pcf}.
 Note that \gls{pcf} is also based upon a combinational description.
 
@@ -313,7 +313,7 @@ T(cc)       & 13540  & 26124 & 51292 & 26118  & 48716  & 94284 & 49710  & 91432 
 \end{table}
 
 \section{Conclusion}\label{sec:knn-conc}
-In this appendix, we present an methodology for generation of highly compact and scalable privacy-preserving $k$-nearest neighbor ($k$-NN) search using \acrshort{gc}.
+In this appendix, we present a methodology for generation of highly compact and scalable privacy-preserving $k$-nearest neighbor ($k$-NN) search using \acrshort{gc}.
 We are the first to suggest a sequential description of $k$-NN, which enables generation of a compact Boolean \acrshort{gc}.
 Our newly created custom libraries allow us to leverage the established powerful logic synthesis tools to optimize the ($k$-NN) Boolean expressions for \acrshort{gc}.
 We introduce transformations that make the $k$-NN sequential expressions transparent to the available garbling schemes that are based on the combinational description.

@@ -230,7 +230,7 @@ The \acrshort{cpu} time in number of cycles and the approximate memory footprint
 	\label{fig:cpu_time}
 \end{figure}
 
-\subsection{High Level Synthesis Tools}\label{ssec:eval-tinygarble-high}
+\subsection{high-level Synthesis Tools}\label{ssec:eval-tinygarble-high}
 The design automation community has been working on tools that work with higher-level languages and abstractions than \acrshort{hdl}.
 While a host of commercial and academic \acrshort{hls} tools are available \cite{tool:Vivado, tool:PandA, decaluwe2004myhdl, Gupta2004}, we selected the Xilinx Vivado \acrshort{hls} for compiling \gls{c} code to \acrshort{hdl} which can then be synthesized using a conventional logic synthesis tool.
 The \acrshort{hls} engine in the Vivado suite is built upon the xPilot project \cite{Chapter:Zhang2008}.
@@ -501,7 +501,7 @@ BUFG & $\numprint{2}$ & $\numprint{6.25}$
 \end{table}
 
 \subsubsection{Performance}
-\tab{table:performance-app} presents the runtime required to evaluate \acrshort{mips} for one instruction in terms of \acrshort{fpga} clock cycles and $\mu\textrm{s}$ for application-specific \acrshort{isa}s.
+\tab{table:performance-app} presents the runtime required to evaluate \gls{mips} for one instruction in terms of \acrshort{fpga} clock cycles and $\mu\textrm{s}$ for application-specific \acrshort{isa}s.
 \tab{table:performance-res-full} repots the same results for restricted and full \acrshort{isa}s.
 Our \acrshort{gc} evaluator operates at $100\textrm{MHz}$ on the \acrshort{fpga}.
 This is used to compute an average evaluation runtime of 1.1 \acrshort{fpga} clock cycles per gate for our pipelined \acrshort{gc} evaluator which translates to an average of $11\textrm{ns}$ per gate in our \acrshort{fpga} implementation.
@@ -509,7 +509,7 @@ The reported runtime can be further improved by providing tighter timing constra
 
 \begin{table}
 \centering
-\caption{Performance of evaluating \acrshort{mips} for application-specific \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-app}
+\caption{Performance of evaluating \gls{mips} for application-specific \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-app}
 \begin{tabular}{l|r|r|r|r|r}
 \multicolumn{1}{c|}{Memory Size (words)} & \multicolumn{1}{c|}{$\numprint{32}$ } &  \multicolumn{1}{c|}{$\numprint{64}$ } & \multicolumn{1}{c|}{$\numprint{128}$ } & \multicolumn{1}{c|}{$\numprint{256}$ } & \multicolumn{1}{c}{$\numprint{512}$ }  \\ \hline \hline
 \multicolumn{6} {c}{Hamming distance-\acrshort{isa}}\\ \hline
@@ -532,7 +532,7 @@ Avg. Time per gate (cc)  & -&- &- & $\numprint{1.11}$      & $\numprint{1.11}$ \
 
 \begin{table}
 \centering
-\caption{Performance of evaluating \acrshort{mips} for restricted and full \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-res-full}
+\caption{Performance of evaluating \gls{mips} for restricted and full \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-res-full}
 \begin{tabular}{l|r|r|r|r|r}
 \multicolumn{1}{c|}{Memory Size (words)} & \multicolumn{1}{c|}{$\numprint{32}$ } &  \multicolumn{1}{c|}{$\numprint{64}$ } & \multicolumn{1}{c|}{$\numprint{128}$ } & \multicolumn{1}{c|}{$\numprint{256}$ } & \multicolumn{1}{c}{$\numprint{512}$ }  \\ \hline \hline
 \multicolumn{6} {c}{ALU\&Shift-\acrshort{isa}}\\
@@ -556,7 +556,7 @@ Avg. Time per gate (cc)  & $\numprint{1.12}$     & $\numprint{1.11}$   & $\numpr
 \end{tabular}
 \end{table}
 
-\subsubsection{Comparison with Prior Art}
+\subsubsection{Comparison with the Prior Art}
 \tab{tab:comp} shows a comparison with other \acrshort{gc} evaluator implementations \cite{jarvinen2010garbled, bellare2013efficient}.
 However, for fairness, we are leveraging \acrshort{gc} optimizations that were not available at the time for \cite{jarvinen2010garbled}.
 We compare with our two implementations, the 21-stage pipelined evaluator and un-pipelined variant to show the effect of pipelining in improving our performance by a factor of 7.8.

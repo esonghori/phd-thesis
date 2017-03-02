@@ -2,23 +2,23 @@
 \thispagestyle{empty}
 \begin{abstract}
 Privacy-preserving computation is a standing challenge central to several modern-world applications which require computing on sensitive data.
-\acrfull{sfe} refers to provably secure techniques aiming to address this challenge by enabling multiple parties to jointly compute an arbitrary function on their private inputs.
+\acrfull{sfe} refers to provably secure techniques aiming to address this problem by enabling multiple parties to compute an arbitrary function jointly on their private inputs.
 The most promising two-party \acrshort{sfe} method is called the \acrfull{gc} protocol introduced by Andrew Yao.
-The protocol is built upon representing the function as a Boolean circuit and encrypting/communicating at logic gate level.
-Despite several key progresses in \acrshort{gc}, efficiency, scalability and ease-of-use of the available methods are limited by the naive circuit representation as a directed acyclic graph, ad-hoc logic optimizations, and custom compilers.
+The protocol relays on representing the function as a Boolean circuit and encrypting/communicating at the logic gate level.
+Despite several significant improvements in \acrshort{gc}, efficiency, scalability and ease-of-use of the available methods are limited by the naive circuit representation as a directed acyclic graph, ad-hoc logic optimizations, and custom compilers.
 
 In this thesis, we proposed a holistic solution to enhance the efficiency, scalability, and simplicity of the \acrshort{gc} protocol.
-Our approach has three main pillars to address these major challenges: \acrshort{gc} synthesis, sequential \acrshort{gc} and garbled processor.
+Our approach has three main pillars to address these key challenges: \acrshort{gc} synthesis, sequential \acrshort{gc}, and garbled processor.
 The \acrshort{gc} synthesis is a novel automated methodology based on logic synthesis techniques for generating optimized Boolean circuits for the \acrshort{gc} protocol.
 Using sequential \acrshort{gc}, we achieve an unprecedented level of compactness and scalability by using sequential circuit descriptions.
 We combine \acrshort{gc} synthesis and sequential \acrshort{gc} in an open-source framework called \gls{tinygarble}.
-The preliminary implementation of benchmark functions using \gls{tinygarble} demonstrates a high degree of memory-foot-print compactness as well as improvement in overall efficiency compared to results of existing tools.
+The preliminary implementation of benchmark functions using \gls{tinygarble} demonstrates a high degree of memory-footprint compactness as well as improvement in overall efficiency compared to results of existing tools.
 
 Our sequential description also enables us, for the first time, to design and realize a garbled processor to reduce the problem of private function evaluation to a conventional \acrshort{sfe} problem.
 In addition, the garbled processor allows users to develop \acrshort{sfe} applications in high-level languages (e.g., \gls{c}) and eliminates the need for Boolean circuit generation.
 We present \gls{arm2gc}, a garbled processor framework based on \gls{tinygarble} and the \gls{arm} processor.
-It allows users to develop \acrshort{gc} applications using high-level programming languages with comparable efficiency to the best prior results.
-The main enabler to make this construction practical and efficient is the introduction of \gls{skipgate}, a new algorithm that omits the communication cost of a Boolean gate when its output is independent of the private data.
-Benchmark evaluations demonstrate efficiency and usability of \gls{arm2gc} compared with prior art in high level \acrshort{gc} compilation.
+It allows users to develop \acrshort{gc} applications using high-level programming languages with comparable efficiency to the best previous results.
+The primary enabler to make this construction practical and efficient is the introduction of \gls{skipgate}, a new algorithm that omits the communication cost of a Boolean gate when its output is independent of the private data.
+Benchmark evaluations demonstrate efficiency and usability of \gls{arm2gc} compared with the prior art in high-level \acrshort{gc} compilation.
 
 \end{abstract}

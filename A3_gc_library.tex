@@ -28,7 +28,7 @@ If none of the inputs is one, the encoder outputs zero.
 We implement the encoder operation using a recursive structure.
 An encoder for $n$-bit input is implemented using two smaller encoder for $n/2$-bit input.
 the first half of the input ($0$ to $n/2-1$) is given to the first small encoder and the rest ($n/2$ to $n-1$) is given to the second one.
-One of the these two small encoder that receives the inactive part of input outputs zero and the other one outputs the binary representation in its half.
+One of these two small encoder that receives the inactive part of input outputs zero and the other one outputs the binary representation in its half.
 Depending on which half was active, a bit is attached as the \acrfull{msb} to the final output.
 In other words, the \acrshort{msb} of $o$ is set to one if the output of the second encoder is nonzero and otherwise zero.
 
@@ -91,7 +91,7 @@ It means 2 to 3.7 times improvement compared to the previous custom compilers.
 
 \tab{table:float} illustrates the number of non-XOR and total gates for the floating point operations.
 The results of both single precision (float) and double precision (double) are reported in the table.
-Pullonen et al, is the only previous work that reported the result for the similar floating-point operations \cite{pullonen2015combining}.
+Pullonen et al., is the only previous work that reported the result for the similar floating-point operations \cite{pullonen2015combining}.
 They used the custom compiler of CBMC-GC \cite{franz2014cbmc} to compile software implementations of these floating-point operations.
 As can be seen in the table, the circuits in \gls{tinygarble} library outperforms the implementation in \cite{pullonen2015combining}.
 
