@@ -1,6 +1,6 @@
 % !TEX root = 0_main.tex
 \chapter{Garbled Processor}\label{chap:processor}
-Supporting sequential circuits in the \acrshort{gc} protocol enables us to evaluate a general processor as a function in two-party \acrshort{sfe}.
+Supporting sequential circuits in the \acrfull{gc} protocol enables us to evaluate a general processor as a function in two-party \acrfull{sfe}.
 The Boolean circuit of a general processor is a sequential circuit that receives a function (more pressingly the compiled binary code of a function) and data in its memory, then computes the function and writes the result back in the memory.
 In this chapter first, we explain the problem of \acrfull{pf-sfe} and how a processor can solve it.
 Next, we describe how we used \gls{mips} processor, a simple text-book processor, to resolve the \acrshort{pf-sfe} problem.
@@ -15,7 +15,7 @@ Two-party \acrfull{pf-sfe} allows secure computation of a function $g_{Alice}(\c
 This setting is in contrast to the usual requirement of \acrshort{sfe} where both parties know the function.
 \acrshort{pf-sfe} is especially useful when the function is proprietary or classified.
 
-It is well known that \acrshort{pf-sfe} can be reduced to regular \acrshort{sfe} by securely evaluating a Universal Circuit (\acrshort{uc}) \cite{sander1999non}.
+It is well known that \acrshort{pf-sfe} can be reduced to regular \acrshort{sfe} by securely evaluating a \acrfull{uc} \cite{sander1999non}.
 \acrshort{uc} is a Boolean circuit capable of simulating any Boolean circuit (function) $g(\cdot)$ given the description of $g(\cdot)$ as input \cite{valiant1976universal,kolesnikov2008practical}:
 $$\acrshort{uc}(b_{Bob},g_{Alice}(\cdot)) = g_{Alice}(b_{Bob}).$$
 Secure evaluation of \acrshort{uc} completely hides the functionality and the  topology of the Boolean circuit of $g_{Alice}(\cdot)$.
@@ -28,15 +28,15 @@ A general purpose processor is a special realization of a \acrshort{utm}.
 It receives a list of \emph{instructions} $g_{Alice}(\cdot)$ (the compiled binary code of $g_{Alice}(\cdot)$) and applies them to the input data $b_{Bob}$.
 
 \subsection{Arithmetic Logic Unit}\label{ssec:processor-alu}
-The core of conventional processors is the Arithmetic Logic Unit (\acrshort{alu}) which receives two \emph{operands} and an \emph{opcode} indicating the desired operation.
+The core of conventional processors is the \acrfull{alu} which receives two \emph{operands} and an \emph{opcode} indicating the desired operation.
 \acrshort{alu} supports a set of operations, for example, addition, multiplication, and XOR.
-The \acrshort{alu} circuit consists of multiple sub-circuits for these operations and a \acrshort{mux} which selects one of their outputs.
+The \acrshort{alu} circuit consists of multiple sub-circuits for these operations and a \acrfull{mux} which selects one of their outputs.
 Secure evaluation of an \acrshort{alu}, where the opcode comes from one party and operands come from the other party, keeps the operations private.
 Thus, we can think of \acrshort{alu} as an emulator of a simple \acrshort{uc} in which the input function $g_{Alice}(\cdot)$ is limited to a single operation.
 
 One can combine a number of \acrshort{alu}s to make a more comprehensive \acrshort{uc} that can support functions consisting of multiple operations.
 Unfortunately, this approach is not practical as the complexity of the circuit grows linearly with the number of operations.
-On the other hand, in conventional processors, \acrshort{alu}s are combined with arrays of \acrshort{ff}s, a.k.a., \emph{registers}, to store the intermediate values for supporting functions with an arbitrarily large number of operations.
+On the other hand, in conventional processors, \acrshort{alu}s are combined with arrays of \acrfull{ff}s, a.k.a., \emph{registers}, to store the intermediate values for supporting functions with an arbitrarily large number of operations.
 Since none of the earlier implementations of \acrshort{gc} explicitly supported memory elements such as \acrshort{ff}s, the ways to connect the feedback loop around the \acrshort{alu} were rather limited.
 However, an explicit sequential description supported by \gls{tinygarble} allows us to leverage conventional processor architectures.
 Therefore, the \gls{tinygarble} methodology not only provides a powerful method for generating compact circuits with a low overhead for \acrshort{sfe} but also paves the way for systematically building scalable sequential circuits used for \acrshort{pf-sfe}.
@@ -54,7 +54,7 @@ Because of \gls{tinygarble} sequential methodology, the memory can be easily imp
 Thus, it can be included in the processor circuit to be evaluated securely using the \acrshort{gc} protocol.
 However, the inclusion of \acrshort{mux}s and \acrshort{ff}s increases the operation time and communication linearly with respect to the memory size.
 
-One alternative approach for hiding memory access patterns is the use of Oblivious Random-Access Machine (\acrshort{oram}) protocols \cite{goldreich1996software} which allow oblivious load/store operations with amortized poly-logarithmic overhead at the expense of increasing the round complexity of the \acrshort{gc} protocol \cite{gordon2012secure,liu2014automating,lu2013garble,gentry2014garbled}.
+One alternative approach for hiding memory access patterns is the use of \acrfull{oram} protocols \cite{goldreich1996software} which allow oblivious load/store operations with amortized poly-logarithmic overhead at the expense of increasing the round complexity of the \acrshort{gc} protocol \cite{gordon2012secure,liu2014automating,lu2013garble,gentry2014garbled}.
 For the sake of simplicity, we do not use \acrshort{oram} in this thesis.
 However, one can simply connect our implementation of \acrshort{pf-sfe} to an \acrshort{oram} to benefit from its lower amortized complexity.
 As another alternate, \cite{zahur2013circuit} shows that algorithms can sometimes be rewritten to use data structures such as stacks, queues, or associative maps for which they give compact circuit constructions of poly-logarithmic size.
@@ -75,7 +75,7 @@ The protocol is as follows:
 \item
   Bob prepares his input based on the agreed configuration to initialize the processor memory.
 \item
-  Using any secure \acrshort{gc} framework, Alice garbles the processor circuit for the maximum number of sequential cycles and Bob, after receiving his inputs with \acrshort{ot}, evaluates the garbled processor circuit for the same number of cycles.
+  Using any secure \acrshort{gc} framework, Alice garbles the processor circuit for the maximum number of sequential cycles and Bob, after receiving his inputs with \acrfull{ot}, evaluates the garbled processor circuit for the same number of cycles.
 
 \item
   Alice shares the output labels with Bob such that he learns the value of the output $g_{Alice}(b_{Bob})$ stored in memory.
@@ -165,7 +165,7 @@ To avoid information leakage about the private function, we use a general-purpos
 \subsection{Hardware Implementation of Garbled Processor} \label{ssec:processor-hardware}
 To the best of our knowledge, the fastest implementation of \acrshort{gc} in hardware was~\cite{jarvinen2010garbled}.
 However, their performance is far less than a JustGarble~\cite{bellare2013efficient}, a software implementation.
-The reason for this gap is that JustGarble utilizes a more efficient fixed-key \acrshort{aes} for garbling instead of an expensive hash function.
+The reason for this gap is that JustGarble utilizes a more efficient fixed-key \acrshort{aes} encryption for garbling instead of an expensive hash function.
 Thus, it is possible that a hardware implementation leveraging the latest \acrshort{gc} optimizations including fixed-key \acrshort{aes} garbling would outperform the software implementation.
 Furthermore, a processor is essentially a sequential circuit, and its evaluation requires sequential \acrshort{gc} which no hardware implementation of \acrshort{gc} supports.
 
@@ -202,7 +202,7 @@ To mitigate this, we push XOR gates to the latest empty stage of the pipeline su
 \subsubsection{Extending Hardware Prototype} \label{ssec:processor-hardware-extend}
 In this thesis, we only use on-chip memory for as a proof-of-concept implementation.
 However, this prototype can be extended to support interfacing with off-chip memory which would store garbled tables and labels of larger garbled processor circuits and functions.
-It can also interface with another \acrshort{fpga} emulator of the garbler which generates the garbled tables and labels and streams them to our evaluator.
+It can also interface with another hardware emulator of the garbler which generates the garbled tables and labels and streams them to our evaluator.
 A wide range of scenarios is now feasible owing to our current hardware platform and state-of-the-art optimized \acrshort{gc} evaluator.
 
 Such extensions would incur additional area and performance overheads but would allow upscaling of our implementation to support garbled processor circuits and benchmarks in the Gigabytes range.
@@ -211,7 +211,7 @@ We emphasize that we provide in this thesis a proof-of-concept prototype to moti
 \section{ARM2GC: Garbled ARM for SFE}\label{sec:processor-arm}
 In this section, we present \gls{arm2gc}, a \acrshort{gc} framework based on a garbled \gls{arm} processor and the \gls{skipgate} algorithm.
 The framework aims to simplify the development of privacy-preserving applications while keeping the garbling cost as low as the best optimized garbled circuits.
-We first describe the overview of \gls{arm2gc} and its \acrshort{api} for \acrshort{gc} development.
+We first describe the overview of \gls{arm2gc} and its \acrfull{api} for \acrshort{gc} development.
 Then, we explain how \gls{arm}'s unique architecture helps to decrease garbling overhead.
 Next, the effect of \gls{skipgate} in reducing the garbling cost is discussed.
 Finally, we discuss why we do not employ \acrshort{oram} for \gls{arm2gc}.
