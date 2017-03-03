@@ -43,7 +43,7 @@ We use the following metrics to measure the efficiency of \gls{tinygarble} for g
 		This metric encompasses both the cost of computation (encrypting/decrypting garbled tables) and the cost of communication (transferring garbled tables) in the \acrshort{gc} protocol \cite{kolesnikov2008improved}.
 
 \item \textit{\acrfull{gtd}} (\%): $$\mathit{GTD} = \dfrac{\mathit{\#GT} - \mathit{\#GT}_{0}}{\mathit{\#GT}_{0}} \times 100,$$ where $\mathit{\#GT}_{0}$ is the total number of garbled tables for the reference circuit and \acrshort{ngt} is the total number of garbled tables for the circuit under evaluation.
-		When comparing a sequential with a combination circuit, positive \acrshort{gtd} shows an \emph{overhead} (caused by folding a circuit with an asymmetric loop, see \sect{sec:seq-overhead}) in total computation and communication time resulting from an excessive number of garbled tables generated in the sequential circuits.
+		When comparing a sequential with a combinational circuit, positive \acrshort{gtd} shows an \emph{overhead} (caused by folding a circuit with an asymmetric loop, see \sect{sec:seq-overhead}) in total computation and communication time resulting from an excessive number of garbled tables generated in the sequential circuits.
 		However, in general, negative \acrshort{gtd} shows improvement in the number of non-XOR gates and generated garbled tables that results from logic synthesis optimization.
 \end{itemize}
 

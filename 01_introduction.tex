@@ -151,7 +151,7 @@ We combined our \acrshort{gc} synthesis and sequential \acrshort{gc} approaches 
 Besides user's manual optimization, \gls{tinygarble} performs various optimizations through standard logic synthesis tools to generate an optimized \textit{\gls{netlist}}, i.e., list of gates.
 \gls{tinygarble} then translates the \gls{netlist} into the \acrfull{sscd} format used in our implementation of the \acrshort{gc} protocol.
 
-\fig{fig:tinygarbel-global-flow} illustrates the global flow of \gls{tinygarble} framework.
+\fig{fig:tinygarbel-global-flow} illustrates the global flow of the \gls{tinygarble} framework.
 The framework consists of two main part (i) \acrshort{gc} synthesis flow and (ii) \acrshort{gc} engine.
 The \acrshort{gc} synthesis flow receives a sequential description of the function ($f(\cdot, \cdot)$) in \acrshort{hdl} and generates a Boolean circuit that can be efficiently evaluated by the \acrshort{gc} protocol.
 The \acrshort{gc} synthesis can create combinational circuits as well as sequential ones.
@@ -164,7 +164,7 @@ We discuss \gls{tinygarble} \acrshort{gc} engine in more details in \appx{chap:e
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{tinygarble_flow-crop.pdf}
-\caption{The global flow of \gls{tinygarble} framework.
+\caption{The global flow of the \gls{tinygarble} framework.
 The framework consists of \acrshort{gc} synthesis flow and \acrshort{gc} engine.
 The \acrshort{gc} synthesis flow generates the optimized Boolean circuit given a function description.
 The \acrshort{gc} engine allows two parties (Alice and Bob) to securely compute the function according to Yao's \acrshort{gc} protocol.

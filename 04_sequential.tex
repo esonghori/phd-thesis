@@ -10,7 +10,7 @@ A version of this chapter has been published in 2015 IEEE Symposium on Security 
 In the context of the \acrshort{gc} protocol, we can defined sequential circuit as a folded version of combinational circuit that needs to be evaluated multiple cycle.
 Unlike combinational circuits where the output depends only on the inputs, the output of sequential circuit depends on both input and the state of the circuit stored in its memory.
 Usually, intermediate values during computation is stored as a state of the circuit and is used in later cycles to complete computation of the function.
-In following, we illustrate the difference between combination and sequential circuit using a simple 4-bit adder as a function.
+In following, we illustrate the difference between combinational and sequential circuit using a simple 4-bit adder as a function.
 
 \begin{figure}
     \centering
@@ -104,7 +104,7 @@ At each cycle, the output of the selected sub-circuit is stored in the \acrshort
     \centering
     \begin{subfigure}[t]{0.7\textwidth}
         \includegraphics[width=\textwidth]{seq-overhead-comb-crop.pdf}
-        \caption{Combination Circuit.}\label{fig:seq-overhead-comb}
+        \caption{Combinational Circuit.}\label{fig:seq-overhead-comb}
     \end{subfigure}
     \begin{subfigure}[t]{0.6\textwidth}
         \includegraphics[width=\textwidth]{seq-overhead-seq-crop.pdf}

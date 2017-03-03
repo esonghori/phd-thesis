@@ -1,7 +1,7 @@
 % !TEX root = 0_main.tex
 \chapter{Preliminaries and Background}\label{chap:prelim}
-In this chapter, we provide a short background about secure multi-party computation and the generalized problem of secure function evaluation (\acrshort{sfe}).
-Next, we introduce an important special case of two-party \acrshort{sfe} problem and how Yao's Garbled Circuit protocol can solve it.
+In this chapter, we provide a short background about secure multi-party computation and the generalized problem of \acrfull{sfe}.
+Next, we introduce an important special case of two-party \acrshort{sfe} problem and how Yao's \acrfull{gc} protocol can solve it.
 Then, we explain basics about combinational and sequential Boolean circuits that are used in the \acrshort{gc} protocol to describe functions.
 
 \section{Secure Multi-party Computation}\label{sec:prelim-smc}
@@ -31,7 +31,7 @@ Thus at best, the trusted third party can be emulated using a cryptographic prot
 \end{figure}
 
 \subsection{Secure Function Evaluation}\label{ssec:prelim-sfe}
-Secure Function Evaluation (\acrshort{sfe}) is a generic formulation of secure multi-party computation in which parties can evaluate any arbitrary function on their attributes.
+\acrfull{sfe} is a generic formulation of secure multi-party computation in which parties can evaluate any arbitrary function on their attributes.
 Formally in \acrshort{sfe}, there are $p$ parties that have access to secure communication channels between each other.
 Each party has an attribute denoted by $i_k$ where $k$ is party identifier.
 The parties are interested to collectively compute function $o = f(i_1, i_2, ..., i_p)$ where $f$ is an arbitrary function and $o$ is a tuple $(o_1, o_2, ..., o_p)$ such that $o_k$ belongs to the $k^{\text{th}}$ party.
@@ -49,11 +49,11 @@ In this problem, there are two parties: Alice and Bob; each has an attribute (in
 \begin{figure}
 \centering
 \includegraphics[width=0.70\textwidth]{two_party_SFE-crop.pdf}
-\caption{The real model for two-party Secure Function Evaluation (\acrshort{sfe}).}
+\caption{The real model for two-party \acrfull{sfe}.}
 \label{fig:two-party-sfe}
 \end{figure}
 
-In the following, we explain how the problem of two-party \acrshort{sfe} can be solved using Yao's Garbled Circuit (\acrshort{gc}) protocol.
+In the following, we explain how the problem of two-party \acrshort{sfe} can be solved using Yao's \acrfull{gc} protocol.
 First, we introduce the adversary model supposed for the \acrshort{gc} protocol.
 Next, we describe an important cryptographic primitive called Oblivious Transfer used in the \acrshort{gc} protocol.
 Then, we explain Yao's \acrshort{gc} protocol and its recent improvements.
@@ -104,7 +104,7 @@ Here, instead of generating a label for the output wire of a gate randomly, the 
 Alice generates the output label such that the first entry of the garbled table becomes all $0$ and no longer needs to be sent.
 
 \subsubsection{Garbling with a Fixed-key Block Cipher}\label{sssec:prelim-aes}
-This method allows to efficiently garble and evaluate non-XOR gates using fixed-key \acrshort{aes}~\cite{bellare2013efficient}.
+This method allows to efficiently garble and evaluate non-XOR gates using fixed-key \acrfull{aes} symmetric encryption~\cite{bellare2013efficient}.
 In this garbling scheme which is compatible with the Free XOR and Row Reduction techniques, the output label $X_{o}$ is encrypted with the input label $X_{a}$ and $X_{b}$ using the encryption function $E(X_a,X_b,T,X_o) = \pi(K) \oplus K \oplus X_o$, where $K=2X_a\oplus4X_b\oplus T$, $\pi$ is a fixed-key block cipher (e.g., instantiated with \acrshort{aes}), and $T$ is a unique-per-gate number (e.g., gate identifier) called \emph{tweak}.
 A comprehensive proof of security for this method is provided in~\cite{bellare2013efficient}.
 
@@ -139,7 +139,7 @@ In digital circuit theory, such a circuit is called \emph{combinational circuit}
 
 \subsection{Sequential Boolean Circuits}\label{ssec:prelim-seq}
 Another class of circuits in digital circuit theory are \emph{sequential circuits} in which unlike in combinational, the circuit outputs are functions of both inputs and circuit \emph{states}.
-The circuit states are kept in memory elements such as Flip Flops (\acrshort{ff}).
+The circuit states are kept in memory elements such as \acrfull{ff}.
 The states can change at the end of each \emph{clock cycle}\footnote{The clock signal oscillates between a low and a high state and its (rising) edge is typically utilized to coordinate the memory updates.}.
 In this thesis, we use only \acrfull{d-ff}, a type of \acrshort{ff} that has four inputs: D (data), I (initial), clk (clock), and rst (reset) and one output: Q (latched data).
 
