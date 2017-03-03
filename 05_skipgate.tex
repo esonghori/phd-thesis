@@ -1,14 +1,14 @@
 % !TEX root = 0_main.tex
 \chapter{{SkipGate}: Reducing Sequential Overhead}\label{chap:skipgate}
-\gls{skipgate} is developed to work with the \acrshort{gc} protocol to reduce the overhead of sequential circuits.
+\gls{skipgate} is developed to work with the \acrfull{gc} protocol to reduce the overhead of sequential circuits.
 It allows secure evaluation of functions in the form of $o = f(a, b, p)$ where $p$ is the public input known to both parties and $a$ and $b$ are the private inputs.
 The goal of \gls{skipgate} is to reduce the circuit of $f(a, b, p)$ into a simpler circuit of $o = f_p(a,b)$ with the same logic for a given public input $p$.
 Secure evaluation of $f_p(a,b)$ costs less than that of $f(a, b, p)$ using the conventional \acrshort{gc} protocol where $p$ is treated as a private input.
 For doing so, \gls{skipgate} removes communication cost of garbling for a gate when its output can either be computed independently by Alice and Bob or has no effect on the final output.
-In other words, \gls{skipgate} reduces the communication between the parties when it can be replaced by less costly local computation.
+In other words, \gls{skipgate} reduces the communication between the parties when when less costly local computation can replace it.
 The cost reduction is especially significant in a sequential circuit where the control path is public and independent of the private inputs.
 
-In this chapter, first we introduce the notation used in \gls{skipgate} algorithm.
+In this chapter, first, we introduce the notation used in the \gls{skipgate} algorithm.
 Next, a motivational example is provided to present the sequential overhead.
 Next, We discuss how gates in a circuit are categorization in \gls{skipgate}.
 The pseudo-code of the \gls{skipgate} algorithm is then provided with its complexity analysis and correctness and security proofs.
@@ -16,15 +16,16 @@ The pseudo-code of the \gls{skipgate} algorithm is then provided with its comple
 \section{Notations}\label{sec:skipgate-notation}
 In a classic Boolean circuit, each wire $w$ carries a value ($x_w\in\{0, 1\}$), whereas in a garbled circuit, each wire carries a pair of labels ($X_w^{0}$ and $X_w^{1}$) on Alice's side and one label ($X_w \in \{X_w^{0}, X_w^{1}\}$) on Bob's.
 If $X_w = X_w^{0}$, the actual Boolean value is 0 and if $X_w = X_w^{1}$, it is 1.
-This means that the information is shared between two parties.
+This construction means that the information is shared between two parties.
 In our scheme, we combine these notions of Boolean and garbled circuits.
-Each wire either carries a Boolean value known to both parties independently (\textit{public} wire) or it carries a (pair of) label(s) (\textit{secret} wire).
+Each wire either carries a Boolean value known to both parties independently (\textit{public} wire), or it carries a (pair of) label(s) (\textit{secret} wire).
 
 \section{Motivational Example}\label{sec:skipgate-motiv}
-\fig{fig:mux} illustrates a sequential circuit that has a control path with a 2-to-1 \acrshort{mux} whose inputs come from two sub-circuits f$_0$ and f$_1$ connecting to \acrshort{mux} input 0 and 1 respectively.
+\fig{fig:mux} illustrates a sequential circuit that has a control path with a 2-to-1 \acrfull{mux} whose inputs come from two sub-circuits f$_0$ and f$_1$ connecting to \acrshort{mux} input 0 and 1 respectively.
 At a certain sequential cycle, if the select wire of the \acrshort{mux} ($x$) is public, say equal to 1, both parties know that the gates in the sub-circuit f$_0$ do not need to be garbled/evaluated since they have no effect on the final output.
-The gates in the \acrshort{mux} itself act as wires and pass the output of f$_1$ to the \acrshort{mux} output, thus the gates in the control path do not need to be garbled/evaluated in that sequential cycle either.
-However in the conventional \acrshort{gc} protocol where public wire $x$ was teared as a secret value, the entire circuit had to be garbled/evaluated.
+The gates in the \acrshort{mux} itself act as wires and pass the output of f$_1$ to the \acrshort{mux} output.
+Thus, the gates in the control path do not need to be garbled/evaluated in that sequential cycle either.
+However, in the conventional \acrshort{gc} protocol where public wire $x$ was teared as a secret value, the entire circuit had to be garbled/evaluated.
 In the following subsection, we explain how the \gls{skipgate} algorithm identifies such gates to reduce the garbling cost in circuits with public wires.
 
 \begin{figure}
@@ -39,10 +40,10 @@ A wire may also alter between being secret and public.
 The \gls{skipgate} algorithm is executed once for each sequential cycle.
 \gls{skipgate}'s decision on each gate (locally computing, garbling/evaluating, or skipping) depends on the status of the gate's inputs (public or secret) on that cycle.
 Thus, \gls{skipgate} is fundamentally different compared to offline circuit simplification methods such as the one introduced in~\cite{pinkas2009secure} which remove gates with known constant inputs.
-The constant gates are already removed in our circuits that are generated by the conventional \acrshort{hdl} synthesis tools.
+Since we use \gls{tinygarble} to create the circuits, the logic synthesis tool already removed the constant gates in it.
 
 \section{Gate Categories}\label{sec:skipgate-cat}
-The \gls{skipgate} algorithm classifies the gates into four categories in terms of the parties' knowledge about their inputs:
+The \gls{skipgate} algorithm classifies the gates into four categories regarding the parties' knowledge about their inputs:
 
 \begin{enumerate}[label=\roman*]
   \item \textit{Gate with two public inputs.}
@@ -51,17 +52,17 @@ The \gls{skipgate} algorithm classifies the gates into four categories in terms 
   	Depending on the gate type, the output becomes either public or secret.
   	For example, for an AND gate with 0 at one input, the output becomes 0.
   	This means that if the secret input is not connected to any other gate, the gate generating it can be skipped for garbling/evaluation.
-  	If the public input is 1, then the AND gate acts as a wire and the output wire carries the label of the secret input.
+  	If the public input is 1, then the AND gate acts like a wire, and the output wire carries the label of the secret input.
   \item \textit{Gate with secret inputs that have identical (or swapped) labels.}
     This indicates that the two secret inputs have identical (or inverted) Boolean values.
-    (We will explain shortly how Bob identifies the swapped case.)
+    (In \sect{ssec:skipgate-ident}, we will explain how Bob identifies the swapped case.)
     Depending on the gate type, the output becomes either public or secret.
     For example, the output of an XOR gate with two inverted inputs (either secret or public) is always 1 (public).
   	Similar to Category ii, the gate generating the inputs, if not connected to any other gates, can be skipped for garbling/evaluation.
   \item \textit{Gate with unrelated secret inputs.}
   	The output is always secret.
   	The gate has to be garbled/evaluated conventionally according to the \acrshort{gc} protocol.
-    However, if its output does not have any effect on the circuit output, the gate is skipped, i.e., the corresponding garbled table is not transfered from Alice to Bob.
+    However, if its output does not have any effect on the circuit output, the gate is skipped, i.e., Alice does not send the corresponding garbled table to Bob.
 \end{enumerate}
 
 \section{Algorithm}\label{sec:skipgate-alg}
@@ -114,20 +115,20 @@ The \gls{skipgate} algorithm classifies the gates into four categories in terms 
 \alg{alg:alice} and \alg{alg:bob} show the \gls{skipgate} algorithm for Alice and Bob sides respectively.
 Lines 2-5 of \alg{alg:alice} and Lines 2-4 of \alg{alg:bob} are similar to the \acrshort{gc} protocol label generation and transfer for both sides.
 The \gls{skipgate} algorithm has two main phases:
-In Phase 1, the outputs of the gates with public input (Categories i-ii) are computed.
-In Phase 2, the gates with private inputs (Categories iii-iv) are  garbled/evaluated.
+In Phase 1, the parties compute the outputs of the gates with public input (Categories i-ii).
+In Phase 2, they garble/evaluate the gates with private inputs (Categories iii-iv).
 For each round of sequential cycle, Alice executes Phase 1 and 2 of \gls{skipgate} and sends the generated garbled tables to Bob.
-Bob receives the tables and executes two phases in order to evaluate the gates.
-In Line 12 of \alg{alg:alice} and Line 11 of \alg{alg:bob}, the labels associated to the input of flip-flops are transfered to their output for the next cycles as required by sequential \acrshort{gc} protocol (see \sect{sec:seq-seq}).
-Similar to conventional \acrshort{gc}, at the end, Alice learns pairs of labels for each output wire and Bob has one of the pairs; they share this information to learn the output $o$.
-For example, in the case where Alice intends to learn the final output, she receives the Bob's output label and together with her input labels finds the real output value (Line 15-16 of \alg{alg:alice} and Line 14 of \alg{alg:bob}).
+Bob receives the tables and executes two phases to evaluate the gates.
+In Line 12 of \alg{alg:alice} and Line 11 of \alg{alg:bob}, the labels associated with the input of flip-flops are transferred to their output for the next cycles as required by sequential \acrshort{gc} protocol (see \sect{sec:seq-seq}).
+Similar to conventional \acrshort{gc}, in the end, Alice learns pairs of labels for each output wire and Bob has one of the pairs; they share this information to learn the output $o$.
+For example, in the case where Alice intends to learn the final output, she receives Bob's output label and together with her input labels finds the real output value (Line 15-16 of \alg{alg:alice} and Line 14 of \alg{alg:bob}).
 
-In \gls{skipgate}, an integer called \texttt{label\_fanout} is associated with each gate and indicates the number of times the gate's output label is used (either as a circuit's output or an input to other gates).
-At the beginning of each cycle (Line 8 of \alg{alg:alice} and \alg{alg:bob}), the \texttt{label\_fanout} is set to the gate fanout in the circuit\footnote{\textit{Fanout} of a gate, borrowed from hardware design, is the number of subsequent gates (and circuit outputs) dependent on the gate’s output.}.
-\texttt{label\_fanout} of a gate may decrease if its output label is not needed anymore, e.g., a gate whose output is connected an AND gate with 0 at the other input (Category ii).
+In \gls{skipgate}, an integer called \texttt{label\_fanout} is associated with each gate and indicates the number of times the gate's output label is used (either as a circuit's output or as an input to other gates).
+At the beginning of each cycle (Line 8 of \alg{alg:alice} and \alg{alg:bob}), the parties set the \texttt{label\_fanout} to the gate fanout in the circuit\footnote{\textit{Fanout} of a gate, borrowed from hardware design, is the number of subsequent gates (and circuit outputs) dependent on the gate’s output.}.
+A gate's \texttt{label\_fanout} may decrease if its output label is not needed anymore, e.g., a gate whose output is connected an AND gate with 0 at the other input (Category ii).
 If \texttt{label\_fanout} reaches 0, it means that gate's output label does not have any effect on the final output.
 The gates with \texttt{label\_fanout}=0 are subsequently designated for skipping, which in turn decreases the \texttt{label\_fanout} of their input gates recursively.
-Finally, the gates in Category iv that have not been marked for skipping are garbled/evaluated.
+Finally, the gates in Category iv that the parties have not marked for skipping are garbled/evaluated.
 
 \begin{algorithm}
 \caption{Phase 1 in \gls{skipgate} for both Alice and Bob sides.}\label{alg:phase1}
@@ -149,13 +150,13 @@ Finally, the gates in Category iv that have not been marked for skipping are gar
 \end{algorithm}
 
 \alg{alg:phase1} illustrates Phase 1 of \gls{skipgate} in which Alice and Bob find and compute the gates that belong to Categories i-ii.
-\texttt{label\_fanout}s of the gates in Category i are set to zero.
+They set the \texttt{label\_fanout}s of the gates in Category i to zero.
 For gates in Category ii, if the output becomes public, \gls{skipgate} decreases the \texttt{label\_fanout} of the secret input's originating gates recursively by invoking \texttt{recursive\_reduction} (\alg{alg:skipgate_reduction}).
 \fig{fig:phaseOneExample} shows four different examples in Phase 1.
 
 Bob does not receive any information from Alice about the gates in Category i-ii because he can locally evaluate Phase 1 just like Alice.
 An alternative approach is that Alice sends the result of Phase 1 to Bob.
-This approach has two main disadvantageous:
+This method has two main disadvantageous:
 First, it makes the protocol complicated if one wants to enhance the security of the protocol to be secure against malicious adversaries.
 Second, it increases the communication overhead which is the bottleneck of the \acrshort{gc} protocol.
 
@@ -239,8 +240,8 @@ Bob evaluates the gates that belong to Category iii and iv.
 In Line 17 of \alg{alg:phase2_bob}, Bob generates and assigns new unique labels (\texttt{next\_unique\_label}) for gates that were filtered by Alice.
 Bob knows that the \texttt{label\_fanout} of these gates will eventually become 0.
 Therefore, he produces new labels for them only to keep track of these secret variables that are used to compute the output of the gates in Category iii.
-He can generate these labels randomly or use a monotonic counter that increase by one for each newly generated label.
-To distinguish valid \acrshort{gc} labels from his generated labels, he keeps a single bit flag besides each label that indicates the label is generated by him and is not valid for \acrshort{gc} evaluation.
+Bob can generate these labels randomly or use a monotonic counter that increases by one for each newly generated label.
+To distinguish valid \acrshort{gc} labels from his generated labels, he keeps a single bit flag along with each label that indicates he generated the label and it is not valid for \acrshort{gc} evaluation.
 
 \begin{algorithm}
 \caption{Recursive Fanout Reduction of \gls{skipgate}.}\label{alg:skipgate_reduction}
@@ -264,10 +265,10 @@ To distinguish valid \acrshort{gc} labels from his generated labels, he keeps a 
 
 
 \alg{alg:skipgate_reduction} illustrates the pseudo-code for the recursive fanout reduction.
-It receives the circuit and a gate inside the circuit.
+It receives the circuit and a gate of the circuit.
 It first decreases the \texttt{label\_fanout} of the given gate.
 If the \texttt{label\_fanout} becomes 0, it recursively calls itself with the gates that generate the secret input(s).
-This process is illustrated on an example circuit in \fig{fig:phaseOneRecursive}.
+\fig{fig:phaseOneRecursive} illustrates this process on a sample circuit.
 
 \begin{figure}
     \centering
@@ -278,7 +279,7 @@ This process is illustrated on an example circuit in \fig{fig:phaseOneRecursive}
 
 \subsection{Identification of Identical and Inverted Labels}\label{ssec:skipgate-ident}
 According to the \acrshort{gc} protocol, Bob receives only one label $X_w$ for each secret wire $w$.
-Due to Free XOR~\cite{kolesnikov2008improved}, he does not need to do anything with a label when it passes a NOT gate because the label's associated with Boolean value is flipped by Alice.
+Due to Free XOR~\cite{kolesnikov2008improved}, he does not need to do anything with a label when it passes a NOT gate because Alice will flip the labels associated with the Boolean value.
 Thus, he cannot tell apart an identical and inverted secret values just by storing labels.
 However, it is still possible for Bob to keep track of the flips by storing one bit along with the label.
 After evaluating a NOT gate, he simply flips the bit.
@@ -307,23 +308,24 @@ To find the complexity of \gls{skipgate}, we compute an upper bound on number of
 The termination condition in \textit{recursive\_reduction} is the fanout reaching zero (Lines 2 and 6 of \alg{alg:skipgate_reduction}).
 Thus, the worst case scenario is when the function reduces the fanout of all the gates to zero.
 In this case, the number of execution of the fanout decrement (Line 5) should be at most the sum of all the initialized fanouts.
-\textit{label\_fanout} is initialized with the gate fanout in the circuit.
-The upper bound on the sum of fanouts of all the gates in the circuit is $$F = \sum_{i=1}^{n} g[i].fanout \le 2n - m + q,$$ where $n$ is number of gates, $q$ is number of circuit output, and $m$ is number of circuit inputs.
+The parties initialize \textit{label\_fanout} the gate fanout in the circuit.
+The upper bound on the sum of fanouts of all the gates in the circuit is $$F = \sum_{i=1}^{n} g[i].fanout \le 2n - m + q,$$ where $n$ is the number of gates, $q$ is the number of circuit output, and $m$ is the number of circuit inputs.
 Each gate has two inputs and each input creates a fanout in previous gates unless it is a circuit input.
 Also, each output wire incurs the fanout of one.
 Both $q$ and $m$ are typically less than or at most in the order of $n$.
 Thus, $F$ and subsequently the number of invocation of \texttt{recursive\_reduction} function are $\BigO{n}$.
-This shows that \gls{skipgate} does not increase the overall linear computational complexity of the \acrshort{gc} protocol.
+This linear complexity shows that \gls{skipgate} does not increase the overall computational complexity of the \acrshort{gc} protocol.
 
 \section{Correctness Proof}\label{sec:skipgate-correct}
 Given the correctness of Yao's \acrshort{gc} protocol, we have to show that \acrshort{gc} protocol with \gls{skipgate} is also correct.
-In \gls{skipgate}, the topology of the circuit is not changed, thus the dependencies of the values remain the same.
+\gls{skipgate} does not alter the topology of the circuit.
+Thus, the dependencies of the values remain the same.
 Therefore, if we can prove that the operation of \gls{skipgate} on a single gate is correct, the entire algorithm is proved to be logically correct.
 
 The operations for gates in Category i are based on the Boolean operation of the gates and are clearly correct.
-For gates in Categories ii-iii, the secret input is considered as an unknown variable.
-Either the label at the secret input of the gate is passed to its output or the output is set to a public value.
-Since this operation is performed based on the Boolean logic of the pertinent gate, the output remains logically correct.
+For gates in Categories ii-iii, we consider the secret input as an unknown variable.
+The parties either pass the secret label to the gate's output, or they set the output to a public value.
+Since they perform this operation based on the Boolean logic of the pertinent gate, the output remains logically correct.
 Gates in Category iv with non-zero \textit{label\_fanout} are garbled/evaluated according to the \acrshort{gc} protocol.
 For the rest of the gates in Category iv, \textit{label\_fanout}=0 indicates that their secret output does not have any effect on the final output of the circuit.
 Therefore, they can be safely skipped.
@@ -336,7 +338,7 @@ The \gls{skipgate} algorithm reduces the Boolean circuit of $f(a, b, p)$ to a tw
 $f_p(a, b)$ consists of the gates in Category iv with non-zero \textit{label\_fanout} evaluated by the \acrshort{gc} protocol.
 The process of skipping gates from $f(a, b, p)$ only utilizes the public input $p$ which is already known to both parties.
 In the process, the private values are treated as unknown Boolean variables.
-In other words, Alice and Bob do not access their inputs in \gls{skipgate} algorithm for reducing $f(a,b,p)$ to $f_p(a, b)$.
-Thus, no information about the private inputs $a$ and $b$ is revealed by \gls{skipgate} algorithm.
+In other words, Alice and Bob do not access their inputs in the \gls{skipgate} algorithm for reducing $f(a,b,p)$ to $f_p(a, b)$.
+Thus, the \gls{skipgate} algorithm reveals no information about the private inputs $a$ and $b$.
 The garbling/evaluation of the two-input Boolean function of $f_p(a,b)$ is passed to the original \acrshort{gc} protocol.
 Therefore, the security proof of the \acrshort{gc} protocol still holds for \gls{skipgate}.
