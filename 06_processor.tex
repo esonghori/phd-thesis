@@ -111,9 +111,9 @@ The output address in the \acrshort{dm} is part of the agreed memory configurati
 \fig{figure:mips} shows the overall architecture of our 32-bit \gls{mips} processor.
 It is based on the Plasma project in opencores \cite{rhoads2006plasma}.
 We modified the circuit such that the \acrshort{im} and the \acrshort{dm} are separated.
-The original Plasma processor supports all the \gls{mips}~I \acrshort{isa} except unaligned memory access.
+The original Plasma processor supports all the \gls{mips}-I \acrshort{isa} except unaligned memory access.
 In our implementation, we also omit division instructions because of their large overhead.
-Any arbitrary function described in \gls{c} language can be easily compiled to \gls{mips}~I assembly code using a cross-platform compiler, e.g., GNU gcc.
+Any arbitrary function described in \gls{c} can be easily compiled to the \gls{mips}-I assembly code using a cross-platform compiler, e.g., GNU gcc.
 
 In 32-bit \gls{mips}, the \acrfull{pc} is a 32-bit register (array of \acrshort{ff}s) that points to the instruction that the processor is executing at the current cycle.
 The processor fetches the instruction from the \acrshort{im} based on the current \acrshort{pc} value.
