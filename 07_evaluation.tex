@@ -578,13 +578,6 @@ Our work w/ pipeline & $\numprint{18500}$ & $\numprint{1.1}$
 \end{tabular}
 \end{table}
 
-% We also compare the overall performance of our \gls{mips} for \acrshot{sfe} with the performance of the proposed software solution in \cite{wang2016secure} on the compatible benchmark functions.
-% For computing Hamming distance on two 32-bit integer arrays, Wang et al.'s solution takes $1.24s$ to garble 481K gates (see Table 4 in \cite{wang2016secure}).
-% Our solution requires \numprint{6715} non-XOR gates and \numprint{426} cycles (see Tables \ref{tab:synres} and \ref{tab:cyc_bench}), and thus it takes only $0.0314s$ to evaluate 2.8M gates.
-% Given that garbling time is double the evaluation time, this indicates a speedup of factor 18 for our solution but with $6\times$ more non-XOR gates for the same functionality.
-% In terms of throughput, our approach can evaluate 90.8M gates and Wang et al.'s solution can evaluate 776K gates which makes ours 117 times faster owing to our hardware implementation.
-% However, this speedup assumes on-chip memory and is likely to be much smaller when utilizing off-chip memory.
-
 \section{Evaluation of ARM2GC}\label{sec:eval-arm2gc}
 In this section, we present the evaluation result of the \gls{skipgate} algorithm and the \gls{arm2gc} framework.
 First, we explain the experimental setup of the evaluation.
