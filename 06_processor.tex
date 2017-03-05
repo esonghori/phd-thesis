@@ -109,7 +109,7 @@ The output address in the \acrshort{dm} is part of the agreed memory configurati
 \end{figure}
 
 \fig{figure:mips} shows the overall architecture of our 32-bit \gls{mips} processor.
-It is based on the Plasma project in opencores \cite{rhoads2006plasma}.
+We borrowed the circuit from the Plasma project in opencores \cite{rhoads2006plasma}.
 We modified the circuit such that the \acrshort{im} and the \acrshort{dm} are separated.
 The original Plasma processor supports all the \gls{mips}-I \acrshort{isa} except unaligned memory access.
 In our implementation, we also omit division instructions because of their large overhead.
