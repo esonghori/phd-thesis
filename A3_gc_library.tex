@@ -1,20 +1,20 @@
 % !TEX root = 0_main.tex
 \chapter{Garbled Circuit Library}\label{chap:library}
-In this section, we introduce \gls{tinygarble} library that consists of \acrshort{gc} optimized circuits for complex mathematical/logical operations that can be used as a building blocks practical applications.
-The \acrshort{sscd} and \gls{netlist} files of the circuits in the library can be found in \gls{tinygarble} repository\footnote{\url{https://github.com/esonghori/\gls{tinygarble}/blob/master/scd/netlists/v.tar.gz}}.
+In this section, we introduce \gls{tinygarble} library that consists of \acrfull{gc} optimized circuits for complex mathematical/logical operations that can be used as building blocks practical applications.
+The \acrfull{sscd} and \gls{netlist} files of the operations in the library can be found in the \gls{tinygarble} repository\footnote{\url{https://github.com/esonghori/\gls{tinygarble}/blob/master/scd/netlists/v.tar.gz}}.
 
 \section{Division and Remainder}
 The \gls{tinygarble} library includes the circuit for integer division which takes two numbers as inputs and outputs quotient and remainder (modulus).
 The library includes the circuits for 16-, 32-, and 64-bit integers.
-Two additional circuits are also included in the library that output only quotient and remainder respectively and have fewer number of gates compared to the original circuit.
+We also add two additional circuits in the library that output only quotient and remainder respectively and have a fewer number of gates compared to the original circuit.
 
 \section{Floating Point Operations}
-The \gls{tinygarble} library includes an extensive set of operations for both IEEE-754 single- and double-precision floating-point numbers.
+The \gls{tinygarble} library includes an extensive set of operations for both IEEE-754 single- and double precision floating-point numbers.
 It supports addition (fp\_add), subtraction (fp\_sub), division (fp\_div), and multiplication (fp\_mult) of two inputs.
-A comparison circuit (fp\_cmp) is also included that outputs three bits: less than, greater than, equal signals.
+We also include a comparison circuit (fp\_cmp) that outputs three bits: less than, greater than, equal signals.
 The natural exponentiation circuit (fp\_exp) receives a floating-point input $a$ and computes $e^a$.
-The logarithm circuit (fp\_log2) calculates logarithm of the input in base 2.
-Other floating-point operations include square (fp\_square), and square-root (fp\_sqrt).
+The logarithm circuit (fp\_log2) calculates the logarithm of the input in base 2.
+Other floating-point operations include square (fp\_square) and square-root (fp\_sqrt).
 
 \section{Encoder}
 Encoder circuit converts a one-hot representation into a binary one.
@@ -26,17 +26,17 @@ For example, if the $n=16$ and the $5^{\text{th}}$ bit is one, the output should
 If none of the inputs is one, the encoder outputs zero.
 
 We implement the encoder operation using a recursive structure.
-An encoder for $n$-bit input is implemented using two smaller encoder for $n/2$-bit input.
-the first half of the input ($0$ to $n/2-1$) is given to the first small encoder and the rest ($n/2$ to $n-1$) is given to the second one.
-One of these two small encoder that receives the inactive part of input outputs zero and the other one outputs the binary representation in its half.
-Depending on which half was active, a bit is attached as the \acrfull{msb} to the final output.
+An encoder for $n$-bit input is implemented using two smaller encoders for $n/2$-bit input.
+The first half of the input ($0$ to $n/2-1$) is given to the first small encoder, and the rest ($n/2$ to $n-1$) is given to the second one.
+One of these two small encoders that receives the inactive part of input outputs zero and the other one outputs the binary representation in its half.
+Depending on which half was active, a bit is attached to the final output as the \acrfull{msb}.
 In other words, the \acrshort{msb} of $o$ is set to one if the output of the second encoder is nonzero and otherwise zero.
 
 \section{Argmax}
 Given an array of numbers, Argmax circuit outputs the largest number along with its index in the array.
-Current implementation supports integers but it can easily be extended to support any type of inputs with appropriate comparison block.
+The current implementation supports integers, but it can easily be extended to support any type of inputs with appropriate comparison block.
 The size of the array ($n$) and the number of bits ($b$) for each number are parameters of the circuit and can be set before compilation.
-The combinational circuit of Argmax has $n-1$ comparison blocks, $n-1$ two-to-one $b$-bit-wide \acrshort{mux}s, and $n-1$ two-to-one $\log_2{n}$-bit-wide \acrshort{mux}s.
+The combinational circuit of Argmax has $n-1$ comparison blocks, $n-1$ two-to-one $b$-bit-wide \acrfull{mux}s, and $n-1$ two-to-one $\log_2{n}$-bit-wide \acrshort{mux}s.
 Its sequential circuit has one comparison blocks, and two \acrshort{mux}s for selecting the index and the largest number and two registers to store them.
 The sequential circuit has to be evaluated for $n-1$ sequential cycles.
 
@@ -58,15 +58,14 @@ The circuit computes two different functions without facing any more overhead co
 Similarly, the hyperbolic mode can compute hyperbolic functions.
 Please note that in the hyperbolic mode iterations $3\times i+1$ need to be computed twice.
 The linear mode can compute the multiplication of the inputs ($x_n=x_0, y_n=y_0z_0, z_n=0$).
-By leveraging the ability of \acrshort{cordic}, number of other non-linear functions can be computed as well.
-For example,
+Using \acrshort{cordic}'s outputs, we can create a few other non-linear functions as well, for example,
 $\tan(\theta)=\frac{\sin(\theta)}{\cos(\theta)}$,
 $\tanh(\theta)=\frac{\sinh(\theta)}{\cosh(\theta)}$,
 $\exp(x)=\sinh (x) + \cosh (x)$, and
 $Sigmoid(\theta)=\frac{1}{1+\cosh(\theta)-\sinh(\theta)}$.
 
 \section{Evaluation}
-\tab{table:div} reports the result of integer devision and reminder functions for various bit-widths.
+\tab{table:div} reports the result of integer division and remainder functions for various bit-widths.
 Div\_rem function calculates both the reminder and division in the same circuit.
 A few of the previous work reported the number of non-XOR gates for 32-bit integer division only: 1,437 \cite{mood2016frigate}, 1,210 \cite{zahur2015obliv}, and 2,236 \cite{liu2015oblivm}.
 As shown in the table, the number of non-XOR gates for our 32-bit division is 599.
@@ -90,10 +89,10 @@ It means 2 to 3.7 times improvement compared to the previous custom compilers.
 \end{table}
 
 \tab{table:float} illustrates the number of non-XOR and total gates for the floating point operations.
-The results of both single precision (float) and double precision (double) are reported in the table.
-Pullonen et al. (2015) is the only previous work that reported the result for the similar floating-point operations \cite{pullonen2015combining}.
+The table reports the results of both single precision (float) and double precision (double).
+Pullonen et al. (2015) are the only previous work that reported the result for the similar floating-point operations \cite{pullonen2015combining}.
 They used the custom compiler of CBMC-GC \cite{franz2014cbmc} to compile software implementations of these floating-point operations.
-As can be seen in the table, the circuits in \gls{tinygarble} library outperforms the implementation in \cite{pullonen2015combining}.
+As can be seen in the table, the circuits in \gls{tinygarble} library outperforms the ones in \cite{pullonen2015combining}.
 
 \begin{table}
 \center
