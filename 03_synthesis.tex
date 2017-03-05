@@ -6,7 +6,7 @@ Then, we discuss the limitation of logic synthesis techniques and tools for maki
 A version of this chapter has been published in 2015 IEEE Symposium on Security and Privacy (S\&P) \cite{songhori2015tinygarble}.
 
 \section{Background on Logic Synthesis}\label{sec:syn-back}
-Logic synthesis refers to the process of translating an abstract form of  function (circuit) presentation to the gate-level logic implementation using a series of sophisticated optimizations, transformations, and mapping \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
+Logic synthesis refers to the process of translating an abstract form of function (circuit) presentation to the gate-level logic implementation using a series of sophisticated optimizations, transformations, and mapping \cite{sentovich1992sis,micheli1994synthesis,devadas1994logic,brayton1987mis}.
 A logic synthesis tool is a computer program which typically accepts the input circuit in some algorithmic form, logic equation, or even a table, and outputs an implementation suitable for the target hardware platform.
 Classic commercial/open-source logic synthesis tools accept the input functions in the \acrfull{hdl} format, e.g., \gls{verilog} or \gls{vhdl} \cite{tool:DesignCompiler,tool:ABC,tool:Encounter,tool:HDLdesigner,tool:PandA,decaluwe2004myhdl} but newer ones also accept high-level format, e.g., \gls{c}/C++ \cite{Gupta2004, tool:Vivado}.
 The common target hardware platforms for the synthesized logic include \acrfull{fpga}, \acrfull{pal}, and \acrfull{asic}.

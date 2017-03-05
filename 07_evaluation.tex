@@ -208,7 +208,7 @@ In practice, smaller circuits which can fit entirely in the processor cache resu
 To better observe the impact of cache speed-up for the compact circuits resulting from \gls{tinygarble}, \fig{fig:cpu_time} depicts the \acrshort{cpu} Time (left y-axis) and the memory footprint of wire labels (right y-axis) versus $cc$ (x-axis) for the $\numprint{32768}$-bit Sum function.
 As mentioned earlier, the memory footprint is directly proportional to the total number of gates in the sequential circuit.
 
-This experiment is done using \gls{tinygarble} \acrshort{gc} engine, our  implementation of sequential \acrshort{gc} protocol, that includes using Free XOR, Row Reduction, and Fixed-key Block-cipher, and Half Gate garbling techniques (see \appx{chap:engine} for TinyGarble GC engine).
+This experiment is done using \gls{tinygarble} \acrshort{gc} engine, our implementation of sequential \acrshort{gc} protocol, that includes using Free XOR, Row Reduction, and Fixed-key Block-cipher, and Half Gate garbling techniques (see \appx{chap:engine} for TinyGarble GC engine).
 We use an Intel Core i7 \acrshort{cpu} @ 3.40GHz which supports Intel \acrfull{aes-ni} instruction set.
 We measure the \acrshort{cpu} cycle as the average of $10,000$ trials using \gls{rdtsc} instruction.
 For security parameter $k=128$ (the bit-width of wire label, see \sect{ssec:prelim-gc}), we store $128$-bit per label.
@@ -650,7 +650,7 @@ MatrixMult8x8 32 & 492,032 & 490,048 & 1,984 & 0.4\% \\ \hline
 \subsection{ARM2GC vs. Logic Synthesis}
 \tab{table:hw_vs_frwk} compares the cost of garbling of functions devised in \gls{verilog} \acrshort{hdl} and constructed by the hardware synthesis technique of \gls{tinygarble} \acrshort{gc} synthesis (see \chap{chap:syn}) with functions developed in \gls{c} and built using the \gls{arm2gc} framework.
 The results of \gls{tinygarble} \acrshort{gc} synthesis are repeated here from \tab{table:result-comb} in \sect{ssec:eval-tinygarble-comb} for comparison.
-As expected, \gls{arm2gc} incurs only a small overhead (at most 6.2\% for MatrixMult8x8) compared to  hardware synthesis method.
+As expected, \gls{arm2gc} incurs only a small overhead (at most 6.2\% for MatrixMult8x8) compared to hardware synthesis method.
 In the case of Hamming distance function, \gls{arm2gc} results in even less number of non-XOR gates (up to $78\%$ improvement).
 Note that we use an efficient binary tree-based method~\cite{huang2011faster} for Hamming distance realization in \gls{c}.
 

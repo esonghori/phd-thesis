@@ -52,7 +52,7 @@ As they discussed in their paper, there are severe limitations for formal verifi
 This type of testing does not detect all possible flaws in the compilation process.
 
 Mood et al. (2016) also introduced \gls{frigate}, a new \gls{c}-style language for \acrshort{sfe} and the corresponding compiler in the same paper~\cite{mood2016frigate}.
-\gls{frigate} supports three different types (\texttt{uint\_t} , \texttt{int\_t}, and \texttt{struct\_t}).
+\gls{frigate} supports three different types (\texttt{uint\_t}, \texttt{int\_t}, and \texttt{struct\_t}).
 The user can add her types, but it requires a good understanding of the internal structure of the compiler.
 Since these three types have a specific bit length, the final computation is not bit-level efficient.
 For example for a 9-bit comparison, \gls{frigate} needs to perform the comparison for a given bit length of \texttt{int\_t}.

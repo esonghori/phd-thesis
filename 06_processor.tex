@@ -18,7 +18,7 @@ This setting is in contrast to the usual requirement of \acrshort{sfe} where bot
 It is well known that \acrshort{pf-sfe} can be reduced to regular \acrshort{sfe} by securely evaluating a \acrfull{uc} \cite{sander1999non}.
 \acrshort{uc} is a Boolean circuit capable of simulating any Boolean circuit (function) $g(\cdot)$ given the description of $g(\cdot)$ as input \cite{valiant1976universal,kolesnikov2008practical}:
 $$\acrshort{uc}(b_{Bob},g_{Alice}(\cdot)) = g_{Alice}(b_{Bob}).$$
-Secure evaluation of \acrshort{uc} completely hides the functionality and the  topology of the Boolean circuit of $g_{Alice}(\cdot)$.
+Secure evaluation of \acrshort{uc} completely hides the functionality and the topology of the Boolean circuit of $g_{Alice}(\cdot)$.
 Subsequent works have shown how to allow \acrshort{pf-sfe} while avoiding the overhead of \acrshort{uc}s \cite{katz2011constant, mohassel2013hide}.
 
 A \acrshort{uc} is similar to a \acrfull{utm} \cite{turing1936computable,herken1995universal} that receives a Turing machine description $g_{Alice}(\cdot)$ and applies it to the input data ($b_{Bob}$) on its tape \cite{davis2001engines}.
@@ -296,7 +296,7 @@ In the \acrshort{gc} protocol, the total number of non-XOR gates is the only fac
 
 Implementation of the \gls{arm} processor results in a complex and large circuit (containing almost five times more gates than the \gls{mips} processor).
 Thus, using \gls{arm} instead of \gls{mips} would incur even a higher cost.
-However, the majority of the components of the \gls{arm} processor remain idle during  execution of an instruction.
+However, the majority of the components of the \gls{arm} processor remain idle during execution of an instruction.
 In the next section, we describe how \gls{skipgate} utilizes this characteristic to minimize the cost of garbling the \gls{arm} processor.
 
 \subsection{How {SkipGate} Helps}

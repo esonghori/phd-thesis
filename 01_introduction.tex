@@ -147,7 +147,7 @@ The latter simplifies the framework by reducing conditional branches and making 
 \section{Global Flow}
 \subsection{TinyGarble}
 We combined our \acrshort{gc} synthesis and sequential \acrshort{gc} approaches into a framework called \gls{tinygarble}.
-\gls{tinygarble} accepts inputs in two different formats: a standard \acrfull{hdl}, or a higher-level language as long as it is compatible with the existing \acrfull{hls} tools (e.g., \gls{c} for  SPARK \cite{Gupta2004} and Xilinx Vivado \cite{tool:Vivado}, or Python for PandA \cite{tool:PandA}, that converts the high-level language to an \acrshort{hdl}).
+\gls{tinygarble} accepts inputs in two different formats: a standard \acrfull{hdl}, or a higher-level language as long as it is compatible with the existing \acrfull{hls} tools (e.g., \gls{c} for SPARK \cite{Gupta2004} and Xilinx Vivado \cite{tool:Vivado}, or Python for PandA \cite{tool:PandA}, that converts the high-level language to an \acrshort{hdl}).
 Besides user's manual optimization, \gls{tinygarble} performs various optimizations through standard logic synthesis tools to generate an optimized \textit{\gls{netlist}}, i.e., list of gates.
 \gls{tinygarble} then translates the \gls{netlist} into the \acrfull{sscd} format used in our implementation of the \acrshort{gc} protocol.
 

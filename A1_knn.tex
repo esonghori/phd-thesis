@@ -1,9 +1,9 @@
 % !TEX root = 0_main.tex
 \chapter{Compacting Privacy-Preserving k-Nearest Neighbor Search using Logic Synthesis}\label{chap:knn}
-In this appendix, we discuss solving privacy-preserving $k$-nearest neighbor ($k$-NN) search using Yao's \acrfull{gc}  .
+In this appendix, we discuss solving privacy-preserving $k$-nearest neighbor ($k$-NN) search using Yao's \acrfull{gc}.
 We use the \gls{tinygarble} \acrshort{gc} synthesis method to implement $k$-NN in optimized and compact circuits for \acrshort{gc}.
 
-In this appendix, we first introduce the problem of privacy-preserving $k$-NN and the challenge of solving it using Yao's \acrshort{gc}  .
+In this appendix, we first introduce the problem of privacy-preserving $k$-NN and the challenge of solving it using Yao's \acrshort{gc}.
 Next, we provide the related work in the literature about privacy-preserving $k$-NN and methods for generating optimized and compact circuits for $k$-NN.
 We then explain our approach that relies on \gls{tinygarble} sequential circuit synthesis (see \chap{chap:seq}).
 Lastly, we provide the evaluation results and conclude the appendix.
@@ -23,11 +23,12 @@ We focus on the basic textbook $k$-NN search which could also be accelerated wit
 %private NN-search
 In a number of scenarios, the data and the query are sensitive, and it is important to maintain privacy while performing the search.
 This requirement has motivated the development of privacy-preserving $k$-NN search \cite{shaneck2009privacy}.
-The existing works assume that the parties each own a private dataset, while the query $q$ is not private; they focus on devising higher-level  s for privacy-preserving similarity search and proofs of privacy \cite{shaneck2009privacy,qi2008efficient}.
+The existing works assume that the parties each own a private dataset, while the query $q$ is not private; they focus on devising higher-levels for privacy-preserving similarity search and proofs of privacy \cite{shaneck2009privacy,qi2008efficient}.
 These works mostly leverage Homomorphic encryption to perform a privacy-preserving task.
 Homomorphic encryption enciphers the data (\emph{plaintext}) in such a way that performing a mathematical function on the encrypted information, and then decrypting the result, produces the same answer as performing a similar operation on the plaintext.
-Since the first fully homomorphic encryption was proposed \cite{gentry2009fully}, numerous  -level and implementation-level advancements have been made.
+Since the first fully homomorphic encryption was proposed \cite{gentry2009fully}, numerous protocol-level and implementation-level advancements have been made.
 Even so, the implementations are still rather inefficient and impracticable for real applications.
+
 
 %Yao's GC
 In this appendix, we suggest the first efficient and scalable methodology for the privacy-preserving $k$-NN search that is implementable on embedded processors.
