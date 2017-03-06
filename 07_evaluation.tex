@@ -4,7 +4,7 @@ This chapter is dedicated to the evaluation of the proposed frameworks and algor
 We fist discuss the assessment of \gls{tinygarble} \acrfull{gc} synthesis flow for combinational and sequential circuits by comparing its result with that of the prior art (\chap{chap:syn} and \chap{chap:seq}).
 We next discuss our experiments for evaluating the \gls{skipgate} algorithm and its effect on the sequential circuits.
 We then present the result of secure evaluation of \gls{mips} processor for \acrfull{pf-sfe} and \acrfull{sfe}.
-Finally, we report the result of evaluating \gls{arm2gc} framework.
+Finally, we report the result of evaluating the \gls{arm2gc} framework.
 Versions of \sect{sec:eval-tinygarble} and \sect{sec:eval-mips-pf-sfe} have been published in 2015 IEEE Symposium on Security and Privacy (S\&P) \cite{songhori2015tinygarble}.
 A version of \sect{sec:eval-mips-sfe} of this chapter has been published in 2016 Proceedings of the 53rd Annual Design Automation Conference (DAC) \cite{songhori2016garbledcpu}.
 
@@ -77,7 +77,7 @@ The $N\times N$ matrix multiplication function consists of three $N$-cycle neste
 It can be folded up to $N^3$ times without any significant overhead.
 
 \textit{\acrshort{aes}-128.} This function receives a 128-bit plaintext and 128-bit round keys and outputs a 128-bit ciphertext based on the Rijndael algorithm.
-The \acrshort{aes}-128 function consists of 10 rounds with almost symmetric structure.
+The \acrshort{aes}-128 function consists of ten rounds with almost symmetric structure.
 Ideally, it can be folded up to $10$ times without any significant overhead.
 
 \textit{\acrshort{sha}3.} This function receives $576$-bit inputs and outputs a $1600$-bit number equal to the \acrshort{sha}3 hash of the input.
@@ -93,7 +93,7 @@ In some other work like FastGC \cite{huang2011faster}, a number of benchmark cir
 \begin{table}
 \centering
 \caption{Comparison of \gls{tinygarble} combinational circuits with \gls{pcf}.
-In the case of \acrshort{aes} 128, the result is compared with FastGC.}
+In the case of \acrshort{aes} 128, we compare the result with Frigate \cite{mood2016frigate}.}
 \label{table:result-comb}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{l||rr||rr||rr}
@@ -159,7 +159,7 @@ We also compare the number of garbled tables of sequential circuits with combina
 \begin{table}
 \centering
 \caption{Comparison of \gls{tinygarble} sequential circuits with \gls{pcf} and \gls{tinygarble} combinational circuits.
-In the case of \acrshort{aes} 128, the result is compared with Frigate \cite{mood2016frigate}.}
+In the case of \acrshort{aes} 128, we compare the result with Frigate \cite{mood2016frigate}.}
 \label{table:result-seq}
 \resizebox{\textwidth}{!}{%
 \begin{tabular}{l||rrr||rr||rr}
@@ -224,7 +224,7 @@ This effect signifies the fact that even for large functions, we can use the seq
 	\centering
 	\includegraphics[width=0.9\textwidth]{CPU_Time-crop.pdf}
 	\caption{Garbling $\numprint{32768}$-bit Sum function.
-The \acrshort{cpu} time in number of cycles and the approximate memory footprint in KBytes (y-axis) versus $cc$ (x-axis) are shown.}
+					The \acrshort{cpu} time in term of the number of cycles and the approximate memory footprint in KBytes (y-axis) versus $cc$ (x-axis) are shown.}
 	\label{fig:cpu_time}
 \end{figure}
 
@@ -275,7 +275,7 @@ The communication load between parties for invocation of one instruction (one se
 
 \begin{table}
 \centering
-\caption{Number of total gates and non-XOR gates in the \gls{mips} implementation.
+\caption{The number of total gates and non-XOR gates in the \gls{mips} implementation.
 The global optimization of \gls{tinygarble} reduces the overall number of gates compared to that of the sum of individual modules.}\label{table:mipsres}
 \begin{tabular}{l|rrl}
 Modules             & Total gates & Non-XOR \\ \hline \hline
@@ -349,7 +349,7 @@ For \acrshort{aes}, we assume that one party holds a 128-bit message and the oth
 
 \begin{table}
 \centering
-\caption{Number of required cycles to compute the benchmark functions.}\label{tab:cyc_bench}
+\caption{The number of required cycles to compute the benchmark functions.}\label{tab:cyc_bench}
 \begin{tabular}{l||r|r}
 \multicolumn{1}{c||}{Function} & \multicolumn{1}{c|}{Input Size} &  \multicolumn{1}{c}{\# of required cycles} \\
 \hline
@@ -507,7 +507,7 @@ The reported runtime can be further improved by providing tighter timing constra
 
 \begin{table}
 \centering
-\caption{Performance of evaluating \gls{mips} for application-specific \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-app}
+\caption{The performance of evaluating \gls{mips} for application-specific \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-app}
 \begin{tabular}{l|r|r|r|r|r}
 \multicolumn{1}{c|}{Memory Size (words)} & \multicolumn{1}{c|}{$\numprint{32}$ } &  \multicolumn{1}{c|}{$\numprint{64}$ } & \multicolumn{1}{c|}{$\numprint{128}$ } & \multicolumn{1}{c|}{$\numprint{256}$ } & \multicolumn{1}{c}{$\numprint{512}$ }  \\ \hline \hline
 \multicolumn{6} {c}{Hamming distance-\acrshort{isa}}\\ \hline
@@ -530,7 +530,7 @@ Avg. Time per gate (cc)  & -&- &- & $\numprint{1.11}$      & $\numprint{1.11}$ \
 
 \begin{table}
 \centering
-\caption{Performance of evaluating \gls{mips} for restricted and full \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-res-full}
+\caption{The performance of evaluating \gls{mips} for restricted and full \acrshort{isa}s with different memory sizes at $100\textrm{MHz}$ clock frequency on \acrshort{fpga}.}\label{table:performance-res-full}
 \begin{tabular}{l|r|r|r|r|r}
 \multicolumn{1}{c|}{Memory Size (words)} & \multicolumn{1}{c|}{$\numprint{32}$ } &  \multicolumn{1}{c|}{$\numprint{64}$ } & \multicolumn{1}{c|}{$\numprint{128}$ } & \multicolumn{1}{c|}{$\numprint{256}$ } & \multicolumn{1}{c}{$\numprint{512}$ }  \\ \hline \hline
 \multicolumn{6} {c}{ALU\&Shift-\acrshort{isa}}\\
@@ -616,7 +616,7 @@ Nevertheless, \gls{skipgate} reduces the cost of \acrshort{gc} by leveraging the
 
 \begin{table}
 \centering
-\caption{\gls{skipgate} algorithm improvement on sequential circuits generated by \acrfull{tg} synthesis flow (\sect{ssec:eval-tinygarble-seq}).
+\caption{The \gls{skipgate} algorithm improvement on sequential circuits generated by \acrfull{tg} synthesis flow (\sect{ssec:eval-tinygarble-seq}).
 	These functions do not have public inputs.
 	\gls{skipgate} benefits from the small number of flip-flops initial values that are public to reduce their garbling cost.}\label{tab:sys_impvoment}
 \begin{tabular}{l||r|r|r||r}
@@ -681,7 +681,7 @@ For example, \gls{arm2gc} results $12.2\times$,  $5.1\times$, $74,000\times$, $5
 
 \begin{table}
 \centering
-\caption{Number of garbled non-XOR gates for the benchmark functions.
+\caption{The number of garbled non-XOR gates for the benchmark functions.
 Comparing \gls{arm2gc} with previous high-level custom compiler methods and \gls{tinygarble} \acrshort{hls} approach.}
 \label{table:other_compiler_vs_frwk}
 \begin{tabular}{l||r|r|r||r}
@@ -704,7 +704,7 @@ MatrixMult8x8 32 & 905,728                                              & -     
 
 \begin{table}
 \centering
-\caption{Number of garbled non-XOR gates for the benchmark functions.
+\caption{The number of garbled non-XOR gates for the benchmark functions.
 Comparing \gls{arm2gc} with the previous garbled processor approaches.}
 \label{table:other_processor_vs_frwk}
 \begin{tabular}{l||r|r|r||r}
@@ -736,7 +736,7 @@ These dramatic improvements are due to a large number of public inputs in the \g
 
 \begin{table}
 \centering
-\caption{\gls{skipgate} algorithm improvement on the \gls{arm} sequential circuit.}
+\caption{The \gls{skipgate} algorithm improvement on the \gls{arm} sequential circuit.}
 \label{tab:sys_improvment_frwk}
 \begin{tabular}{l||r|r||r}
 \multirow{2}{*}{Function (bit)} & \multicolumn{2}{c||}{\# of non-XOR gates} &
@@ -765,7 +765,7 @@ As shown in \tab{tab:complex_funct}, we also develop a number of more complex fu
 
 \begin{table}
 \centering
-\caption{\gls{skipgate} algorithm improvement on the \gls{arm} sequential circuit for the complex functions.}
+\caption{The \gls{skipgate} algorithm improvement on the \gls{arm} sequential circuit for the complex functions.}
 \label{tab:complex_funct}
 \begin{tabular}{l||r|r||r}
 \multirow{2}{*}{Function (bit)} & \multicolumn{2}{c||}{\# of non-XOR gates} & \multicolumn{1}{c}{\multirow{2}{*}{\begin{tabular}[c]{@{}c@{}}Improvement \\ (1000X)\end{tabular}}} \\ \cline{2-3}

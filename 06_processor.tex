@@ -143,7 +143,7 @@ In the following, we discuss these modes of function evaluation and the trade-of
 Employ a general-purpose processor supporting its entire \acrshort{isa} for \acrshort{sfe} incurs a significant computation and communication cost.
 However, this cost seems unnecessary since both parties know the executed function instructions and they are only interested in learning the output value.
 Hence, garbling a limited application-specific \acrshort{isa} for executing each instruction is sufficient to achieve the desired privacy.
-To further reduce the \acrshort{isa}, assuming, for example, a function that consists of \numprint{10} instructions, we could theoretically generate $2^{10} -1$ \gls{netlist}s (\gls{netlist}s of \acrshort{isa} with different combinations of the 10 instructions, excluding the \gls{netlist} with zero instructions).
+To further reduce the \acrshort{isa}, assuming, for example, a function that consists of \numprint{10} instructions, we could theoretically generate $2^{10} -1$ \gls{netlist}s (\gls{netlist}s of \acrshort{isa} with different combinations of the ten instructions, excluding the \gls{netlist} with zero instructions).
 At run-time, one of these \gls{netlist}s is plugged in (garbled and evaluated) at each instruction step depending on the expected instructions.
 However, to make it more reasonable (generate fewer \gls{netlist}s), for functions with control flow independent of private data, we know in advance which instruction will be executed at each step.
 Thus, we need only the \gls{netlist} of the processor implementing \acrshort{isa} with that specific instruction, restricting the required \gls{netlist}s in this case to \numprint{10}.
@@ -286,7 +286,7 @@ Otherwise, the program flow will be dependent on the secret condition, and as a 
         \includegraphics[width=\textwidth]{conditional_exec_w-crop.pdf}
         \caption{With Conditional Execution}
     \end{subfigure}
-    \caption{An example code showing how conditional execution in \gls{arm} can reduce the code size and make the program flow predictable.}\label{fig:conditional_exec}
+    \caption{An example code that shows how conditional execution in \gls{arm} can reduce the code size and make the program flow predictable.}\label{fig:conditional_exec}
 \end{figure}
 
 We modify and remove a few features from the \gls{arm} processor like interrupts, co-processors, and performance-related components including cache and pipeline.
@@ -328,7 +328,7 @@ Since the cost of fetching instructions remains smaller than that of break-even 
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{branch-crop.pdf}
-\caption{In case of compiler failure to replace a secret branch with conditional instructions, the parties do not know which instruction is executed after the branch.
+\caption{In a case when the compiler fails to replace a secret branch with conditional instructions, the parties do not know which instruction is executed after the branch.
 Thus, the instruction becomes secret.}
 \label{fig:branch}
 \end{figure}

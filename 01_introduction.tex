@@ -167,7 +167,7 @@ We discuss \gls{tinygarble} \acrshort{gc} engine in more details in \appx{chap:e
 \caption{The global flow of the \gls{tinygarble} framework.
 The framework consists of \acrshort{gc} synthesis flow and \acrshort{gc} engine.
 The \acrshort{gc} synthesis flow generates the optimized Boolean circuit given a function description.
-The \acrshort{gc} engine allows two parties (Alice and Bob) to securely compute the function according to Yao's \acrshort{gc} protocol.
+The \acrshort{gc} engine allows two parties (Alice and Bob) to compute the function securely according to Yao's \acrshort{gc} protocol.
 }
 \label{fig:tinygarbel-global-flow}
 \end{figure}
@@ -182,12 +182,12 @@ By the end of the protocol, both parties receive the output of $o = f(a,b,p) = g
 \begin{figure}
 \centering
 \includegraphics[width=\textwidth]{arm2gc_flow-crop.pdf}
-\caption{The global flow of \gls{arm2gc} framework.
-The framework consists of \acrshort{gc} synthesis flow of \gls{tinygarble} and its \acrshort{gc} engine with \gls{skipgate} algorithm.
+\caption{The global flow of the \gls{arm2gc} framework.
+The framework consists of \acrshort{gc} synthesis flow of \gls{tinygarble} and its \acrshort{gc} engine with the \gls{skipgate} algorithm.
 The \acrshort{gc} synthesis flow generates the circuit description of the \gls{arm} processor $f(\cdot,\cdot,\cdot)$.
 The function to be securely evaluated ($g(\cdot,\cdot)$) is compiled using an \gls{arm} cross-compiler.
 The \acrshort{gc} engine allows two parties (Alice and Bob) to securely compute the \gls{arm} circuit $f(a,b,p)$ where $p$ is the binary code of $g(\cdot,\cdot)$.
-At the end, they will receive the output of $f(a,b,p) = g(a,b)$
+In the end, they will receive the output of $f(a,b,p) = g(a,b)$
 }
 \label{fig:arm2gc-globalflow}
 \end{figure}
@@ -223,5 +223,5 @@ We review the preliminaries and background of the \acrshort{sfe}, \acrshort{gc},
 We discuss \acrshort{gc} synthesis and its limitation in \chap{chap:syn}.
 Sequential \acrshort{gc} and its overhead is described in \chap{chap:seq}.
 We introduce \gls{skipgate} algorithm to remove the sequential overhead in \chap{chap:skipgate}.
-Next, we present garbled processors for \acrshort{pf-sfe}, \acrshort{sfe} and \gls{arm2gc} framework in \chap{chap:processor}.
+Next, we present garbled processors for \acrshort{pf-sfe}, \acrshort{sfe} and the \gls{arm2gc} framework in \chap{chap:processor}.
 Lastly, we review the related work in \chap{chap:related} and conclude the thesis in \chap{chap:conclusion}.

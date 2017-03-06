@@ -15,24 +15,24 @@ In following, we illustrate the difference between combinational and sequential 
 \begin{figure}
     \centering
     \includegraphics[width=0.85\textwidth]{adder-crop.pdf}
-    \caption{Combinational and sequential design of a 4-bit Adder.
-  (a) \acrshort{ha} circuit.
-  (b) \acrshort{fa} circuit.
-  (c) Combinational 4-bit Adder using 1 \acrshort{ha} and 3 \acrshort{fa}s.
-  (d) Sequential 4-bit Adder using one \acrshort{fa}.}\label{fig:combSeq}
+    \caption{The combinational and sequential design of a 4-bit Adder.
+  (a) The \acrshort{ha} circuit.
+  (b) The \acrshort{fa} circuit.
+  (c) The combinational 4-bit Adder using one \acrshort{ha} and three \acrshort{fa}s.
+  (d) The sequential 4-bit Adder using one \acrshort{fa}.}\label{fig:combSeq}
 \end{figure}
 
 \fig{fig:combSeq} demonstrates an example of a combinational and a sequential circuit for a 4-bit Adder function with inputs $x = \overline{x_3x_2x_1x_0}$ and $y = \overline{y_3y_2y_1y_0}$, producing sum $s = \overline{s_3s_2s_1s_0} = f(x, y) = x + y$.
 \fig{fig:combSeq}a and \ref{fig:combSeq}b show the internal combinational circuit of a half Adder (\acrshort{ha}) and a full Adder (\acrshort{fa}) respectively.
-In \fig{fig:combSeq}c a combinational Adder is built by cascading 3 \acrshort{fa}s and one \acrshort{ha}.
+In \fig{fig:combSeq}c a combinational Adder is built by cascading three \acrshort{fa}s and one \acrshort{ha}.
 \fig{fig:combSeq}d represents a sequential implementation of a 4-bit Adder which uses one \acrshort{fa} and a one bit \acrshort{ff} to save the carry bit from the previous cycle.
-The circuit should be evaluated for 4 cycles.
+The circuit should be evaluated for four cycles.
 At the first cycle, the carry bit is $z_0=0$.
-Note that, in the combinational circuit we use three \acrshort{fa}s and one \acrshort{ha} whereas, in the sequential circuit, we have to use one \acrshort{fa} for 4 sequential cycles.
+Note that, in the combinational circuit we use three \acrshort{fa}s and one \acrshort{ha} whereas, in the sequential circuit, we have to use one \acrshort{fa} for four sequential cycles.
 This asymmetry in the loop of Addition function introduces a small \emph{overhead} in \acrshort{gc} computation and communication time as an \acrshort{ha} circuit has fewer gates compared to an \acrshort{fa} circuit.
 We will discuss the overhead of garbling sequential circuits and its sources in more detail in \sect{sec:seq-overhead}.
 
-However, the total number of gates for representing the function is reduced approximately by a factor of 4 when using a sequential circuit (one \acrshort{fa} for sequential compared with three \acrshort{fa} and one \acrshort{ha} for combinational).
+However, the total number of gates for representing the function is reduced approximately by a factor of four when using a sequential circuit (one \acrshort{fa} for sequential compared with three \acrshort{fa} and one \acrshort{ha} for combinational).
 This reduction in the number of gates helps to limit the memory footprint for garbling and evaluation required for storing circuit description and wire labels ($k$-bit per wire, see \sect{ssec:prelim-gc}).
 In a sequential circuit, the number of labels that we need to store in the memory at any moment is proportional to the number of gates in the circuit.
 We simply overwrite the wire labels with the ones for the next sequential cycle.
@@ -74,7 +74,7 @@ Fortunately, adopting \gls{tinygarble} \acrshort{gc} synthesis for sequential ci
 We add memory element of sequential circuits into the technology library of \gls{tinygarble} (see \sect{sec:syn-techlib}).
 
 We can implement these elements using \acrshort{ff}s. Although in \acrshort{asic} design FFs are typically as costly as four NAND gates, as seen above in \acrshort{gc}, \acrshort{ff}s do not have any impact on the garbling/evaluation process as they require no cryptographic operations.
-Therefore, we set the area of \acrshort{ff}s to 0 to show its lack of impact on the communication cost of the \acrshort{gc} protocol.
+Therefore, we set the area of \acrshort{ff}s to zero to show its lack of impact on the communication cost of the \acrshort{gc} protocol.
 Moreover, we modify our \acrshort{ff}s such that they can accept an initial value.
 The initial value helps us to remove unnecessary \acrshort{mux}s in standard \acrshort{ff} design for initialization.
 
@@ -97,7 +97,7 @@ U1 sub-circuit represents the computation in the first step, U2 the middle four 
 \fig{fig:seq-overhead-seq} illustrates the sequential circuit representation of the example function.
 A \acrshort{mux} selects the output of the sub-circuits according to the cycle id (cid).
 In the digital circuit design, \acrshort{mux} and similar components that control the flow of data are called \textit{control path}.
-If cid is 0, the \acrshort{mux} selects U1, if it is 5, U3, and otherwise, U2.
+If cid is zero, the \acrshort{mux} selects U1, if it is five, U3, and otherwise, U2.
 The unselected sub-circuits remain idle in that cycle since their output is not used.
 At each cycle, the output of the selected sub-circuit is stored in the \acrshort{ff} to be read in the following cycles.
 
@@ -112,7 +112,7 @@ At each cycle, the output of the selected sub-circuit is stored in the \acrshort
         \caption{Sequential Circuit.}\label{fig:seq-overhead-seq}
     \end{subfigure}\\
     \caption{The combinational and sequential representations of a function with an asymmetric structure.
-    The sequential implementation has to be evaluated for 6 cycles and eventually needs more gates to be garbled/evaluated compared to the combinational one.}\label{fig:fig:seq-overhead-comb}
+    The sequential implementation has to be evaluated for six cycles and eventually needs more gates to be garbled/evaluated compared to the combinational one.}\label{fig:fig:seq-overhead-comb}
 \end{figure}
 
 The number of gates that have to be garbled/evaluated in the combinational circuit is $C_{U1}+4*C_{U2}+C_{U3}$, where $C_{Ui}$ is the number of gates in $Ui$ sub-circuit.

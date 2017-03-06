@@ -98,7 +98,7 @@ The technology library includes logical descriptions of these units along with t
 The goal of the synthesis tool in this step is to generate a \gls{netlist} of library components that best fit the given constraints.
 For logic synthesis, we use tools targeting \acrshort{asic}s as they allow more flexibility in their input technology library.
 We design a custom technology library that contains two-input gates as they incur minimum garbled tables in the \acrshort{gc} protocol compared to gates with more inputs.
-We set the area of XOR gates to 0 and that of non-XOR gates to a non-0 value, e.g., 1.
+We set the area of XOR gates to zero and that of non-XOR gates to a non-zero value, e.g., one or a large positive number.
 We choose area minimization as the only optimization goal, so the synthesis tool produces a \gls{netlist} with the minimum possible number of non-XOR gates.
 Reducing non-XOR gates translates directly into decreasing the communication cost of the GC protocol due to the Free XOR optimization \cite{kolesnikov2008improved}.
 
@@ -106,8 +106,8 @@ An additional feature of our custom technology library is that it contains non-s
 For example, the logical functions $F = A\wedge B$ and $F = (\neg A)\wedge B$ requires same effort in garbling/evaluation.
 However, using only standard gates, the second function would need two gates (a NOT gate and an AND gate) and store one extra pair of labels for $\neg A$ in the memory.
 We include four such non-standard gates with an inverted input in our custom library.
-XOR, XNOR, and NOT gates are free, so we set their area to 0.
-We assign the area of all other gates, similar to that of non-XOR, to 1.
+XOR, XNOR, and NOT gates are free, so we set their area to zero.
+We assign the area of all other gates, similar to that of non-XOR, to one.
 To be consistent with the previous work in the literature, we use ``number of non-XOR gates'' to refer to the number of non-free gates in a circuit throughout this thesis.
 Due to the Free XOR optimization, this metric directly corresponds to time and communication cost of garbling/evaluating the circuit.
 

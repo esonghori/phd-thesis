@@ -140,8 +140,8 @@ In all these modules, the total number of gates is $\BigO{w}$.
 The technology library includes logical descriptions of basic units and their parameters like delay and area.
 The synthesis tool uses the technology library to generate a circuit optimized for given objectives and constraints.
 We design a custom technology library that contains 2-input gates (according to the requirement of the \acrshort{gc} protocol).
-We set the area of XOR gates to 0 and the area of non-XOR gates to 1.
-We synthesize the circuits with the area constraint set to 0 so that the synthesis tool's objective becomes minimizing the number of non-XOR gates in the generated circuit.
+We set the area of XOR gates to zero and the area of non-XOR gates to one.
+We synthesize the circuits with the area constraint set to zero so that the synthesis tool's objective becomes minimizing the number of non-XOR gates in the generated circuit.
 
 An additional feature of this library is the inclusion of non-standard gates (other than basic gates like NOT, AND, NAND, OR, NOR, XOR, and XNOR) to increase the flexibility of the mapping process.
 For example, the logical functions $F = A\vee B$ and $F = (\sim A)\vee B$ requires equal time in garbling/evaluation.
@@ -154,14 +154,14 @@ To start our implementation for the special case of 1-NN search, we look for the
 In the privacy-preserving setting, we need to compare the query point to all the points in the dataset because one cannot utilize the (private) intermediate search values to bound the search, e.g., binary search.
 
 \fig{fig:fist-nns-comb} shows the combinational circuit for $1$-NN.
-The implementation uses $n$ Hamming distance modules, and $n-1$ \emph{min} modules (consisting of 1 COMP and 2 \acrshort{mux}s) to find the nearest point.
+The implementation uses $n$ Hamming distance modules, and $n-1$ \emph{MIN} modules (consisting of one COMP and two \acrshort{mux}s) to find the nearest point.
 One \acrshort{mux} selects the smaller distance for later comparison while the other one finds the point corresponding to that distance.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{first-nns-comb-crop.pdf}
-\caption{Combinational circuit for $1$-NN.
-It consists of $n$ Hamming distance and $n-1$ min modules.}
+\caption{The combinational circuit for $1$-NN.
+It consists of $n$ Hamming distance and $n-1$ MIN modules.}
 \label{fig:fist-nns-comb}
 \end{figure}
 
@@ -187,7 +187,7 @@ Thereby, the proof of security provided in \cite{lindell2009proof,bellare2013eff
 We now describe the sequential 1-NN search implementation followed by $k$-NN implementation.
 
 \subsubsection{Sequential 1-NN}
-Our 1-NN search sequential circuit is implemented with only 1 Hamming distance and 1 min module.
+Our 1-NN search sequential circuit is implemented with only one Hamming distance and one MIN module.
 \fig{fig:fist-nns-seq} illustrates the sequential circuit for $1$-NN search.
 In each cycle $c$, the circuit computes the distance between $q$ and $S[c]$.
 Next, it compares the resulting distance with the stored minimum distance in the register (reg).
@@ -197,8 +197,8 @@ The total number of cycles required to compute 1-NN is $n$.
 \begin{figure}
 \centering
 \includegraphics[width=0.5\textwidth]{first-nns-seq-crop.pdf}
-\caption{Sequential circuit for $1$-NN.
-It consists of 1 Hamming distance and 1 min module.
+\caption{The sequential circuit for $1$-NN.
+It consists of one Hamming distance and one MIN module.
 For a dataset of size $n$, the circuit is required to be garbled/evaluated $n$ times.}
 \label{fig:fist-nns-seq}
 \end{figure}
@@ -220,14 +220,14 @@ We expand the sequential circuit for the 1-NN to store the $k$ nearest points.
 For this purpose, we implement a priority queue with the depth of $k$ which receives one point at each cycle.
 The priority of each point is equal to its distance to the query.
 \fig{fig:k-nns-seq} shows the sequential circuit for the $k$-NN search.
-The circuit has 1 Hamming distance, $k$ min, and $k-1$ \emph{max} modules.
-The max module, like min, consists of 1 COMP and 2 \acrshort{mux}s.
+The circuit has one Hamming distance, $k$ MIN, and $k-1$ \emph{MAX} modules.
+The MAX module, like MIN, consists of one COMP and two \acrshort{mux}s.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.8\textwidth]{k-nns-seq-crop.pdf}
-\caption{Sequential circuit for $k$-NN.
-It consists of 1 Hamming distance, $k$ min, and $k-1$ max modules.
+\caption{The sequential circuit for $k$-NN.
+It consists of one Hamming distance, $k$ MIN, and $k-1$ MAX modules.
 It requires to be evaluated $n$ times where $n$ is the size of the dataset $S$.}
 \label{fig:k-nns-seq}
 \end{figure}

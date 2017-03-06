@@ -126,7 +126,7 @@ For example, in the case where Alice intends to learn the final output, she rece
 In \gls{skipgate}, an integer called \texttt{label\_fanout} is associated with each gate and indicates the number of times the gate's output label is used (either as a circuit's output or as an input to other gates).
 At the beginning of each cycle (Line 8 of \alg{alg:alice} and \alg{alg:bob}), the parties set the \texttt{label\_fanout} to the gate fanout in the circuit\footnote{\textit{Fanout} of a gate, borrowed from hardware design, is the number of subsequent gates (and circuit outputs) dependent on the gate’s output.}.
 A gate's \texttt{label\_fanout} may decrease if its output label is not needed anymore, e.g., a gate whose output is connected an AND gate with 0 at the other input (Category ii).
-If \texttt{label\_fanout} reaches 0, it means that gate's output label does not have any effect on the final output.
+If \texttt{label\_fanout} reaches zero, it means that gate's output label does not have any effect on the final output.
 The gates with \texttt{label\_fanout}=0 are subsequently designated for skipping, which in turn decreases the \texttt{label\_fanout} of their input gates recursively.
 Finally, the gates in Category iv that the parties have not marked for skipping are garbled/evaluated.
 
@@ -164,8 +164,8 @@ Second, it increases the communication overhead which is the bottleneck of the \
     \centering
     \includegraphics[width=0.40\textwidth]{phaseOneExample-crop.pdf}
     \caption{Four examples of replacing gates in Phase 1 by zero, one, wire, or inverter.
-    \texttt{label\_fanout} is decreased for the unnecessary gate.
-    The top-left example is in Category i and the rest are in Category ii.}
+    We decrease the \texttt{label\_fanout} of the unnecessary gate accordingly.
+    The top-left example is in Category i, and the rest are in Category ii.}
     \label{fig:phaseOneExample}
 \end{figure}
 
@@ -196,15 +196,15 @@ Second, it increases the communication overhead which is the bottleneck of the \
 \alg{alg:phase2_alice} shows the Phase 2 of \gls{skipgate} for Alice's side in which she performs the same task for Category iii.
 She then generates garbled tables for gates with non-zero \texttt{label\_fanout} in Category iv.
 \fig{fig:phaseTwoExample} shows four different examples in this phase.
-By the end of Phase 2, due to the recursive nature of the fanout reduction, \texttt{label\_fanout} of some gates that have already been garbled may become 0.
+By the end of Phase 2, due to the recursive nature of the fanout reduction, \texttt{label\_fanout} of some gates that have already been garbled may become zero.
 In Line 17 of \alg{alg:phase2_alice}, Alice filters the garbled tables that have non-zero \texttt{label\_fanout} to be sent to Bob.
 
 \begin{figure}
     \centering
     \includegraphics[width = 0.50\textwidth]{phaseTwoExample-crop.pdf}
     \caption{Four examples of replacing and computing gates in Phase 2.
-    		 \texttt{label\_fanout} is decreased for the unnecessary gates.
-         The top-right example is in Category iv, and the rest are in Category iii.}
+    		     We decrease the \texttt{label\_fanout} of the unnecessary gate accordingly.
+             The top-right example is in Category iv, and the rest are in Category iii.}
     \label{fig:phaseTwoExample}
 \end{figure}
 
@@ -238,7 +238,7 @@ In Line 17 of \alg{alg:phase2_alice}, Alice filters the garbled tables that have
 \alg{alg:phase2_bob} shows the Phase 2 for Bob's side.
 Bob evaluates the gates that belong to Category iii and iv.
 In Line 17 of \alg{alg:phase2_bob}, Bob generates and assigns new unique labels (\texttt{next\_unique\_label}) for gates that were filtered by Alice.
-Bob knows that the \texttt{label\_fanout} of these gates will eventually become 0.
+Bob knows that the \texttt{label\_fanout} of these gates will eventually become zero.
 Therefore, he produces new labels for them only to keep track of these secret variables that are used to compute the output of the gates in Category iii.
 Bob can generate these labels randomly or use a monotonic counter that increases by one for each newly generated label.
 To distinguish valid \acrshort{gc} labels from his generated labels, he keeps a single bit flag along with each label that indicates he generated the label and it is not valid for \acrshort{gc} evaluation.
@@ -267,7 +267,7 @@ To distinguish valid \acrshort{gc} labels from his generated labels, he keeps a 
 \alg{alg:skipgate_reduction} illustrates the pseudo-code for the recursive fanout reduction.
 It receives the circuit and a gate of the circuit.
 It first decreases the \texttt{label\_fanout} of the given gate.
-If the \texttt{label\_fanout} becomes 0, it recursively calls itself with the gates that generate the secret input(s).
+If the \texttt{label\_fanout} becomes zero, it recursively calls itself with the gates that generate the secret input(s).
 \fig{fig:phaseOneRecursive} illustrates this process on a sample circuit.
 
 \begin{figure}

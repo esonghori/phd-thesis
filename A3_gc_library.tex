@@ -66,14 +66,14 @@ $Sigmoid(\theta)=\frac{1}{1+\cosh(\theta)-\sinh(\theta)}$.
 
 \section{Evaluation}
 \tab{table:div} reports the result of integer division and remainder functions for various bit-widths.
-Div\_rem function calculates both the reminder and division in the same circuit.
+Div\_rem function calculates both the remainder and division in the same circuit.
 A few of the previous work reported the number of non-XOR gates for 32-bit integer division only: 1,437 \cite{mood2016frigate}, 1,210 \cite{zahur2015obliv}, and 2,236 \cite{liu2015oblivm}.
 As shown in the table, the number of non-XOR gates for our 32-bit division is 599.
 It means 2 to 3.7 times improvement compared to the previous custom compilers.
 
 \begin{table}
 \center
-\caption{The result of integer division and reminder functions.}\label{table:div}
+\caption{The result of integer division and remainder functions.}\label{table:div}
 \begin{tabular}{l||r||r|r}
 	Function                  & \multicolumn{1}{c|}{Bit-width} & \multicolumn{1}{c|}{Non-XOR} & \multicolumn{1}{c}{Total gates} \\ \hline \hline
 \multirow{3}{*}{Reminder} & 16        & 186     & 500         \\
