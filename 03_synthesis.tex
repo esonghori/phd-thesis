@@ -84,7 +84,7 @@ In the following, we describe the details of the synthesis steps and how we mani
 
 \section{Synthesis Library}\label{sec:syn-synlib}
 The first phase in the synthesis flow is to convert arithmetic and conditional operations like add, multiply, and if-else to their logical representations that fit best to the user's constraints.
-For example, we can replace the sum of two N-bit numbers with an N-bit ripple carry adder in the case of area optimization or an N-bit carry look-ahead adder for timing optimization.
+For example, one can replace the sum of two N-bit numbers with an N-bit ripple carry adder in the case of area optimization or an N-bit carry look-ahead adder for timing optimization.
 A library that consists of these various implementations is called a \emph{synthesis library}.
 We develop our synthesis library that includes implementations customized for the \acrshort{gc} protocol.
 In this library, we build the arithmetic operations based on a full adder with one non-XOR gate \cite{boyar2006concrete} and conditional operations based on a 2-to-1 \acrfull{mux} with one non-XOR gate \cite{kolesnikov2008improved}.
@@ -131,4 +131,4 @@ In hardware design, these functions are folded around their loops and are descri
 A sequential circuit has feedback loops and is evaluated for multiple times (sequential cycles).
 Thus, it is the most suited format to represent the recurring blocks in large functions
 In the next chapter, we will discuss the possibility of using the sequential circuit for the \acrshort{gc} protocol.
-We will show how we can exploit loops in sequential circuits to fold large functions while still benefiting from the optimization of synthesis tools.
+We will show how one can benefit from the loops in sequential circuits to fold large functions while still benefiting from the optimization of synthesis tools.

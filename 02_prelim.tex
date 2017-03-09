@@ -37,7 +37,7 @@ Each party has an attribute denoted by $i_k$ where $k$ is party identifier.
 The parties are interested to collectively compute function $o = f(i_1, i_2, ..., i_p)$ where $f$ is an arbitrary function and $o$ is a tuple $(o_1, o_2, ..., o_p)$ such that $o_k$ belongs to the $k^{\text{th}}$ party.
 After the computation of $f$, the parties should gain no information about other parties' attribute, other than the one they can deduce from the output.
 
-We can also describe the function $f$ as a tuple of functions $f = (f_1, f_2, ...,  f_p)$ where the output of $o_k = f_k(i_1, i_2, .. i_p)$ belongs to $k^{\text{th}}$ party.
+One can also describe the function $f$ as a tuple of functions $f = (f_1, f_2, ...,  f_p)$ where the output of $o_k = f_k(i_1, i_2, .. i_p)$ belongs to $k^{\text{th}}$ party.
 A common special case is where $f = f_1 = f_2 = ... = f_p$, meaning all parties receive the same output.
 For example in the case of the average of salaries, the result of the average function is evaluated and shared with all the participating parties.
 
@@ -77,8 +77,8 @@ The steps of Yao's protocol are described below.
 \item The function $f$ to be computed is represented as a Boolean circuit, called \textit{\gls{netlist}}, consisting of 2-input 1-output logic gates (a four entry truth table).
 \item For each wire $w$ in the \gls{netlist}, Alice assigns two $k$-bit random strings, called \textit{labels}, $X_w^{0}$ and $X_w^{1}$ respectively corresponding to 0 and 1 Boolean values.
       $k$ is the security parameter -- typically $k=128$ is sufficient~\cite{bellare2013efficient}.
-\item For each gate, she encrypts the output label in each on of the four rows of the truth table with the corresponding input labels.
-      The resulting table of ciphertexts is then randomly rearranged and called the \textit{garbled table}.
+\item For each gate, she encrypts the output label with the corresponding input labels and creates a encrypted table with four rows.
+      The table is then randomly rearranged and called the \textit{garbled table}.
 \item She then sends the garbled tables along with the labels corresponding to her input values to Bob.
       Bob obtains the labels corresponding to his input values obliviously through 1-out-of-2 \acrshort{ot} protocol.
 \item Bob uses these input labels to decrypt the garbled tables gate by gate.
@@ -91,6 +91,11 @@ The steps of Yao's protocol are described below.
 Throughout the last decade, the cryptographic scheme of the \acrshort{gc} protocol has gone through numerous developments.
 We describe the most consequential of these improvements here.
 
+\subsubsection{Row Reduction}\label{sssec:prelim-row}
+The Row Reduction technique reduces the size of a garbled table by $25\%$, i.e., only three rows of a garbled table are needed to transferred between the parties~\cite{naor1999privacy}.
+Here, instead of randomly generating a label for the output wire of a gate, the output label is produced as a function of the labels of the inputs.
+Alice generates the output label such that the first entry of the garbled table becomes all $0$ and no longer needs to be sent.
+
 \subsubsection{Free XOR}\label{sssec:prelim-freexor}
 The most significant optimization to \acrshort{gc} so far is Free XOR proposed in~\cite{kolesnikov2008improved}.
 In this optimization, for any wire $w$, Alice only generates the label $X_w^{0}$ and computes the label corresponding to 1 as $X_w^{0}\oplus (R \parallel 1)$ where $\parallel$ represents bit concatenation and
@@ -98,14 +103,9 @@ $R$ is a global random ($k-1$)-bit value known only to Alice.
 With this convention, the label for the output of an XOR gate with inputs $a$, $b$ and output $o$ can simply be computed as $X_{o} = X_{a} \oplus X_{b}$.
 Thus it does not need computation or transfer of the garbled tables and the XOR gate becomes \textit{free}.
 
-\subsubsection{Row Reduction}\label{sssec:prelim-row}
-Row Reduction optimization reduces the size of the tables for the non-XOR gates by $25\%$, i.e., three rows of garbled table are needed to transferred between the parties~\cite{naor1999privacy}.
-Here, instead of generating a label for the output wire of a gate randomly, the output label is produced as a function of the labels of the inputs.
-Alice generates the output label such that the first entry of the garbled table becomes all $0$ and no longer needs to be sent.
-
 \subsubsection{Garbling with a Fixed-key Block Cipher}\label{sssec:prelim-aes}
 This method allows to efficiently garble and evaluate non-XOR gates using fixed-key \acrfull{aes} symmetric encryption~\cite{bellare2013efficient}.
-In this garbling scheme which is compatible with the Free XOR and Row Reduction techniques, the output label $X_{o}$ is encrypted with the input label $X_{a}$ and $X_{b}$ using the encryption function $E(X_a,X_b,T,X_o) = \pi(K) \oplus K \oplus X_o$, where $K=2X_a\oplus4X_b\oplus T$, $\pi$ is a fixed-key block cipher (e.g., instantiated with \acrshort{aes}), and $T$ is a unique-per-gate number (e.g., gate identifier) called \emph{tweak}.
+In this garbling scheme which is compatible with the Free XOR and Row Reduction techniques, the output label $X_{o}$ is encrypted with the input label $X_{a}$ and $X_{b}$ using the encryption function $E(X_a,X_b,T,X_o) = \pi(K) \oplus K \oplus X_o$, where $K=2X_a\oplus4X_b\oplus T$, $\pi$ is a fixed-key block-cipher (e.g., instantiated with \acrshort{aes}), and $T$ is a unique-per-gate number (e.g., gate identifier) called \emph{tweak}.
 A comprehensive proof of security for this method is provided in~\cite{bellare2013efficient}.
 
 \subsubsection{Half Gate}\label{sssec:prelim-half}

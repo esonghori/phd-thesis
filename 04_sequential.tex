@@ -73,7 +73,8 @@ We also explain in more detail about how we set the encryption tweak and how it 
 Fortunately, adopting \gls{tinygarble} \acrshort{gc} synthesis for sequential circuits is straightforward since the synthesis tools support sequential circuits.
 We add memory element of sequential circuits into the technology library of \gls{tinygarble} (see \sect{sec:syn-techlib}).
 
-We can implement these elements using \acrshort{ff}s. Although in \acrshort{asic} design FFs are typically as costly as four NAND gates, as seen above in \acrshort{gc}, \acrshort{ff}s do not have any impact on the garbling/evaluation process as they require no cryptographic operations.
+We implement these elements using \acrshort{ff}s.
+Although in \acrshort{asic} design \acrshort{ff}s are typically as costly as four NAND gates, as seen above in \acrshort{gc}, \acrshort{ff}s do not have any impact on the garbling/evaluation process as they require no cryptographic operations.
 Therefore, we set the area of \acrshort{ff}s to zero to show its lack of impact on the communication cost of the \acrshort{gc} protocol.
 Moreover, we modify our \acrshort{ff}s such that they can accept an initial value.
 The initial value helps us to remove unnecessary \acrshort{mux}s in standard \acrshort{ff} design for initialization.
@@ -85,13 +86,13 @@ Moreover, the compatibility of our sequential descriptions with standard synthes
 
 \section{Overhead of Sequential Circuit}\label{sec:seq-overhead}
 In the sequential circuit, we divide the function into smaller steps such that we can compute each step at one cycle.
-If we can split a function into identical steps, we then can implement the sequential circuit using only one step.
+If one can split a function into identical steps, then she can implement the sequential circuit using only one step.
 Evaluating the sequential circuit for multiple cycles ensures that the function is computed completely.
-However, many functions do not have such a symmetrical structure, and we cannot divide them perfectly into identical steps.
+However, many functions do not have such a symmetrical structure, and they cannot be divided perfectly into identical steps.
 The sequential circuits of such functions include different sub-circuits that each corresponds to one of the steps in the function.
 
 \fig{fig:seq-overhead-comb} shows an example of such function represented as a combinational circuit.
-We can divide the computation of the function can into six non-identical steps.
+We divide the computation of the function can into six non-identical steps.
 The computation in the first and last steps are different from the rest.
 U1 sub-circuit represents the computation in the first step, U2 the middle four steps, and U3 the last step.
 \fig{fig:seq-overhead-seq} illustrates the sequential circuit representation of the example function.
