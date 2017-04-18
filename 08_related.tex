@@ -136,45 +136,49 @@ Moreover, the protocol described in \cite{demmler2014ad}, which uses a smart-car
 In \cite{carter2016secure, carter2014whitewash}, the mobiles no longer need to process circuits anymore as \acrshort{gc} generation and evaluation is outsourced to cloud servers.
 
 \section{Securing GC against Malicious Adversary}\label{sec:related-malicious}
-Yao's \acrshort{gc} protocol presented in this thesis is secure against an \acrfull{hbc} adversary, also known as a semi-honest or passive adversary (see \sect{ssec:prelim-gc}).
+Yao's \acrshort{gc} protocol discussed in this thesis is secure against an \acrfull{hbc} adversary, also known as a semi-honest or passive adversary (see \sect{ssec:prelim-gc}).
 In the \acrshort{hbc} model, the parties follow the protocol, but they wish to learn as much as possible about the other party's private input.
 
-However, in a malicious model where parties can deviate from the protocol, Alice can garble a faulty circuit instead of the correct one and send it to Bob.
-Bob is not able to distinguish the faulty circuit because it is garbled.
+
+In a malicious model of \acrshort{gc} where parties can deviate from the protocol, Alice can garble a faulty circuit instead of the correct one and send it to Bob.
+Bob is not able to distinguish the faulty circuit because it is garbled, i.e., encrypted.
 A straightforward method to make the protocol secure against a malicious adversary is to apply Goldreich-Micali-Wigderson (GMW) compiler to the protocol \cite{goldreich1987play}, such that Alice can prove to Bob that she garbled the circuit correctly without revealing the garbling secrets.
 However, this approach is not practical due to the use of costly generic zero-knowledge proofs in the GMW compiler \cite{lindell2007efficient}.
 
 Lindell and Pinkas (2007) proposed the first practical and efficient method to secure the \acrshort{gc} protocol against malicious adversaries in \cite{lindell2007efficient}.
 They propose to apply a cut-and-choose strategy on the \acrshort{gc} protocol.
-Alice (the garbler) using the original \acrshort{gc} protocol (the \acrshort{hbc} model) garbles the circuit for $s$ times and send the garbled circuits to Bob (the evaluator), where $s$ is a statistical security parameter, and the cheating probability is exponentially small with respect to $s$.
+Alice garbles the circuit using the \acrshort{hbc} version of the protocol for $s$ times and send the garbled circuits to Bob.
+$s$ is a statistical security parameter, and the cheating probability is exponentially small with respect to $s$.
 Bob randomly selects half of the garbled circuits and asks Alice to reveal them to him.
 Bob can detect if Alice cheated in garbling any of the circuits.
 If Bob finds out that Alice garbled the majority of the circuits correctly, then he evaluates the rest of them and chooses the most recurring output as the final output.
-Bob selects the majority instead of terminating the protocol because Alice can create a faulty circuit that fails given a particular input. Thus, Bob's termination can reveal his input to Alice.
+Bob selects the majority instead of terminating the protocol in case of different outputs because Alice can create a faulty circuit that fails given a particular input.
+Thus, Bob's termination can reveal his input to Alice.
 
-This method creates another security challenge that is to make sure that the parties are using the same inputs for the multiple invocations of the garbled circuit.
-To solve this problem, the authors propose to use a commitment scheme for input such that parties cannot change their input after the commitment.
-The authors later improve their method to make it more efficient in \cite{lindell2012secure}.
-More perspicuously, they showed that garbling $s$ circuits and opening half of them result in the cheating probability of $2^{-0.311s}$.
+The cut-and-choose method creates another security challenge that is to make sure that the parties are using the same inputs for the multiple invocations of the garbled circuit.
+To solve this problem, the authors propose to use a commitment scheme for input such that parties cannot change their input after the start of the protocol.
+The authors later improve their method by reducing number of commitments at the expense of garbling more circuits to make the overall protocol more efficient \cite{lindell2012secure}.
+They showed that garbling $s$ circuits and opening half of them result in the cheating probability of $2^{-0.311s}$.
 For example, one requires garbling $s=128$ circuits to achieve $2^{-40}$ cheating probability.
 Most recently, Lindell (2016) improved the cut-and-chose strategy even further in \cite{lindell2016fast}.
 He showed applying some twists to the cut-and-chose strategy can achieve $2^{-s}$ probability error given $s$ circuits.
 This means one requires garbling only $s=40$ circuits to achieve $2^{-40}$ cheating probability.
 
 Nielsen et al. (2009) proposed LEGO, an alternative method for securing \acrshort{gc} in the presence of malicious adversary \cite{nielsen2009lego}.
-The main difference between LEGO and previous cut-and-chose methods in \cite{lindell2007efficient, shen2011two, lindell2012secure, mohassel2013garbled, lindell2016fast} is that instead of garbling the entire circuit for multiple times, Alice garbles a large number of NAND gates.
-And instead of asking to open the entire circuit, Bob asks her to open half of the garbled NAND gates.
+The main difference between LEGO and the conventional cut-and-chose methods  \cite{lindell2007efficient, shen2011two, lindell2012secure, mohassel2013garbled, lindell2016fast} is that instead of garbling the entire circuit for multiple times, Alice garbles a large number of NAND gates in LEGO.
+And instead of asking to reveal the entire circuit, Bob asks her to open half of the garbled NAND gates.
 Bob then constructs a fault-tolerant circuit based on the original circuit using the remaining unrevealed NAND gates and evaluate the circuit.
 Since in this thesis, we focus on generating a Boolean function with the minimum number of non-XOR gates, LEGO cannot directly enjoy from the improvement of \gls{tinygarble} synthesis similar to the conventional cut-and-chose methods that reveal the entire circuit.
+However, the \acrshort{gc} synthesis methodology presented in \chap{chap:syn} may improve the number of NAND gates required to create the fault-tolerate circuit for LEGO.
 
 \subsection{Discussion}\label{sec:related-malicious-dis}
-Securing \acrshort{gc} using the cut-and-chose strategy incurs a multiplicative factor of $s$ to the cost of \acrshort{gc} compared to the \acrshort{hbc} model.
+Securing \acrshort{gc} using the cut-and-chose strategy incurs a multiplicative factor of $s$ (the statistical security parameter) to the cost of \acrshort{gc} compared to the \acrshort{hbc} model.
 Thus, reducing the cost of \acrshort{gc} under \acrshort{hbc} (one of the objectives of this thesis) results in an immediate reduction in the cost of \acrshort{gc} under the malicious adversary as well.
 
 Since in this thesis, we use the \acrshort{gc} protocol as a black-box, one can easily apply the cut-and-chose strategy presented in \cite{lindell2016fast} to secure our frameworks against malicious adversaries.
-For instance, in the \gls{arm2gc} framework described in \sect{sec:processor-arm}, the Boolean circuit is the circuit of an \gls{arm} processor, and the inputs are parties private inputs.
-Both parties create a simplified circuit of the \gls{arm} processor that is going to be garbled/evaluated using the \gls{skipgate} algorithm.
-Using the cut-and-chose strategy, Alice and Bob first commit their inputs \cite{lindell2016fast}.
-Then for achieving $2^{-40}$ cheating probability, Alice generates $s$ garbled circuits from the simplified \gls{arm} circuit and sends them to Bob.
-Bob then asks Alice to reveal half of them to Bob, and if the majority of the garbled circuit are garbled correctly by Bob, he evaluates the rest and chooses the most recurring output as the final output.
+For instance, in the \gls{arm2gc} framework described in \sect{sec:processor-arm}, the Boolean circuit is the circuit of an \gls{arm} processor, and the inputs are parties' private inputs.
+Both parties create and agree on a simplified circuit of the \gls{arm} processor that is going to be garbled/evaluated using the \gls{skipgate} algorithm.
+Using Lindell's method, Alice and Bob first commit their inputs \cite{lindell2016fast}.
+Then for achieving $2^{-40}$ cheating probability, Alice generates $40$ garbled circuits from the simplified \gls{arm} circuit and sends them to Bob.
+Bob then asks Alice to reveal half of them to Bob, and if the majority of the garbled circuit are garbled correctly, he evaluates the rest and chooses the most recurring output as the final output.
 Similarly, one can easily apply this to \gls{tinygarble} \acrshort{gc} engine to make it secure against the malicious adversary.
